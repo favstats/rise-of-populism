@@ -84,13 +84,38 @@ ches %>%
   ggthemes::scale_color_hc()
 
 ggsave(file = here("images", "party_alignment.png"), height = 10, width = 10)
-```
 
-```{r}
+
 ches_pop <- ches %>% 
   filter(populism >= 60)
 
 length(unique(ches_pop$country))
 length(unique(ches$country))
+```
+```{r}
+ches %>% 
+  ggplot(aes(liberalism, antielite_salience, color = family)) + 
+  geom_point() +
+  geom_text_repel(aes(liberalism, antielite_salience, label = party_cntry)) +
+  guides(text = F) +
+  ggthemes::theme_hc() +
+  ggthemes::scale_color_hc() 
+
+ggsave(file = here("images", "party_alignment2.png"), height = 10, width = 10)
+
+
+ches_elite <- ches %>% 
+  filter(antielite_salience >= 7.5)
+
+length(unique(ches_elite$country))
+length(unique(ches$country))
+
+table(to_label(ches_elite$country))
+```
+
+
+
+```{r}
+
 ```
 
