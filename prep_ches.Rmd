@@ -1,0 +1,96 @@
+---
+title: "My_Template"
+output: html_notebook
+---
+
+# Load in Packages
+
+```{r}
+#install.packages("pacman")
+#pacman::p_install_gh("systats/binoculaR")
+pacman::p_load(tidyverse, magrittr, haven, ggthemes, sjPlot, sjmisc, sjstats, binoculaR, janitor, here, Amelia, mlbench, psych, ggrepel)
+
+range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.rm = T))}
+
+```
+
+
+# Load in Data
+
+```{r}
+ches <- haven::read_dta(here("data", "1999_2014_CHES.dta"))
+```
+
+
+# Filter Data
+
+```{r}
+ches %>% 
+  mutate(cntry = to_label(country))
+
+# create a missing map
+ches %>% 
+  arrange(year, country) %>% 
+missmap(col=c("black", "grey"), legend=FALSE)
+```
+
+
+# Recoding
+
+```{r}
+mod1 <- lm(antielite_salience ~ corrupt_salience, data = ches)
+
+ 
+ches %>% 
+  select(antielite_salience, corrupt_salience) %>% 
+  na.omit() %>% 
+  cor()
+
+plot_model(mod1, show.data = T)
+
+
+```
+
+
+# Analysis
+
+```{r}
+ches %>% 
+  select(sociallifestyle, civlib_laworder, galtan) %>% 
+  na.omit() %>% 
+  cor()
+
+ches %>% 
+  select(sociallifestyle, civlib_laworder, galtan) %>% 
+  pca()
+```
+
+
+```{r}
+ches %<>% 
+  mutate(populism = antielite_salience + corrupt_salience) %>% 
+  mutate(liberalism = sociallifestyle + civlib_laworder + galtan) %>% 
+  mutate(populism = range01(populism)*100) %>% 
+  mutate(liberalism = range01(liberalism)*100) %>% 
+  mutate(party_cntry = paste0(to_label(country), "_", party)) %>% 
+  mutate(family = to_label(family))
+
+ches %>% 
+  ggplot(aes(liberalism, populism, color = family)) + 
+  geom_point() +
+  geom_text_repel(aes(liberalism, populism, label = party_cntry)) +
+  guides(text = F) +
+  ggthemes::theme_hc() +
+  ggthemes::scale_color_hc()
+
+ggsave(file = here("images", "party_alignment.png"), height = 10, width = 10)
+```
+
+```{r}
+ches_pop <- ches %>% 
+  filter(populism >= 60)
+
+length(unique(ches_pop$country))
+length(unique(ches$country))
+```
+

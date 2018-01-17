@@ -24,7 +24,7 @@ opts_chunk$set(echo=F,
 
 ```{r}
 
-pacman::p_load(tidyverse, haven, broom, ggplot2, ggthemes, kableExtra)
+pacman::p_load(tidyverse, haven, broom, ggplot2, ggthemes, kableExtra, googledrive)
 #load(url('https://github.com/systats/macro_project/raw/master/project_macro.Rdata'))
 ```
 
@@ -33,7 +33,10 @@ pacman::p_load(tidyverse, haven, broom, ggplot2, ggthemes, kableExtra)
 ```{r}
 ess <- read_spss("data/ess_round8.sav")
 # ess <- read_spss("https://github.com/systats/binoculaR/raw/master/data/ess_round8.sav")
+googledrive::drive_get("ess_1_7.sav")
+load(googledrive::drive_link("ess_1_7.sav"))
 
+ess_1_7 <- haven::read_spss("C:/Users/Fabio/Google Drive/data/ess_1_7.sav")
 ```
 
 
