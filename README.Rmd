@@ -1,0 +1,13 @@
+---
+title: "Rise of Populism"
+output: github_document
+---
+
+```{r, echo=F, warning=F, message=F}
+load("data/party_data.Rdata")
+
+library(tidyverse)
+
+ches_pop2 %>% 
+  knitr::kable()
+```

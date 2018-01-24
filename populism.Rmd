@@ -24,8 +24,9 @@ opts_chunk$set(echo=F,
 
 ```{r}
 
-pacman::p_load(tidyverse, haven, broom, ggplot2, ggthemes, kableExtra, googledrive)
-#load(url('https://github.com/systats/macro_project/raw/master/project_macro.Rdata'))
+pacman::p_load(tidyverse, haven, broom, ggplot2, ggthemes, kableExtra, googledrive, countrycode)
+vdems_start_url <- url("https://github.com/favstats/database_delib/raw//master/vdems_start.Rdata")
+load(vdems_start_url)
 ```
 
 ## Loading 
@@ -92,7 +93,31 @@ ess <- ess %>%
   ) %>%
   mutate(vote_right = ifelse(!is.na(party_right), 1, 0) %>% as.factor())
 
-# prop.table(table(!is.na(nn$vote_right)))
+#prop.table(table(!is.na(ess$vote_right)))
+
+table(ess$prtcldru)
+2045/32792
+
+table(ess$cntry)
+ess %<>% 
+  mutate(cntry = countrycode::countrycode(cntry, "iso2c", "country.name"))
+
+vdems_start %<>% 
+  filter(year == 2016) %>% 
+  mutate(cntry = countrycode::countrycode(country_text_id, "iso3c", "country.name"))
+
+merged <- ess %>% 
+  left_join(vdems_start, by = "cntry")
+
+table(merged$cntry)
+
+merged %>% 
+  ggplot(aes(v2dlcommon)) +
+  geom_histogram()
+
+vdems_start %>% 
+  ggplot(aes(v2dlcommon)) +
+  geom_histogram()
 ```
 
 

@@ -31,23 +31,34 @@ ches %>%
 # create a missing map
 ches %>% 
   arrange(year, country) %>% 
-missmap(col=c("black", "grey"), legend=FALSE)
+  missmap(col=c("black", "grey"), legend=FALSE)
 ```
 
 
 # Recoding
 
 ```{r}
-mod1 <- lm(antielite_salience ~ corrupt_salience, data = ches)
+mod1 <- lm(antielite_salience ~ position, data = ches)
 
  
 ches %>% 
-  select(antielite_salience, corrupt_salience) %>% 
+  select(antielite_salience, corrupt_salience, position, eu_budgets, eu_cohesion, eu_foreign) %>% 
   na.omit() %>% 
   cor()
 
+ches %>% 
+  select(antielite_salience, corrupt_salience, position, eu_budgets, eu_cohesion, eu_foreign) %>% 
+  na.omit() %>% 
+  fa(2)
+
+
 plot_model(mod1, show.data = T)
 
+
+ches %>% 
+  select(antielite_salience, position, nationalism) %>% 
+  na.omit() %>% 
+  cor()
 
 ```
 
@@ -69,6 +80,9 @@ ches %>%
 ```{r}
 ches %<>% 
   mutate(populism = antielite_salience + corrupt_salience) %>% 
+  mutate(populism2 = range01(range01(antielite_salience) + 
+                               (1 - range01(position)))*100) %>% #+ 
+                           #    (1 - range01(eu_budgets)))*100) %>% 
   mutate(liberalism = sociallifestyle + civlib_laworder + galtan) %>% 
   mutate(populism = range01(populism)*100) %>% 
   mutate(liberalism = range01(liberalism)*100) %>% 
@@ -91,6 +105,8 @@ ches_pop <- ches %>%
 
 length(unique(ches_pop$country))
 length(unique(ches$country))
+
+table(1-range01(ches$position))
 ```
 ```{r}
 ches %>% 
@@ -98,8 +114,8 @@ ches %>%
   geom_point() +
   geom_text_repel(aes(liberalism, antielite_salience, label = party_cntry)) +
   guides(text = F) +
-  ggthemes::theme_hc() +
-  ggthemes::scale_color_hc() 
+  ggthemes::theme_hc() #+
+#  ggthemes::scale_color_hc() 
 
 ggsave(file = here("images", "party_alignment2.png"), height = 10, width = 10)
 
@@ -110,12 +126,38 @@ ches_elite <- ches %>%
 length(unique(ches_elite$country))
 length(unique(ches$country))
 
-table(to_label(ches_elite$country))
+#table(to_label(ches_elite$country))
 ```
 
 
 
 ```{r}
+
+```
+
+```{r}
+ches %>% 
+  ggplot(aes(liberalism, populism2, color = family)) + 
+  geom_point() +
+  geom_text_repel(aes(liberalism, populism2, label = party_cntry)) +
+  guides(text = F) +
+  ggthemes::theme_hc() +
+  ggthemes::scale_color_hc()
+
+ggsave(file = here("images", "party_alignment3.png"), height = 10, width = 10)
+
+ches_pop2 <- ches %>% 
+  filter(populism2 >= 65)
+
+length(unique(ches_pop2$country))
+length(unique(ches$country))
+
+
+```
+
+```{r}
+ess <- read_spss("data/ess_round8.sav")
+
 
 ```
 
