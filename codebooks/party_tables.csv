@@ -1,0 +1,452 @@
+PARTY = party abbreviation,,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+BE,102,PS,Parti Socialiste,Socialist Party
+,103,SP; SPA,Socialistische Partij;,Socialist Party;
+,,,Socialistische Partij Anders,Socialist Party Different
+,104,ECOLO,Ecolo,Ecolo
+,105,AGALEV; Groen,Agalev; Groen!,Agalev; Green!
+,106,PRL; MR,Parti Réformateur Libéral;,Liberal Reformist Party;
+,,,Mouvement Réformateur,Reformist Movement
+,107,VLD,Open Vlaamse Liberalen en Democraten,Open Flemish Liberals and Democrats
+,108,PSC; CDH,Parti Social Chrétien;,Christian Social Party;
+,,,Centre Démocrate Humaniste,Humanist Democratic Centre
+,109,CVP; CD&V,Christelijke Volkspartij;,Christian People’s Party;
+,,,Christen-Democratisch & Vlaams,Christian Democratic & Flemish
+,110,VU; NVA,Volksunie; Nieuw-Vlaamse Alliantie,People’s Union; New Flemish Alliance
+,111,FDF,Front Démocratique des Francophones,Francophone Democratic Front
+,112,VB,Vlaams Blok; Vlaams Belang,Flemish Bloc; Flemish Interest
+,113,MCC,Mouvement des Citoyens pour le Changement,Citizens’ Movement for Change
+,114,ID21,ID21,ID21
+,115,FN,Front National,National Front
+,117,LDD,Lijst Dedecker,List Dedecker
+,118,SLP; Spirit,Sociaal-Liberale Partij; Spirit,Social-Liberal Party; Spirit
+,119,PVDA,Partij van de Arbeid van België,Workers’ Party of Belgium
+,120,PP,Parti Populaire,People’s Party
+DK,201,SD,Socialdemokraterne,Social Democrats
+,202,RV,Det Radikale Venstre,Radical Left-Social Liberal Party
+,203,KF,Det Konservative Folksparti,Conservative People’s Party
+,204,CD,Centrum-Demokraterne,Centre Democrats
+,206,SF,Socialistisk Folkeparti,Socialist People’s Party
+,210,KRF,Kristeligt Folkeparti,Christian People’s Party
+,211,V,"Venstre, Danmarks Liberale Parti","Venstre, Liberal Party of Denmark"
+,212,FP,Fremskridtspartiet,Progress Party
+,213,EL,Enhedslisten,Unity List-Red/Green Alliance
+,215,DF,Dansk Folkeparti,Danish People’s Party
+,216,JuniB,JuniBevægelsen,June Movement
+,217,FolkB,Folkebevægelsen mod EU,People’s Movement Against the EU
+,218,LA,Liberal Alliance,Liberal Alliance
+,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+GE,301,CDU,Christlich Demokratische Union Deutschlands,Christian Democratic Union of Germany
+,302,SPD,Sozialdemokratische Partei Deutschlands,Social Democratic Party of Germany
+,303,FDP,Freie Demokratische Partei,Free Democratic Party
+,304,Grunen,Bündnis ’90; Die Grünen,Alliance 90; The Greens
+,305,REP,Republikaner,Republikaner
+,306,PDS;,Partei des Demokratischen Sozialismus;,Party of Democratic Socialism;
+,,Linkspartei;,Die Linkspartei;,Left Party;
+,,Linke,Die Linke,The Left
+,308,CSU,Christlich Soziale Union in Bayern,Christian Social Union in Bavaria
+,309,DVU; NPD,Deutsche Volksunion;,German People’s Union;
+,,,Nationaldemokratische Partei Deutschlands,National Democratic Party of Germany
+,310,AfD,Alternative für Deutschland,Alternative for Germany
+,311,Piraten,Piratenpartei Deutschland,Pirate Party of Germany
+,312,DieTier,Mensch Umwelt Tierschutz,Human Environment Animal Protection
+GR,401,PASOK,Panellinio Sosialistikó Kínima,Panhellenic Socialist Movement
+,402,ND,Néa Dimokratía,New Democracy
+,403,SYN; SYRIZA,Synaspismós tïs Aristerás kai tïs Proódou;,Coalition of the Left and Progress;
+,,,Synaspismó’s Rizospastikís Aristerás,Coalition of the Radical Left
+,404,KKE,Kommounistikó Kómma Elládas,Communist Party of Greece
+,408,POLA,Politiki Anixi,Political Spring
+,409,DIKKI,Dimokratiko Kinoniko Kinima,Democratic Social Movement
+,410,LAOS,Laïkós Orthódoxos Synagermós,Popular Orthodox Rally
+,411,OP,Oikologoi Prasinoi,Ecologist Greens
+,412,ANEL,Anexartitoi Ellines,Independent Greeks
+,413,Potami,To Potami,The River
+,414,DIMAR,Dimokratiki Aristera,Democratic Left
+,415,XA,Laïkós Sýndesmos—Chrysí Avgí,Popular Association—Golden Dawn
+ESP,501,PSOE,Partido Socialista Obrero Español,Spanish Socialist Workers’ Party
+,502,PP,Partido Popular,People’s Party
+,504,IU,Izquierda Unida,United Left
+,505,CiU,Convergència i Unió,Convergence and Unity
+,506,PNV,Euzko Alderdi Jeltzalea/Partido Nacionalista Vasco,Basque Nationalist Party
+,507,EA,Eusko Alkartasuna,Basque Solidarity
+,508,EH,Euskal Herritarrok,We Basque Citizens
+,510,PAR,Partido Aragonés,Aragonese Party
+,511,ERC,Esquerra Republicana de Catalunya,Republican Left of Catalonia
+,512,UV,Unión Valenciana,Valencian Union
+,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+ESP,513,BNG,Bloque Nacionalista Galego,Galician Nationalist Bloc
+(cont’d),514,VERDE,Los Verdes,The Greens
+,516,PA,Partido Andalucista,Andalusian Party
+,517,CC,Coalición Canaria,Coalicion Canaria
+,518,IC,Iniciativa per Catalunya,Initiative for Catalonia
+,519,PSC,Partit dels Socialistes de Catalunya,Catalan Socialist Party
+,520,CHA,Chunta Aragonesista,Aragonese Council
+,521,CpE,Coalicion por Europa,Coalition for Europe
+,522,EdP-V,Europa de los Pueblos-Los Verdes,Europe of the Peoples-Greens
+,523,UPyD,Unión Progreso y Democracia,"Union, Progress, and Democracy"
+,524,Amaiur,Amaiur,Amaiur
+,525,Podemos,Podemos,We Can
+,526,Cs,Ciudadanos—Partido de la Ciudadanía,Citizens—Party of the Citizenry
+FR,601,PCF,Parti Communiste Français,French Communist Party
+,602,PS,Parti Socialiste,Socialist Party
+,603,PRG,Parti Radical de Gauche,Left Radical Party
+,605,VERTS,Les Verts,Green Party
+,609,RPR; UMP,Rassemblement pour la République;,Rally for the Republic;
+,,,Union pour un Mouvement Populaire,Union for Popular Movement
+,610,FN,Front National,National Front
+,612,RPF/MPF; MPF,Rassemblement pour la France/Mouvement Pour la France;,Rally for France/Movement for France;
+,,,Mouvement Pour la France,Movement for France
+,613,UDF; Modem,Union pour la Démocratie Française,Union for French Democracy
+,614,LO-LCR,Lutte Ouvrière/Ligue communiste révolutionnaire,Workers’ Struggle/Revolutionary
+,,,,Communist League
+,615,DL,Démocratie Libérale,Liberal Democracy
+,617,MEI,Mouvement Ecologiste Indépendant,Independent Ecological Movement
+,618,D,La Droite,The Right
+,619,CPNT,"Chasse, Pêche, Nature, Traditions","Hunting, Fishing, Nature, Tradition Party"
+,620,MN,Mouvement National Républicain,National Republican Movement
+,621,NC,Nouveau Centre,New Center
+,622,PRV,Parti radical,Radical Party
+,623,AC,Alliance centriste,Centrist Alliance
+,624,PG,Parti de Gauche,Left Party
+,625,Ens,Ensemble,Together
+,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+IRL,701,FF,Fianna Fáil,Soldiers of Destiny
+,702,FG,Fine Gael,Family of the Irish
+,703,Lab,Páirti Lucht Oibre,Labour
+,705,GP,Comhaontas Glas,Green Party
+,707,SF,Sinn Féin,We Ourselves
+,708,SP,Páirtí Sóisialach,Socialist Party
+,709,PBPA,People Before Profit Alliance,People Before Profit Alliance
+IT,802,PDS; DS,Partito Democratico della Sinistra;,Democratic Party of the Left;
+,,,Democratici di Sinistra,Democrats of the Left
+,803,RC,Partito della Rifondazione Comunista,Communist Refoundation Party
+,805,AN,Alleanza Nazionale,National Alliance
+,806,PRI,Partito Repubblicano Italiano,Italian Republican Party
+,807,PSDI; SDI,Partito Socialista Democratico Italiano;,Italian Democratic Socialist Party;
+,,,Socialisti Democratici Italiani,Italian Democratic Socialists
+,808,FdV;Verdi,Federazione dei Verdi,Federation of Greens
+,811,LN,Lega Nord,Northern League
+,813,RAD,Radicali Italiani,Italian Radicals
+,814,CCD; UDC,Centro Cristiano Democratico; Unione dei Democratici,Christian Democratic Center;
+,,,Cristiani e die Democratici di Centro;,Union of Christian and Center Democrats;
+,,,Unione di Centro,Union of the Centre
+,815,FI,Forza Italia,Forward Italy
+,817,CU/UD,Unione Democratica,Democratic Union
+,818,CDU,Cristiani Democratici Uniti,United Christian Democrats
+,819,DEM; DL,I Democratici; Democrazia è Libertà—,The Democrats; Democracy is Freedom—
+,,,La Margherita,The Daisy
+,820,LB,Lista Bonino,Bonino List
+,821,MS,Movimento Sociale Fiamma Tricolore,Tricolor Flame Social Movement
+,822,PdUP,Partito di Unità Proletaria,Party of Proletarian Unity for Communism
+,823,PPI,Partito Popolare Italiano,Italian Popular Party
+,824,PsDA,Partito Sardo d’Azione,Sardinian Action Party
+,825,RI,Rinnovamento Italiano,Italian Renewal-Dini List
+,826,SEG,Patto Segni,Segni Pact
+,827,SVP,Südtiroler Volkspartei,South Tyrolean People’s Party
+,828,IdV,Di Pietro-Italia dei Valori,Italy of Values
+,829,UDEUR,Popolari-UDEUR,Popular-UDEUR
+,830,PP,Partito dei Pensionati,Pensioners’ Party
+,832,MRE,Movimento Repubblicani Europei,European Republican Movement
+,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+IT,835,NPSI,Nuovo Partito Socialista Italiano,New Italian Socialist Party
+(cont’d),836,PdCI,Partito dei Comunisti Italiani,Party of Italian Communists
+,837,PD,Partido Democratico,Democratic Party
+,838,SL; SEL,Sinistra e Libertà; Sinistra Ecologia Libertà,Left and Freedom; Left Ecology Freedom
+,839,PSI,Partito Socialista Italiano,Italian Socialist Party
+,840,MpA,Movimento per le Autonomie,Movement for Autonomies
+,842,SD,Sinistra Democratica,Democratic Left
+,843,CD,Centro Democratico—Diritti e Libertá,Democratic Centre
+,844,FDL,Fratelli d’Italia,Brothers of Italy
+,845,M5S,MoVimento Cinque Stelle,Five Star Movement
+,846,SC,Scelta Civica,Civic Choice
+,847,VdA,Vallée d’Aoste,Aosta Valley
+,848,NCD,Nuovo Centrodestra,New Centre-Right
+NL,1001,CDA,Christen-Democratisch Appel,Christian Democratic Appeal
+,1002,PvdA,Partij van de Arbeid,Labour Party
+,1003,VVD,Volkspartij voor Vrijheid en Democratie,People’s Party for Freedom and Democracy
+,1004,D66,Democraten 66,Democrats 66
+,1005,GL,GroenLinks,GreenLeft
+,1006,SGP,Staatkundig Gereformeerde Partij,Political Reformed Party
+,1007,GPV,Gereformeerd Politiek Verbond,Reformed Political League
+,1008,RPF,Reformatorische Politieke Federatie,Reformational Political Federation
+,1009,CD,Centrum Democraten,Center Democrats
+,1014,SP,Socialistische Partij,Socialist Party
+,1015,LPF,Lijst Pim Fortuyn,Lijst Pim Fortuyn
+,1016,CU,ChristenUnie,ChristianUnion
+,1017,PVV,Partij voor de Vrijheid,Party for Freedom
+,1018,PvdD,Partij voor de Dieren,Party for the Animals
+,1020,50PLUS,50PLUS,50PLUS
+UK,1101,Cons,Conservative Party,Conservative Party
+,1102,Lab,Labour Party,Labour Party
+,1104,LibDem,Liberal Democratic Party,Liberal Democratic Party
+,1105,SNP,Scottish National Party,Scottish National Party
+,1106,Plaid,Plaid Cymru,Party of Wales
+,1107,Green,Green Party,Green Party
+,1108,UKIP,United Kingdom Independence Party,United Kingdom Independence Party
+,1109,BNP,British National Party,British National Party
+,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+POR,1201,CDU,Coligação Democrática Unitária,Democratic Unitarian Coalition
+,1202,CDS; PP,Centro Democrático e Social; Partido Popular,Democratic and Social Center; People’s Party
+,1205,PS,Partido Socialista,Socialist Party
+,1206,PPD; PSD,Partido Popular Democrático;,Democratic People’s Party;
+,,,Partido Social Democrata,Social Democratic Party
+,1208,BE,Bloco de Esquerda,Left Bloc
+,1209,MPT,Partido da Terra,Earth Party
+AUS,1301,SPÖ,Sozialdemokratische Partei Österreichs,Social Democratic Party of Austria
+,1302,ÖVP,Österreichische Volkspartei,Austrian People’s Party
+,1303,FPÖ,Freiheitliche Partei Österreichs,Freedom Party of Austria
+,1304,Grüne,Die Grünen,The Austrian Green Party
+,1306,LIF; NEOS,Liberales Forum;,Liberal Forum;
+,,,NEOS—Das Neue Österreich und Liberales Forum,NEOS—The New Austria and Liberal Forum
+,1307,BZÖ,Bündnis Zukunft Österreich,Alliance for the Future of Austria
+,1308,MARTIN,Liste Dr. Hans-Peter Martin,Hans-Peter Martin’s List
+,1310,TeamStronach,Team Stronach für Österreich,Team Stronach for Austria
+FIN,1401,SDP,Suomen Sosialidemokraattinen,Social Democratic Party of Finland
+,1402,KOK,Kansallinen Kokoomus,National Coalition Party
+,1403,KESK,Suomen Keskusta,Finnish Center Party
+,1404,VAS,Vasemmistoliitto,Left Alliance
+,1405,PS,Persussuomalaiset,True Finns
+,1406,RKP/SFP,Ruotsalainen kansanpuolue/ Svenska folkpartiet,Swedish People’s Party
+,1408,VIHR,Vihreä Liitto,Green League
+,1409,SKL; KD,Suomen Kristillinen Liitto; Kristillisdemokraatit,Finish Christian League; Christian Democrats
+,1411,EKA,Eläkeläiset Kansan Asialla,Pensioners for the People
+,1412,REM,Remonttiryhmä,Reform Group
+,1413,KIPU,Kirjava “puolue” - Elonkehän puolesta,Ecological Party
+SV,1601,V,Vänsterpartiet,Left Party
+,1602,SAP,Arbetarpartiet- Socialdemokraterna,Worker’s Party-Social Democrats
+,,,Sveriges Socialdemokratiska Arbetareparti,Swedish Social Democratic Party
+,1603,C,Centerpartiet,Center Party
+,1604,FP,Folkpartiet liberalerna,Liberal People’s Party
+,1605,M,Moderaterna; Moderata Samlingspartiet,Moderate Party
+,1606,KD,Kristdemokraterna,Christian-Democrats
+,1607,MP,Miljöepartiet de Gröna,Environment Party—The Greens
+,1608,NyD,Ny Demokrati,New Democracy
+,1609,JL,Junilistan,June List
+,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+SV,1610,SD,Sverigedemokraterna,Sweden Democrats
+(cont’d),1611,PIRAT,Piratpartiet,Pirate Party
+,1612,FI,Feministiskt initiativ,Feminist Initative
+BUL,2001,NDSV,Nacionalno Dviženie Simeon Vtori,National Movement Simeon II
+,2002,ODS; SDS,Obedineni Demokraticni Sili;,United Democratic Forces;
+,,,Sayuz na demokratichnite sili,Union of Democratic Forces
+,2003,KzB; BSP,Koalicija za Balgarija;,Coalition for Bulgaria;
+,,,BSP—Lyava Bulgaria,BSP—Left Bulgaria
+,2004,DPS,Dviženie za Prava i Svobodi,Movement for Rights and Freedoms
+,2005,G-VMRO/,Dviženie Gergiovden,Gergiovden-VMRO
+,,VMRO-BND,VMRO—Bulgarsko Natsionalno Dvizhenie,VMRO—Bulgarian National Movement
+,2006,KSII,Koalicija Simeon II,Coalition Simeon II
+,2007,NOA; Ataka,Nacionalno Obedinenie Ataka; Ataka,National Union Attack; Attack
+,2008,DSB,Demokrati za Silna Balgarija,Democrats for a Strong Bulgaria
+,2009,BNS,Balgarski Naroden Sajuz,Bulgarian People’s Union
+,2010,GERB,Grazhdani za evropeysko razvitie na Balgariya,Citizens for European Development of Bulgaria
+,2011,L,Lider,Lider
+,2012,RZS,"Red, zakonnost i spravedlivost","Order, Lawfullness, Justice"
+,2013,DBG,Dvizhenie Bulgaria na grazhdanite,Bulgaria for Citizens Movement
+,2014,NFSB,Natsionalen Front za Spasenie na Bulgaria,National Front for the Salvation of Bulgaria
+,2015,BBT,Bulgaria bez Tsenzura,Bulgaria without Censorship
+,2016,ABV,Alternativa za Balgarsko Vazrazhdane,Alternative for Bulgarian Revival
+CZECH,2101,CSSD,Ceská strana sociálne demokratická,Czech Social Democratic Party
+,2102,ODS,Obcanská Demokratická Strana,Civic Democratic Party
+,2103,KSCM,Komunistická strana Cech a Moravy,Communist Party of Bohemia and Moravia
+,2104,KDU-CSL,Kr<U+0306>estanská demokratická unie—,Christian Democratic Union—
+,,,C<U+0306>eskoslovenská strana lidová,Czechoslovak People’s Party
+,2105,US-DEU,Unie Svobody—Demokratická unie,Freedom Union—Democratic Union
+,2106,SNK-ED,Sdružení nezávislých kandidátu—,Union of Independents—European Democrats
+,,,Evropští demokraté,
+,2107,SZ,Strana zelených,Green Party
+,2108,Nezavisli,Nezávislí,Independents
+,2109,TOP09,Top09,Top09
+,2110,VV,Veci Ver<U+0306>ejné,Public Affairs
+,2111,ANO2011,"ANO 2011, Akce nespokojených obc<U+0306>anu","ANO 2011, Action of Dissatisfied Citizens"
+,2112,USVIT,Úsvit pr<U+0306>ímé demokracie,Dawn of Direct Democracy
+,2113,SVOBODNI,Strana svobodných obc<U+0306>anu,Party of Free Citizens
+,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+EST,2201,IRL,Erakond Isamaa ja Res Publica Liit,Pro Patria and Res Publica Union
+,2202,EK,Eesti Keskerakond,Estonian Center Party
+,2203,ER,Eesti Reformierakond,Estonian Reform Party
+,2204,SDE,Sotsiaaldemokraatlik Erakond,Social Democratic Party
+,2205,KP,Eestimaa ühendatud Rahvapartei,Constitution Party
+,2206,ERL,Eestimaa Rahvaliit,Estonian People’s Union
+,2207,EER,Erakond Eestimaa Rohelised,Estonian Greens
+,2208,EVE,Eesti Vabaerakond,Estonian Free Party
+HUNG,2301,MSzP,Magyar Szocialista Párt,Hungarian Socialist Party
+,2302,Fidesz-M,Fidesz—Magyar Polgári Szövetség,Fidesz—Hungarian Civic Union
+,2303,MDF,Magyar Demokrata Fórum,Hungarian Democratic Forum
+,2304,SzDSz,Szabad Demokraták Szövetsége,Alliance of Free Democrats
+,2305,MIEP,Magyar Igazság és élet Pártja,Hungarian Justice and Life Party
+,2306,CP,Centrumpárt,Centre Party
+,2307,KDNP,Kereszténydemokrata Néppárt,Christian Democratic People’s Party
+,2308,JOBBIK,Jobbik Magyarorszagert Mozgalom,Movement for a Better Hungary
+,2309,LMP,Lehet Más a Politika,Politics Can Be Different
+,2310,E14,Együtt 2014,Together 2014
+,2311,DK,Demokratikus Koalíció,Democratic Coalition
+LAT,2401,JL,Jaunais Laikas,New Era Party
+,2402,PCTVL;LKS,Par Cilveka Tiesibam Vienota Latvija;,For Human Rights in United Latvia;
+,,,Latvijas Krievu savieniba,Latvian Russian Union
+,2403,TP,Tautas Partija,People’s Party
+,2404,LPP,Latvijas Pirma Partija,Lativa’s First Party
+,2405,ZZS,Zalo un Zemnieku Savieniba,Union of Greens and Farmers
+,2406,TB-LNNK; NA,Nacionala apvieniba “Visu Latvijai!”—,National Alliance “All For Latvia!”—
+,,,“Tevzemei un Brivibai/LNNK”,“For Fatherland and Freedom/LNNK”
+,2407,LC,Latvijas Celš,Latvia’s Way
+,2408,LSDSP,Latvijas Socialdemokratiska,Latvian Social Democratic Labour Party
+,,,Stradnieku Partija,
+,2410,SC; SDPS,"Saskanas Centrs; Socialdemokratiska Partija “Saskana""",Harmony Centre; Social Democratic Party “Harmony”
+,2411,ZRP,Zatlera Reform Partija,Zatler’s Reform Party
+,2412,V,Vienotiba,Unity
+,2413,NSL,No sirds Latvijai,For Latvia from the Heart
+,2414,LRA,Latvijas Re<U+01F5>ionu apvieniba,Latvian Association of Regions
+,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+LITH,2501,LSDP,Lietuvos socialdemokratu <U+0328> partija,Social Democratic Party of Lithuania
+,2502,NDP,Naujosios demokratijos partija,New Democratic Party
+,2503,LRS,Lietuvos rusu <U+0328> sajunga,Lithuanian Russian Union
+,2504,NS,Naujoji sajunga (socialliberalai),New Union (Social Liberals)
+,2505,LLS; LiCS,Lietuvos liberalu <U+0328> sajunga;,Liberal Union of Lithuanian;
+,,,Liberalu ir centro sajunga,Liberal and Centre Union
+,2506,TS-LKD,Tevynes sajunga—Lietuvos krikšcionys demokratai,Homeland Union—Lithuanian Christian Democrats
+,2507,LVP; LVLS,Lietuvos valstieciu <U+0328> partija; Valstieciu ir,Lithuanian Peasant Party;
+,,,Naujosios demokratijos partiju sajungos;,Lithuanian Peasant Popular Union;
+,,LVZS,Lietuvos valstieciu¸ ir Žaliu <U+0328>ju <U+0328> sajunga,Lithuanian Peasant and Greens Union
+,2508,LKDP,Lietuvos krikšcionys demokratai,Lithuanian Christian Democrats
+,2509,LCS,Lietuvos centro sajunga,Center Union of Lithuania
+,2510,NKS,Nuosaikiuju konservatoriu sajunga,Moderate Conservative Union
+,2511,LLRA,Lietuvos lenku <U+0328> rinkimu <U+0328> akcija,Electoral Action of Lithuania’s Poles
+,2512,LLS,Lietuvos laisves sajunga,Lithuanian Liberty Union
+,2513,JL-PKS,Lietuviu Nacionaline Partija—“Jaunoji Lietuva”,Young Lithuania—New Nationalists
+,,,,and Political Prisoner’s Union
+,2514,MKDS,Moderniu <U+0328>ju <U+0328>i krikšcioniu <U+0328> demokratu <U+0328> sajunga,Modern Christian-Democratic Union
+,2515,TT,Tvarka ir teisingumas,Order and Justice
+,2516,DP,Darbo partija,Labour Party
+,2517,TPP,Tautos prisikelimo partija,National Resurrection Party
+,2518,LRLS,Lietuvos Respublikos Liberalu <U+0328> Sajudis;,Liberals’ Movement of the Republic of Lithuania;
+,,,Liberalu <U+0328> Sajudis,Liberal Movement
+,2519,FRONT,Fronto Partija,Front Party
+,2520,DK,Drasos Kelias,The Way of Courage
+POL,2601,SLD,Sojusz Lewicy Demokratycznej,Alliance of Democratic Left
+,2602,UP,Unia Pracy,Union of Labour
+,2603,PO,Platforma Obywatelska,Civic Platform
+,2604,S,Samoobrona RP,Self Defense of the Polish Republic
+,2605,PiS,Prawo i Sprawiedliwosc,Law and Justice Party
+,2606,PSL,Polskie Stronnictwo Ludowe,Polish People’s Party
+,2607,LPR,Liga Polskich Rodzin,League of Polish Families
+,2608,AWSP,Koalicja Akcja Wyborcza Solidarnosc Prawicy,Coalition Electoral Action Solidarity
+,,,,of the Right
+,2609,UW; PD,Unia Wolnosci; Partia Demokratyczna,Freedom Union; Democratic Party
+,2611,SDPL,Socjaldemokracja Polska,Social Democracy of Poland
+,2612,SD,Stronnictwo Demokratyczne,Democratic Party
+,2613,RP,Twój Ruch (Ruch Palikota),Your Movement (Palikot’s Movement)
+,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+POL,2614,KNP,Kongres Nowej Prawicy,Congress of the New Right
+(cont’d),2615,PR,Polska Razem,Poland Together
+,2616,SP,Solidarna Polska,United Poland
+ROM,2701,PSD,Partidul Social Democrat,Social Democratic Party
+,2702,PUR; PC,Partidul Umanist din Romania; Partidul Conservator,Romanian Humanist Party; Conservative Party
+,2703,PRM,Partidul România Mare,Party of Great Romania
+,2704,PDL,Partidul Democrat,Democratic Party
+,2705,PNL,Partidul National Liberal,National Liberal Party
+,2706,UDMR,Uniunea Democrata Maghiara din România,Hungarian Democratic Union of Romania
+,2707,CDR 2000,Conventia Democrata Româna,Romanian Democratic Convention 2000
+,2708,FDGR,Forumul Democrat al Germanilor din România,Democratic Forum of Germans of Romania
+,2709,UNPR,Uniunea Nat <U+0328>ionala pentru Progresul României,National Union for the Progress of Romania
+,2710,PP-DD,Partidul Poporului—Dan Diaconescu,People’s Party—Dan Diaconescu
+,2711,PMP,Partidul Mis <U+0328>carea Populara,People’s Movement Party
+,2712,PLR,Partidul Liberal Reformator,Liberal Reformist Party
+SLO,2801,LS-HZDS,Ludová strana-Hnutie za demokratické Slovensko,People’s Party-Movement for a Democratic
+,,,,Slovakia
+,2802,SDKU;,Slovenská demokratická a krestanská únia;,Slovak Democratic and Christian Union;
+,,SDKU-DS,Slovenská demokratická a krestanská unia—,Slovak Democratic and
+,,,Demokratická strana,Christian Union—Democratic Party
+,2803,Smer;,Strana Smer-Tretia Cesta;,Direction-Third Way;
+,,Smer-SD,Smer-sociálna demokracia,Direction—Social Democracy
+,2804,SMK;,Strana madarskej koalície—Magyar,Party of the Hungarian Coalition
+,,SMK-MKP,Koalíció Pártja,
+,2805,KDH,Krestanskodemokratické hnutie,Christian Democratic Movement
+,2806,ANO,Aliancia Nového Obcana,Alliance for a New Citizen
+,2807,KSS,Komunistická strana Slovenska,Communist Party of Slovakia
+,2808,PSNS,Pravá Slovenská národná strana,Right Slovak National Party
+,2809,SNS,Slovenská národná strana,Slovak National Party
+,2810,HZD,Hnutie za demokraciu,Movement for Democracy
+,2811,SF,Slobodné fórum,Free Forum
+,2812,SaS,Sloboda a Solidarita,Freedom and Solidarity
+,2813,Most,Most-Hid,Bridge
+,2814,OLaNO,Obycajní Ludia a nezávislé osobnosti,Ordinary People and Independent Personalities
+,2815,NOVA,Nová Väcšina,New Majority
+,2816,Siet,Siet,Net / Network
+,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,,
+Country,Party ID,Party Abbrev,Party Name,,Party Name (English)
+SLE,2901,LDS,Liberalna demoracija Slovenije,,Liberal Democracy of Slovenia
+,2902,SDS,Socialdemokratska stranka Slovenije;,,Social Democratic Party of Slovenia;
+,,,Slovenska demokratska stranka,,Slovenian Democratic Party
+,2903,ZLSD;,Združena lista socialnih demokratov,,United List of Social Democrats
+,,SD,Socijalni Demokrati,,Social Democrats
+,2904,SLS-SKD;,Slovenska ljudska stranka,,Slovenian People’s Party-Slovenian
+,,SLS,,,Christian Democrats; Slovenian People’s Party
+,2905,NSI,Nova Slovenija—Kršcanska ljudska stranka,,New Slovenia—Christian People’s Party
+,2906,DeSUS,Demokraticna stranka upokojencev Slovenije,,Democratic Party of Pensioners of Slovenia
+,2907,SNS,Slovenska nacionalna stranka,,Slovenian National Party
+,2908,SMS,Stranka Mladih Slovenije,,Party of the Slovenia Youth
+,2909,AS,Aktivna Slovenija,,Active Slovenia
+,2910,Zares,Zares,,Zares—For Real
+,2911,SMC,Stranka Mira Cerarja,,Party of Miro Cerar
+,2912,ZL,Združena Levica,,United Left
+,2913,ZaAB,Zavezništvo Alenke Bratušek,,Alliance of Alenka Bratušek
+,2914,PS,Pozitivna Slovenija,,Positive Slovenia
+CRO,3101,HDZ,Hrvatska Demokratska Zajednica,,Croatian Democratic Union
+,3102,SDP,Socialdemokratska Partija Hrvatske,,Social Democratic Party of Croatia
+,3103,HSS,Hrvatska Seljacka Stranka,,Croatian Peasant Party
+,3104,HSLS,Hrvatska Socijalno Liberalna Stranka,,Croatian Social Liberal Party
+,3105,HNS,Hrvatska Narodna Stranka—Liberalni Demokrati,,Croatian People’s Party—Liberal Democrats
+,3106,IDS,Istarski Demokratski Sabor,,Istrian Democratic Assembly
+,3107,HDSSB,Hrvatski Demokrtski Sabor Slavonije i Baranje,,Croatian Democratic Assembly of Slavonija and Baranja
+,3109,HSP,Hrvatska Stranka Prava,,Croatian Party of Rights
+,3112,HL-SR,Hrvatski Laburisti–Stranka Rada,,Croatian Labourists–Labour Party
+,3113,HSP-AS,Hrvatska stranka prava dr.,Ante Starcevic,Croatian Party of Rights dr. Ante Starcevic
+,3114,ORaH,Održivi Razvoj Hrvatske,,Croatian Sustainable Development
+MAL,3701,PL,Partit Laburista,,Labour Party
+,3702,PN,Partit Nazzjonalista,,Nationalist Party
+LUX,3801,CSV,Chrëschtlech Sozial Vollekspartei,,Christian Social People’s Party
+,3802,Greng,Déi Gréng,,The Greens
+,3803,DP,Demokratesch Partei,,Democratic Party
+,3804,LSAP,Lëtzebuerger Sozialistesch Aarbechterpartei,,Luxembourg Socialist Workers’ Party
+,3805,ADR,Alternativ Demokratesch Reformpartei,,Alternative Democratic Reform Party
+,3806,DL,Déi Lénk,,The Left
+,,,,,Continued on next page
+
+PARTY = party abbreviation (continued from previous page),,,,
+Country,Party ID,Party Abbrev,Party Name,Party Name (English)
+CYP,4001,DISY,Dimokratikós Sinagermós,Democratic Rally
+,4002,Evroko,Evropaiko Komma,European Party
+,4003,AKEL,Anorthotikó Kómma Ergazómenou Laoú,Progressive Party of Working People
+,4004,DIKO,Dimokratikó Kómma,Democratic Party
+,4005,EDEK,Kinima Sosialdimokraton EDEK,Movement for Social Democracy EDEK
+,4006,KOP,Kinima Oikologon Perivallontiston,Ecological and Environmental Movement
+

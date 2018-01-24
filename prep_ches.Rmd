@@ -8,7 +8,7 @@ output: html_notebook
 ```{r}
 #install.packages("pacman")
 #pacman::p_install_gh("systats/binoculaR")
-pacman::p_load(tidyverse, magrittr, haven, ggthemes, sjPlot, sjmisc, sjstats, binoculaR, janitor, here, Amelia, mlbench, psych, ggrepel)
+pacman::p_load(tidyverse, magrittr, haven, ggthemes, sjPlot, sjmisc, sjstats, binoculaR, janitor, here, Amelia, mlbench, psych, ggrepel, cluster, factoextra, rvest)
 
 range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.rm = T))}
 
@@ -129,31 +129,207 @@ length(unique(ches$country))
 #table(to_label(ches_elite$country))
 ```
 
-
+# extracting party names
 
 ```{r}
+#devtools::install_github("expersso/pdftables")
 
+# pdftable_api <- "opj9i5owyg40"
+# 
+# pdftables::convert_pdf("codebooks/party_tables2.pdf",
+#                        "codebooks/party_tables.csv",
+#                        api_key = pdftable_api)
+
+party_tables <- read_csv("codebooks/party_tables.csv")
+
+colnames(party_tables) <- party_tables[1,]
+
+party_tables %<>% 
+  janitor::clean_names() %>% 
+  select(party_id, party_name, party_name_english) %>% 
+  filter(party_name != "Party Name") %>% 
+  filter(party_name_english != "Party Name (English)") %>% 
+  na.omit()
+
+ches <- party_tables %>% 
+  mutate(party_id = as.numeric(party_id)) %>% 
+  left_join(ches, by = "party_id")
 ```
 
 ```{r}
 ches %>% 
   ggplot(aes(liberalism, populism2, color = family)) + 
-  geom_point() +
+  geom_point() + 
+  geom_hline(yintercept = 55, linetype = 4) +
   geom_text_repel(aes(liberalism, populism2, label = party_cntry)) +
   guides(text = F) +
   ggthemes::theme_hc() +
   ggthemes::scale_color_hc()
 
 ggsave(file = here("images", "party_alignment3.png"), height = 10, width = 10)
+```
+
+# Function for getting website.
+```{r}
+getWebsite <- function(name)
+{
+    url = URLencode(paste0("https://www.google.com/search?q=",name))
+
+    page <- read_html(url)
+
+    results <- page %>% 
+      html_nodes("cite") %>% # Get all notes of type cite. You can change this to grab other node types.
+      html_text()
+
+    result <- results[1]
+
+    return(as.character(result)) # Return results if you want to see them all.
+}
+
+
+links <- ches_pop2$party_name_english %>% 
+  str_replace_all("\u0092", "'") %>% 
+  paste(" wikipedia") %>% 
+  map_chr(getWebsite)
 
 ches_pop2 <- ches %>% 
-  filter(populism2 >= 65)
+  filter(populism2 >= 55) %>% 
+  mutate(lr_popul = ifelse(liberalism >= 50, 
+                           "Right-Wing Populism", 
+                           "Left-Wing Populism")) %>% 
+  mutate(links = links)
 
 length(unique(ches_pop2$country))
 length(unique(ches$country))
 
+#dput(ches_pop2$party_cntry)
+
+ches_pop2 %<>% 
+  select(party_cntry, party_name, party_name_english, populism2, liberalism, 
+       electionyear, vote, seat, epvote, family, lr_popul, links) 
+
+save(ches_pop2, file = "data/party_data.Rdata")
 
 ```
+
+
+# Clustering
+
+```{r}
+ches_cluster <- ches %>% 
+  select(party_cntry, liberalism, populism2) %>% 
+  na.omit() %>% 
+  as.data.frame()
+
+row_names <- ches_cluster$party_cntry
+
+ches_cluster %<>% 
+  select(-party_cntry) %>% 
+  mutate_all(scale) 
+
+rownames(ches_cluster) <- row_names
+
+distance <- get_dist(ches_cluster)
+png("images/distance_matrix.png", width = 1800, height = 1600)
+fviz_dist(distance, 
+                             gradient = list(low = "#00AFBB", 
+                                             mid = "white",
+                                             high = "#FC4E07"))
+dev.off()
+
+k3 <- kmeans(ches_cluster, centers = 6, nstart = 25)
+
+fviz_cluster(k3, data = ches_cluster)
+
+
+ches %>%
+  select(party_cntry, liberalism, populism2) %>% 
+  na.omit() %>% 
+  mutate(cluster = k3$cluster,
+         state = row.names(ches_cluster)) %>%
+  ggplot(aes(liberalism, populism2, color = factor(cluster))) + 
+  geom_point() +
+  geom_text_repel(aes(liberalism, populism2, label = party_cntry)) +
+  guides(text = F) +
+  ggthemes::theme_hc() +
+  ggthemes::scale_color_gdocs()
+
+ggsave(file = here("images", "party_alignment5.png"), height = 10, width = 10)
+
+
+```
+
+
+```{r}
+set.seed(123)
+fviz_nbclust(ches_cluster, kmeans, method = "wss")
+fviz_nbclust(ches_cluster, kmeans, method = "silhouette")
+
+
+gap_stat <- clusGap(ches_cluster, FUN = kmeans, nstart = 25,
+                    K.max = 10, B = 50)
+
+fviz_gap_stat(gap_stat)
+```
+
+```{r}
+ches_cluster <- ches %>% 
+  select(party_cntry, antielite_salience, position, sociallifestyle, galtan, civlib_laworder) %>% 
+  na.omit() %>% 
+  as.data.frame()
+
+row_names <- ches_cluster$party_cntry
+
+ches_cluster %<>% 
+  select(-party_cntry) %>% 
+  mutate_all(scale) 
+
+rownames(ches_cluster) <- row_names
+
+distance <- get_dist(ches_cluster)
+png("images/distance_matrix.png", width = 1800, height = 1600)
+fviz_dist(distance, 
+                             gradient = list(low = "#00AFBB", 
+                                             mid = "white",
+                                             high = "#FC4E07"))
+dev.off()
+
+k3 <- kmeans(ches_cluster, centers = 4, nstart = 25)
+
+fviz_cluster(k3, data = ches_cluster)
+
+ches %>%
+  select(party_cntry, liberalism, populism2) %>% 
+  na.omit() %>% 
+  mutate(cluster = k3$cluster,
+         state = row.names(ches_cluster)) %>%
+  ggplot(aes(liberalism, populism2, color = factor(cluster))) + 
+  geom_point() +
+  geom_text_repel(aes(liberalism, populism2, label = party_cntry)) +
+  guides(text = F) +
+  ggthemes::theme_hc() +
+  ggthemes::scale_color_gdocs()
+
+ggsave(file = here("images", "party_alignment6.png"), height = 10, width = 10)
+
+
+```
+
+
+```{r}
+set.seed(123)
+fviz_nbclust(ches_cluster, kmeans, method = "wss")
+fviz_nbclust(ches_cluster, kmeans, method = "silhouette")
+
+
+gap_stat <- clusGap(ches_cluster, FUN = kmeans, nstart = 25,
+                    K.max = 10, B = 50)
+
+fviz_gap_stat(gap_stat)
+```
+
+
+
 
 ```{r}
 ess <- read_spss("data/ess_round8.sav")
