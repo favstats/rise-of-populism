@@ -129,7 +129,7 @@ length(unique(ches$country))
 #table(to_label(ches_elite$country))
 ```
 
-# extracting party names
+# extracting party and country names 
 
 ```{r}
 #devtools::install_github("expersso/pdftables")
@@ -140,7 +140,12 @@ length(unique(ches$country))
 #                        "codebooks/party_tables.csv",
 #                        api_key = pdftable_api)
 
+# pdftables::convert_pdf("codebooks/country_names.pdf",
+#                        "codebooks/country_names.csv",
+#                        api_key = pdftable_api)
+
 party_tables <- read_csv("codebooks/party_tables.csv")
+
 
 colnames(party_tables) <- party_tables[1,]
 
@@ -154,6 +159,23 @@ party_tables %<>%
 ches <- party_tables %>% 
   mutate(party_id = as.numeric(party_id)) %>% 
   left_join(ches, by = "party_id")
+
+country_names <- read_csv("codebooks/country_names.csv") %>% janitor::clean_names()
+
+colnames(country_names) <- country_names[1,]
+
+country_names <- rbind(country_names[,1:3], 
+                       country_names[,4:6]) 
+
+colnames(country_names) <- c("id", "cntry_short", "cntry")
+
+country_names %<>% 
+  na.omit() %>% 
+  select(cntry_short, cntry)
+
+ches %<>% 
+  mutate(cntry_short = str_to_upper(to_label(country))) %>% 
+  left_join(country_names, by = "cntry_short")
 ```
 
 ```{r}
@@ -186,10 +208,9 @@ getWebsite <- function(name)
     return(as.character(result)) # Return results if you want to see them all.
 }
 
-
-links <- ches_pop2$party_name_english %>% 
+links <- ches$party_name_english %>% 
   str_replace_all("\u0092", "'") %>% 
-  paste(" wikipedia") %>% 
+  paste(ches$cntry, " wikipedia") %>% 
   map_chr(getWebsite)
 
 ches_pop2 <- ches %>% 
@@ -199,6 +220,7 @@ ches_pop2 <- ches %>%
                            "Left-Wing Populism")) %>% 
   mutate(links = links)
 
+
 length(unique(ches_pop2$country))
 length(unique(ches$country))
 
@@ -206,7 +228,8 @@ length(unique(ches$country))
 
 ches_pop2 %<>% 
   select(party_cntry, party_name, party_name_english, populism2, liberalism, 
-       electionyear, vote, seat, epvote, family, lr_popul, links) 
+       electionyear, vote, seat, epvote, family, lr_popul, links) %>% 
+  mutate(party_name_english = str_replace_all(party_name_english, "\u0092", "'"))
 
 save(ches_pop2, file = "data/party_data.Rdata")
 

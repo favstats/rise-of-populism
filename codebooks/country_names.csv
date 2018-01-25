@@ -1,0 +1,17 @@
+Country,Country,Country,Country,Country,Country
+ID,Abbreviation,,ID,Abbreviation,
+1,BE,Belgium,20,BUL,Bulgaria
+2,DK,Denmark,21,CZ,Czech Republic
+3,GE,Germany,22,EST,Estonia
+4,GR,Greece,23,HUN,Hungary
+5,ESP,Spain,24,LAT,Latvia
+6,FR,France,25,LITH,Lithuania
+7,IRL,Ireland,26,POL,Poland
+8,IT,Italy,27,ROM,Romania
+10,NL,Netherlands,28,SLO,Slovakia
+11,UK,United Kingdom,29,SLE,Slovenia
+12,POR,Portugal,31,CRO,Croatia
+13,AUS,Austria,37,MAL,Malta
+14,FIN,Finland,38,LUX,Luxembourg
+16,SV,Sweden,40,CYP,Cyprus
+

@@ -21,6 +21,6 @@ ches_pop2 %>%
 #  mutate(party_name_english = str_replace_all(party_name_english, ";", ""))
 
 
-
+ches_pop2$links
 
 ```
