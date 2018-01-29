@@ -37,7 +37,7 @@ ess <- read_spss("data/ess_round8.sav")
 googledrive::drive_get("ess_1_7.sav")
 load(googledrive::drive_link("ess_1_7.sav"))
 
-ess_1_7 <- haven::read_spss("C:/Users/Fabio/Google Drive/data/ess_1_7.sav")
+
 ```
 
 

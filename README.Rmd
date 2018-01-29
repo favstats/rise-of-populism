@@ -4,23 +4,47 @@ output: github_document
 ---
 
 ```{r, echo=F, warning=F, message=F}
-load("data/party_data.Rdata")
+load("data/populist_parties.Rdata")
 
-pacman::p_load(tidyverse)
-
-
+pacman::p_load(tidyverse, writexl)
 
 
-ches_pop2 %>% 
+
+
+populist_parties %>% 
  # select(party_cntry) %>% 
   mutate(link = paste0("[",party_name_english,"](", links,")")) %>% 
-  select(link, party_cntry, family, lr_popul) %>% 
+  select(link, party_name, party_cntry, family, cluster) %>% 
   knitr::kable()
 
 #ches_pop2 %<>% 
 #  mutate(party_name_english = str_replace_all(party_name_english, ";", ""))
 
+#write_xlsx(populist_parties, 'data/populist_parties.xlsx')
+```
 
-ches_pop2$links
+# Populistische Parteien umkodieren
 
+```{r, echo=F, warning=F, message=F}
+load("data/populist_parties.Rdata")
+
+populist_parties %>% 
+  arrange(party_cntry)
+
+
+ess <- haven::read_spss("data/ess_round8.sav")
+
+#ess %>% 
+  
+table(sjmisc::to_label(ess$prtvtcbe))
+
+ess %>% 
+  mutate(populism = case_when(
+    prtvtbat == "BZÖ" ~ "Illiberal Populism",
+    prtvtbat == "FPÖ" ~ "Illiberal Populism",    
+    prtvtbat == "Team Frank Stronach" ~ "Illiberal Populism",  
+    prtvtcbe == "Parti Populaire" ~ "Illiberal Populism",
+    prtvtcbe == "PVDA+" ~ "Liberal Populism",
+    prtvtcbe == "Vlaams Belang" ~ "Illiberal Populism"
+  ))
 ```

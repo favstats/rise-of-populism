@@ -87,7 +87,8 @@ ches %<>%
   mutate(populism = range01(populism)*100) %>% 
   mutate(liberalism = range01(liberalism)*100) %>% 
   mutate(party_cntry = paste0(to_label(country), "_", party)) %>% 
-  mutate(family = to_label(family))
+  mutate(family = to_label(family)) %>%
+  filter(year > 2009)
 
 ches %>% 
   ggplot(aes(liberalism, populism, color = family)) + 
@@ -199,7 +200,7 @@ getWebsite <- function(name)
 
     page <- read_html(url)
 
-    results <- page %>% 
+    results <- page %>%
       html_nodes("cite") %>% # Get all notes of type cite. You can change this to grab other node types.
       html_text()
 
@@ -208,30 +209,86 @@ getWebsite <- function(name)
     return(as.character(result)) # Return results if you want to see them all.
 }
 
-links <- ches$party_name_english %>% 
-  str_replace_all("\u0092", "'") %>% 
-  paste(ches$cntry, " wikipedia") %>% 
-  map_chr(getWebsite)
+fix_the_string <- function(string) {
+  string %<>%
+#  unique() %>%
+  iconv(from = "Windows-1252", to = "UTF-8") %>% 
+  stringi::stri_replace_all_regex("<U\\+([[:alnum:]]{4})>", "\\\\u$1") %>% 
+  stringi::stri_replace_all_regex("<U\\+([[:alnum:]]{5})>", "\\\\U000$1") %>% 
+  stringi::stri_replace_all_regex("<U\\+([[:alnum:]]{6})>", "\\\\U00$1") %>% 
+  stringi::stri_replace_all_regex("<U\\+([[:alnum:]]{7})>", "\\\\U0$1") %>% 
+  stringi::stri_replace_all_regex("<U\\+([[:alnum:]]{8})>", "\\\\U$1") %>% 
+  stringi::stri_replace_all_regex("<U\\+([[:alnum:]]{1})>", "\\\\u000$1") %>% 
+  stringi::stri_replace_all_regex("<U\\+([[:alnum:]]{2})>", "\\\\u00$1") %>% 
+  stringi::stri_replace_all_regex("<U\\+([[:alnum:]]{3})>", "\\\\u0$1") %>% 
+  stringi::stri_unescape_unicode() %>% 
+  stringi::stri_enc_toutf8()
+}
 
-ches_pop2 <- ches %>% 
-  filter(populism2 >= 55) %>% 
-  mutate(lr_popul = ifelse(liberalism >= 50, 
-                           "Right-Wing Populism", 
-                           "Left-Wing Populism")) %>% 
-  mutate(links = links)
+ches %<>%
+  mutate(party_name = fix_the_string(party_name)) %>%
+  mutate(party_name_english = fix_the_string(party_name_english)) 
+
+# links <- ches$party_name %<>%
+#   unique() %>%
+#   paste(unique(ches$cntry), "english wikipedia") %>%
+#   map_chr(getWebsite)
+# 
+# save(links, file = "data/party_links.Rdata")
+
+load("data/party_links.Rdata")
+
+merger <- ches$party_name %>%
+  unique() %>%
+  cbind(links) %>%
+  data.frame()
+
+colnames(merger) <- c("party_name", "links")
+
+ches %<>%
+  left_join(merger, by = "party_name")
 
 
-length(unique(ches_pop2$country))
+table(ches$party_name)
+
+# ches_pop2 <- ches %>% 
+#   filter(populism2 >= 55) %>% 
+#   mutate(lr_popul = ifelse(liberalism >= 50, 
+#                            "Right-Wing Populism", 
+#                            "Left-Wing Populism")) %>% 
+#   mutate(links = links)
+# 
+
+#length(unique(ches_pop2$country))
 length(unique(ches$country))
 
 #dput(ches_pop2$party_cntry)
 
-ches_pop2 %<>% 
-  select(party_cntry, party_name, party_name_english, populism2, liberalism, 
-       electionyear, vote, seat, epvote, family, lr_popul, links) %>% 
-  mutate(party_name_english = str_replace_all(party_name_english, "\u0092", "'"))
+# ches_pop2 %<>% 
+#   select(party_cntry, party_name, party_name_english, populism2, liberalism, 
+#        electionyear, vote, seat, epvote, family, lr_popul, links)
 
-save(ches_pop2, file = "data/party_data.Rdata")
+# save(ches_pop2, file = "data/party_data.Rdata")
+
+# 
+# library(xml2) 
+# library(httr) 
+# library(rvest) 
+# library(purrr) 
+# library(dplyr)  
+# 
+# to_get <- seq(0, 150, 10) 
+# pb <- progress_estimated(length(to_get))  
+# 
+# map_chr(to_get, function(i) {   
+#   pb$tick()$print()   searchurl <- paste("http://pqasb.pqarchiver.com/djreprints/results.html?st=advanced&qrytxt=bankruptcy&sortby=chron&datetype=6&frommonth=01&fromday=01&fromyear=1908&tomonth=12&today=31&toyear=1908&by=&title=&at_hist=article&at_hist=editorial_article&at_hist=front_page&type=historic&start=", i, sep="")   htmlweb <- read_html(searchurl)   nodeweb <- html_node(htmlweb, "td > font.result_title > a")   
+#   
+# textweb <- html_text(nodeweb)   
+# sys.sleep(sample(10, 1) * 0.1)   textweb }) -> titles 
+# 
+# print(trimws(titles))
+
+table(ches$year)
 
 ```
 
@@ -239,6 +296,7 @@ save(ches_pop2, file = "data/party_data.Rdata")
 # Clustering
 
 ```{r}
+set.seed(2018)
 ches_cluster <- ches %>% 
   select(party_cntry, liberalism, populism2) %>% 
   na.omit() %>% 
@@ -260,7 +318,7 @@ fviz_dist(distance,
                                              high = "#FC4E07"))
 dev.off()
 
-k3 <- kmeans(ches_cluster, centers = 6, nstart = 25)
+k3 <- kmeans(ches_cluster, centers = 4, nstart = 25)
 
 fviz_cluster(k3, data = ches_cluster)
 
@@ -280,6 +338,30 @@ ches %>%
 ggsave(file = here("images", "party_alignment5.png"), height = 10, width = 10)
 
 
+```
+
+# Save Cluster Data
+
+```{r}
+ches_pop3 <- ches %>%
+  select(party_cntry, party_name, party_name_english, populism2, liberalism, family, links) %>%
+  na.omit() %>%
+  mutate(cluster = k3$cluster) %>%
+  mutate(cluster = case_when(
+    cluster == 1 ~ "Illiberal Populism",
+    cluster == 2 ~ "Liberal Populism",
+    TRUE ~ "Establishment"
+  ))
+
+#load("data/ches_pop3.Rdata")
+
+
+table(ches_pop3$cluster)
+
+populist_parties <- ches_pop3 %>%
+  filter(cluster != "Establishment")
+
+save(populist_parties, file = "data/populist_parties.Rdata")
 ```
 
 
