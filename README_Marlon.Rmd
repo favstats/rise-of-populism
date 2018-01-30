@@ -146,6 +146,8 @@ ess %<>%
 
 ignores <- c("be_", "dk_", "ge_", "gr_", "esp_", "fr_", "irl_", "it_", "nl_", "uk_", "por_", "aus_", "fin_", "sv_", "bul_", "cz_", "est_", "hun_", "lat_", "lith_", "pol_", "rom_", "slo_", "cro_", "cyp_")
 
+#GGGdufhiwelbweoifnc
+
 populist_parties$party_cntry %>% 
   stringr::str_replace_all("_", "")
 stringi::stri_sub(4) 
