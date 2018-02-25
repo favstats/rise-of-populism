@@ -1,0 +1,133 @@
+---
+title: "Data Modeling"
+output: html_notebook
+---
+
+# Loading in Data and packages
+
+```{r}
+load("data/ess.Rdata")
+
+pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, car, psych, knitr, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, brms, questionr)
+```
+
+
+
+
+## Descriptives
+
+```{r}
+
+pacman::p_install_gh("systats/binoculaR")
+library(rstan)
+binoculaR::binoculaR(ess)
+
+# ess %>% 
+#   select(prtvede1, prtvede2) %>% na.omit() %>% mutate_all(sjmisc::to_label)
+
+var_label(ess$imueclt)
+
+rstan_options(auto_write=TRUE)
+options(mc.cores=parallel::detectCores ()) # Run on multiple cores
+
+set.seed(3875)
+
+#ir <- data.frame (scale (iris[, -5]), Species=iris[, 5])
+
+mlogit_ess <- ess %>% 
+  mutate(target = as.factor(target)) %>% 
+  drop_na(target) %>% 
+  mutate(cltre_ndrmnd = 10 - imueclt) %>% 
+  mutate(stsfd_econ = 10 - stfeco)
+
+mlogit_ess %>% 
+  ggplot(aes(target, cltre_ndrmnd, group = target, fill = target)) +
+  geom_boxplot() +
+  ggthemes::theme_fivethirtyeight() +
+  ggthemes::scale_fill_fivethirtyeight()
+
+mlogit_ess %>% 
+  ggplot(aes(target, stsfd_econ, group = target, fill = target)) +
+  geom_boxplot() +
+  ggthemes::theme_fivethirtyeight() +
+  ggthemes::scale_fill_fivethirtyeight()
+```
+
+
+# Mlogit
+
+```{r}
+load("data/ess.Rdata")
+
+#pacman::p_install_gh("systats/binoculaR")
+library(rstan)
+binoculaR::binoculaR(ess)
+
+var_label(ess$imueclt)
+
+rstan_options(auto_write=TRUE)
+options(mc.cores=parallel::detectCores ()) # Run on multiple cores
+
+
+mlogit_ess <- ess %>% 
+  mutate(target = as.factor(target)) %>% 
+  drop_na(target) %>% 
+  mutate(cltre_ndrmnd = 10 - imueclt) %>% 
+  mutate(stsfd_econ = 10 - stfeco)
+
+set.seed(3875)
+
+### With improper prior it takes about 12 minutes, with about 40% CPU utilization and fans running,
+### so you probably don't want to casually run the next line...
+
+library(nnet)
+mlogit_ess$populism2 <- relevel(mlogit_ess$target, ref = "Establishment")
+test <- multinom(populism2 ~ cltre_ndrmnd + stsfd_econ, data = mlogit_ess, weights = pweight)
+
+screenreg(test)
+stargazer::stargazer(test, type="text")
+
+multi1.rrr <- exp(coef(test))
+
+stargazer::stargazer(test, type="text",coef=list(multi1.rrr), p.auto=FALSE)
+
+summary(test)
+
+p <- predict(test)
+table(p)
+z <- summary(test)$coefficients/summary(test)$standard.errors
+z
+
+# 2-tailed z test
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test))
+
+head(pp <- fitted(test))
+
+library(mlogit)
+m <- mlogit(populism2 ~ cltre_ndrmnd, data = mlogit_ess)
+# compute a data.frame containing the mean value of the covariates in the sample
+z <- with(mlogit_ess, data.frame(price = tapply(price, index(m)$alt, mean), 
+	catch = tapply(catch, index(m)$alt, mean), 
+income = mean(income)))
+# compute the marginal effects (the second one is an elasticity
+effects(m, covariate = "income", data = z)
+effects(m, covariate = "price", type = "rr", data = z)
+effects(m, covariate = "catch", type = "ar", data = z)
+
+library(mnlogit)
+#data(Fish, package = "mnlogit")
+fm <- formula(populism2 ~ cltre_ndrmnd )
+fit <- mnlogit(fm, mlogit_ess, choiceVar="Establishment", ncores = 2)
+
+system.time (b1 <- brm (populism ~ cltre_ndrmnd, 
+                        data=mlogit_ess,
+                        family="categorical", 
+                        n.chains=3, 
+                        n.iter=3000, 
+                        n.warmup=600))
+
+```

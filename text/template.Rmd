@@ -1,0 +1,96 @@
+---
+geometry: "left=2.5cm,right=4cm,top=2.5cm,bottom=2cm"
+output: 
+  bookdown::pdf_book:
+    toc: false
+    includes:
+     in_header: header.tex
+     before_body: title_page.tex
+#     after_body: appendix.tex
+documentclass: article
+bibliography: references.bib
+cls: systats.cls
+csl: university-of-stuttgart-sowi-standards.csl
+link-citations: yes
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+x <- 1233.34
+y <- 44864
+z <- 34.876
+```
+
+
+<!-- \onehalfspacing -->
+\setstretch{1.5}
+
+# Introduction
+
+
+```{r child = '1_intro.Rmd'}
+```
+
+This is a great way to test whether $`r x`$ really works in the way it is intended to work. This is different though becasue $`r toString(z)`$ might be better actually. Or how about $`r I(y)`$.
+
+`r x`
+
+`r toString(x)`
+
+`r I(x)`
+
+The following subsection will conceptualize regime support and introduce possible explanatory frameworks that were gathered from the relevant literature (Section 2.1). In this section, the concept of deliberation is clarified (Section 2.2) and a link between deliberation and regime support is established, from which research hypotheses are subsequently derived (Section 2.3). 
+
+
+# Theory
+
+**Some Citations**
+
+This is an example introduction. Let's cite someone here [@easton1965systems]. And in text as well: @habermas1994three says that we can cite people in text. Or we can write the name, and than use the citation thingy to print the year: Blabla states something about something [-@easton1975re]. Or how about multiple citations [@habermas1994three; @habermas1994three]. Or we citation with a little of text around it [for example see @habermas1994three: 92-93].
+
+ALLE Zitierweisen von Zotero gibts [HIER](https://www.zotero.org/styles).
+
+
+**More Citations**
+
+Blah blah [cf. @easton1965systems, pp. 33-35; also @easton1975re, pp. 2].
+
+Blah blah [@easton1975re, pp. 33-35, 38-39].
+
+Blah blah [@easton1975re; @habermas1994three].
+
+Smith says blah [-@easton1975re].
+
+@easton1975re says blah.
+
+@habermas1994three [p. 33] says blah.
+
+
+
+```{r child = '2_theory.Rmd'}
+```
+
+# Methodology
+
+```{r child = '3_methods.Rmd'}
+```
+
+# Analysis
+
+```{r child = '4_analysis.Rmd'}
+```
+
+# Conclusions
+
+```{r child = '5_conclusions.Rmd'}
+```
+
+
+\setstretch{1}
+
+\newpage
+
+# References

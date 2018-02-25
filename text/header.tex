@@ -1,0 +1,82 @@
+\usepackage{csquotes}
+\usepackage{lmodern}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage[flushleft]{threeparttable}
+%\usepackage{array}
+\usepackage{caption}
+%\usepackage{float}% If comment this, figure moves to Page 2
+%\usepackage{flafter}
+\usepackage[normalem]{ulem}
+\usepackage{adjustbox}
+\usepackage{mathtools}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{pdflscape}
+\usepackage{graphicx}
+\usepackage{threeparttable}
+\usepackage{ragged2e}
+\usepackage{caption}
+\usepackage{wrapfig}
+\usepackage{lipsum}
+\usepackage{floatflt}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+\usepackage{multicol}
+\usepackage{capt-of}% or use the larger `caption` package
+\usepackage{tabularx}
+\usepackage{placeins}
+\usepackage{setspace}
+
+\usepackage{lscape}
+\usepackage{rotating}
+\usepackage{epstopdf}
+%\restylefloat{figure}
+%%% language control, order matters
+% [english, ngerman] = German
+% [ngerman, english] = English
+\usepackage[ngerman, english]{babel}
+
+\usepackage{lmodern}
+
+\makeatletter
+\ifcase \@ptsize \relax% 10pt
+\newcommand{\miniscule}{\@setfontsize\miniscule{4}{5}}% \tiny: 5/6
+\or% 11pt
+\newcommand{\miniscule}{\@setfontsize\miniscule{5}{6}}% \tiny: 6/7
+\or% 12pt
+\newcommand{\miniscule}{\@setfontsize\miniscule{5}{6}}% \tiny: 6/7
+\fi
+\makeatother
+
+%\usepackage[round]{natbib}
+
+%\setcitestyle{notesep={: }}
+%\setcitestyle{aysep={}} 
+
+\usepackage{framed}
+\newenvironment{quotationb}%
+{\begin{leftbar}\begin{quotation}}%
+		{\end{quotation}\end{leftbar}}
+
+
+%\fancyhf{}
+%\renewcommand{\sectionmark}[1]{\markright{#1}}
+%%% header
+%\fancyhead[RE,LO]{\fancyplain{}{\rightmark}} 
+%\rhead{\thepage}
+%\rfoot{\fancyplain{}{}}
+%\pagestyle{fancy}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\leftmark}
+\fancyhead[RE,LO]{\thepage}
+\fancyfoot[CE,CO]{}
+\fancyfoot[LE,RO]{}
+\renewcommand{\headrulewidth}{1pt}  
+\renewcommand{\footrulewidth}{0pt}
+
+
+%\rhead{\fancyplain{}{MyName}}
+\newcommand{\ackname}{Acknowledgements}

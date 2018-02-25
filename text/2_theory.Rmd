@@ -1,0 +1,15 @@
+---
+output: pdf_document
+---
+
+## Populism as we understand it
+
+### Liberal Populism
+
+### Illiberal Populism
+
+## Cultural Backlash
+
+## Economic Deprivation
+
+

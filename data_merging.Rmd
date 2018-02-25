@@ -1,0 +1,44 @@
+---
+title: "Data Merging"
+output: html_notebook
+---
+
+## Loading in Data
+
+```{r, echo=F, warning=F, message=F}
+load("data/populist_parties.Rdata")
+
+populist_parties %>% 
+  arrange(party_cntry)
+
+#ess_1_7 <- haven::read_spss("C:/Users/Fabio/Google Drive/data/ess_1_7.sav")
+
+#ess5_7 <- haven::read_spss("data/ess5_7.sav")
+
+#ess8 <- haven::read_spss("data/ess_round8.sav")
+
+
+```
+
+# Merging the ESS
+
+```{r}
+ess <- plyr::rbind.fill(ess5_7, ess8)
+
+ess %<>% 
+  mutate(cntryname = sjmisc::to_label(cntry)) %>% 
+  mutate(cntryear = paste(cntryname, essround, sep = "_"))
+
+table(ess$cntryear)
+
+cntry_keeps <- c("Austria_8","Belgium_8","Bulgaria_6","Croatia_5","Cyprus_6","Czech Republic_8",
+                 "Denmark_7","Estonia_8","Finland_8","France_8","Germany_8","Greece_5","Hungary_7",
+                 "Iceland_8","Ireland_8","Italy_6","Lithuania_7","Netherlands_8","Norway_8","Poland_8",
+                 "Portugal_7","Russia_8","Slovakia_6","Slovenia_8","Spain_7","Sweden_8","Switzerland_8",
+                 "Ukraine_6","United Kingdom_8")
+
+ess %<>% 
+  filter(cntryear %in% cntry_keeps)
+
+save(ess, file = "data/ess.Rdata")
+```
