@@ -56,8 +56,13 @@ mlogit_ess %>%
 
 # Mlogit
 
+## Data prep
+
 ```{r}
 load("data/ess.Rdata")
+
+mlogit_ess <- ess 
+
 
 #pacman::p_install_gh("systats/binoculaR")
 library(rstan)
@@ -65,15 +70,49 @@ binoculaR::binoculaR(ess)
 
 var_label(ess$imueclt)
 
-rstan_options(auto_write=TRUE)
-options(mc.cores=parallel::detectCores ()) # Run on multiple cores
+# rstan_options(auto_write=TRUE)
+# options(mc.cores=parallel::detectCores ()) # Run on multiple cores
 
 
 mlogit_ess <- ess %>% 
   mutate(target = as.factor(target)) %>% 
   drop_na(target) %>% 
   mutate(cltre_ndrmnd = 10 - imueclt) %>% 
-  mutate(stsfd_econ = 10 - stfeco)
+  mutate(stsfd_econ = 10 - stfeco) %>% 
+  rename(
+    demsat = stfdem,
+    age = agea,
+#    year = inwyys,
+    trust_gov = trstplt,
+    trust_parliament = trstprl,
+    trust_police = trstplc,
+    trust_courts = trstlgl
+  ) %>%
+  mutate(
+    income = 5 - hincfel,
+    educ = Recode(
+      eisced,
+      "55 = NA"
+    ),
+    work = ifelse(mnactic == 1, 1, 0),
+    sex = gndr - 1 # sex variable erstellen
+  ) %>% 
+  select(demsat, age, income, educ, work, sex, trust_gov,
+         cltre_ndrmnd, stsfd_econ, target, pweight) %>% 
+  na.omit()
+```
+
+# Factoring
+
+```{r}
+
+```
+
+
+# Modeling
+
+```{r}
+
 
 set.seed(3875)
 
@@ -82,7 +121,9 @@ set.seed(3875)
 
 library(nnet)
 mlogit_ess$populism2 <- relevel(mlogit_ess$target, ref = "Establishment")
-test <- multinom(populism2 ~ cltre_ndrmnd + stsfd_econ, data = mlogit_ess, weights = pweight)
+test <- multinom(populism2 ~ cltre_ndrmnd + stsfd_econ + demsat + trust_gov + 
+                   age + educ + income + work + sex +
+                 cltre_ndrmnd*stsfd_econ, data = mlogit_ess, weights = pweight)
 
 screenreg(test)
 stargazer::stargazer(test, type="text")
@@ -92,6 +133,56 @@ multi1.rrr <- exp(coef(test))
 stargazer::stargazer(test, type="text",coef=list(multi1.rrr), p.auto=FALSE)
 
 summary(test)
+
+head(pp <- fitted(test))
+
+broom::tidy(test)
+
+probs <- pp %>% 
+  as_tibble() %>% 
+  cbind(mlogit_ess) #%>%
+
+plot_probs <- function(probs, variable) {
+  ss <- probs %>% 
+  mutate(variable = as.numeric(variable)) %>% 
+  select(variable, `Illiberal Populism`, `Liberal Populism`, Establishment) %>% 
+#  mutate(id = n()) %>% 
+  gather(key = variable)  
+
+names(ss) <- c("variable", "type", "value")
+
+
+ss %>% 
+   ggplot(aes(variable, value, colour = type)) +
+   geom_smooth(method = "loess") +
+   labs(x = names(ss)[1]) +
+  ggthemes::theme_fivethirtyeight() +
+  ggthemes::scale_color_fivethirtyeight()
+}
+
+plot_probs(probs, probs$demsat)
+
+
+
+ss <- probs %>% 
+  mutate(stsfd_econ = as.numeric(stsfd_econ)) %>% 
+  select(stsfd_econ, `Illiberal Populism`, `Liberal Populism`, Establishment) %>% 
+#  mutate(id = n()) %>% 
+  gather(key = stsfd_econ)  
+
+ # 
+names(ss) <- c("stsfd_econ", "type", "value")
+
+
+ss %>% 
+   ggplot(aes(stsfd_econ, value, colour = type)) +
+   geom_smooth()
+
+```
+
+
+
+```{r}
 
 p <- predict(test)
 table(p)
@@ -129,5 +220,5 @@ system.time (b1 <- brm (populism ~ cltre_ndrmnd,
                         n.chains=3, 
                         n.iter=3000, 
                         n.warmup=600))
-
 ```
+
