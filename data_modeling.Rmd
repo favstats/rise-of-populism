@@ -8,7 +8,9 @@ output: html_notebook
 ```{r}
 load("data/ess.Rdata")
 
-pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, car, psych, knitr, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, brms, questionr)
+pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, car, psych, knitr, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, brms, questionr, lavaan, car, BBmisc )
+
+range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.rm = T))}
 ```
 
 
@@ -18,115 +20,200 @@ pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, car, psych, kn
 
 ```{r}
 
-pacman::p_install_gh("systats/binoculaR")
-library(rstan)
-binoculaR::binoculaR(ess)
+# pacman::p_install_gh("systats/binoculaR")
+# 
+# binoculaR::binoculaR(ess)
 
 # ess %>% 
 #   select(prtvede1, prtvede2) %>% na.omit() %>% mutate_all(sjmisc::to_label)
 
-var_label(ess$imueclt)
-
-rstan_options(auto_write=TRUE)
-options(mc.cores=parallel::detectCores ()) # Run on multiple cores
-
-set.seed(3875)
+#var_label(ess$imueclt)
 
 #ir <- data.frame (scale (iris[, -5]), Species=iris[, 5])
 
 mlogit_ess <- ess %>% 
   mutate(target = as.factor(target)) %>% 
   drop_na(target) %>% 
-  mutate(cltre_ndrmnd = 10 - imueclt) %>% 
-  mutate(stsfd_econ = 10 - stfeco)
+  mutate(imm_culture = 10 - imueclt) %>% 
+  mutate(econ_unsat = 10 - stfeco)
 
 mlogit_ess %>% 
-  ggplot(aes(target, cltre_ndrmnd, group = target, fill = target)) +
+  ggplot(aes(target, imm_culture, group = target, fill = target)) +
   geom_boxplot() +
   ggthemes::theme_fivethirtyeight() +
   ggthemes::scale_fill_fivethirtyeight()
 
 mlogit_ess %>% 
-  ggplot(aes(target, stsfd_econ, group = target, fill = target)) +
+  ggplot(aes(target, econ_unsat, group = target, fill = target)) +
   geom_boxplot() +
   ggthemes::theme_fivethirtyeight() +
   ggthemes::scale_fill_fivethirtyeight()
 ```
 
 
-# Mlogit
 
-## Data prep
+
+# Data prep
 
 ```{r}
 load("data/ess.Rdata")
 
 mlogit_ess <- ess 
 
+# pacman::p_install_gh("systats/binoculaR")
+# binoculaR::binoculaR(ess)
 
-#pacman::p_install_gh("systats/binoculaR")
-library(rstan)
-binoculaR::binoculaR(ess)
+# library(isco88conversion)
+# dd <- suppressMessages(suppressWarnings(isco88conversion::convert(ess$iscoco, type = "EGP")))  
+# table(dd)
+# ss <- to_label(ess$iscoco)
+# 
+# devtools::install_git("https://github.com/pdparker/isco88conversion")
 
-var_label(ess$imueclt)
-
-# rstan_options(auto_write=TRUE)
-# options(mc.cores=parallel::detectCores ()) # Run on multiple cores
-
+# 1025	impsafe	Important to live in secure and safe surroundings
+# 1027	ipfrule	Important to do what is told and follow rules
+# 1036	ipbhprp	Important to behave properly
+# 1040	imptrad	Important to follow traditions and customs
+# 1034	ipstrgv	Important that government is strong and ensures safety
 
 mlogit_ess <- ess %>% 
   mutate(target = as.factor(target)) %>% 
-  drop_na(target) %>% 
-  mutate(cltre_ndrmnd = 10 - imueclt) %>% 
-  mutate(stsfd_econ = 10 - stfeco) %>% 
+#  drop_na(target) %>% 
+  mutate(imm_culture = 10 - imueclt) %>% 
+  mutate(imm_badecon = 10 - imbgeco) %>%
+  mutate(imm_worselive = 10 - imwbcnt) %>%
+  mutate(econ_unsat = 10 - stfeco) %>% 
+  mutate(aut_safe = 7 - impsafe) %>% 
+  mutate(aut_rules = 7 - ipfrule) %>%
+  mutate(aut_behave = 7 - ipbhprp) %>%
+  mutate(aut_trad = 7 - imptrad) %>% 
+  mutate(aut_govstrong = 7 - ipstrgv) %>% 
   rename(
+    econ_insec = hincfel,
     demsat = stfdem,
     age = agea,
 #    year = inwyys,
+    trust_un = trstun,
+    trust_eu = trstep,
     trust_gov = trstplt,
-    trust_parliament = trstprl,
-    trust_police = trstplc,
-    trust_courts = trstlgl
+    # trust_parliament = trstprl,
+    # trust_police = trstplc,
+    # trust_courts = trstlgl,
+    govsat = stfgov,
+    religion = rlgdgr,
+    rural = domicil,
+ #   educ = edulvlb
   ) %>%
   mutate(
-    income = 5 - hincfel,
     educ = Recode(
       eisced,
       "55 = NA"
     ),
     work = ifelse(mnactic == 1, 1, 0),
-    sex = gndr - 1 # sex variable erstellen
+    unemployed = ifelse(uemp3m == 1, 1, 0),
+    sex = gndr - 1, # sex variable erstellen
+    ethnic = ifelse(blgetmg == "1", 1, 0),
+    welfare = ifelse(hincsrca %in% c(5,6), 1, 0)
   ) %>% 
-  select(demsat, age, income, educ, work, sex, trust_gov,
-         cltre_ndrmnd, stsfd_econ, target, pweight) %>% 
+  select(target, imm_culture, imm_badecon, imm_worselive, econ_unsat, econ_insec, aut_safe, aut_behave, aut_rules, aut_trad, aut_govstrong, demsat, age, trust_un, trust_eu, trust_gov, govsat, religion, rural, educ, unemployed, sex, ethnic, welfare, lrscale, pweight, cntry) %>% 
   na.omit()
+
+var_checks <- function(vars) {
+  list(
+    table = table(vars),
+    var_label = var_label(vars),
+    val_labels = val_labels(vars),
+    is.character = is.character(vars),
+    is.numeric = is.numeric(vars)
+  )
+}
+
+var_checks(ess$eisced)
+
+var_checks(mlogit_ess$imm_culture)
+
+table(mlogit_ess$unemployed)
+
+# install.packages("SocialPosition")
+# library(SocialPosition)
+# data(data_PCS2003_2l)
+# data_PCS2003_2l <- SocialPosition::collapse_PCS2003_2l(
+# 				   PCS2003_2l=data_PCS2003_2l$codes_2_level,
+# 				   data=data_PCS2003_2l)
+# 
+# ss <- SocialPositioncollapse_PCS2003_4l(
+# 				   PCS2003_4l=ess$isco08p,
+# 				   data=ess)
+
+#table(mlogit_ess$cntry)
 ```
 
-# Factoring
+# Factorscores
 
 ```{r}
+anti_imm_dat <- mlogit_ess %>%
+  select(imm_culture, imm_badecon, imm_worselive) %>%
+  mutate_all(as.numeric) 
+
+mlogit_ess <- anti_imm_dat %>%
+  psych::fa() %>%
+  predict.psych(data = anti_imm_dat) %>%
+  as.data.frame() %>%
+  transmute(anti_imm = range01(MR1)*10) %>%
+  cbind(mlogit_ess)
+
+auth_dat <- mlogit_ess %>%
+  select(aut_safe, aut_rules, aut_behave, aut_trad, aut_govstrong) %>%
+  mutate_all(as.numeric) 
+
+mlogit_ess <- auth_dat %>%
+  psych::fa() %>%
+  predict.psych(data = auth_dat) %>%
+  unlist() %>% as.character() %>% as.numeric() %>%
+  data.frame(authoritarianism = .) %>%
+  transmute(authoritarianism = range01(authoritarianism)*10) %>%
+  cbind(mlogit_ess) 
+
+global_dat <- mlogit_ess %>%
+  select(trust_un, trust_eu) %>%
+  mutate_all(as.numeric) 
+
+mlogit_ess <- global_dat %>%
+  psych::fa() %>%
+  predict.psych(data = global_dat) %>%
+  unlist() %>% as.character() %>% as.numeric() %>%
+  data.frame(globalism = .) %>%
+  transmute(globalism = range01(globalism)*10) %>%
+  cbind(mlogit_ess) 
+
 
 ```
 
 
-# Modeling
+# Mlogit
 
 ```{r}
 
 
 set.seed(3875)
 
-### With improper prior it takes about 12 minutes, with about 40% CPU utilization and fans running,
-### so you probably don't want to casually run the next line...
 
 library(nnet)
 mlogit_ess$populism2 <- relevel(mlogit_ess$target, ref = "Establishment")
-test <- multinom(populism2 ~ cltre_ndrmnd + stsfd_econ + demsat + trust_gov + 
-                   age + educ + income + work + sex +
-                 cltre_ndrmnd*stsfd_econ, data = mlogit_ess, weights = pweight)
+
+test <- multinom(
+  populism2 ~ 
+    # economic deprivation
+    econ_unsat + econ_insec + unemployed +
+    # cultural backlash
+    anti_imm + authoritarianism + globalism +
+    # control variables
+    demsat + trust_gov + govsat + age + educ +  + sex ,
+    #data
+    data = mlogit_ess, weights = pweight)
 
 screenreg(test)
-stargazer::stargazer(test, type="text")
+stargazer::stargazer(test, type = "text")
 
 multi1.rrr <- exp(coef(test))
 
@@ -140,49 +227,146 @@ broom::tidy(test)
 
 probs <- pp %>% 
   as_tibble() %>% 
-  cbind(mlogit_ess) #%>%
+  cbind(mlogit_ess) %>%
+  as.data.frame()
 
-plot_probs <- function(probs, variable) {
+
+  
+
+plot_probs <- function(probs = probs, variable = probs$anti_imm) {
   ss <- probs %>% 
   mutate(variable = as.numeric(variable)) %>% 
   select(variable, `Illiberal Populism`, `Liberal Populism`, Establishment) %>% 
 #  mutate(id = n()) %>% 
-  gather(key = variable)  
+  gather(key = variable, value = value)  
 
 names(ss) <- c("variable", "type", "value")
 
 
 ss %>% 
    ggplot(aes(variable, value, colour = type)) +
-   geom_smooth(method = "loess") +
-   labs(x = names(ss)[1]) +
-  ggthemes::theme_fivethirtyeight() +
+   geom_smooth(method = "lm") +
+   geom_point(alpha = 0.1) +
+#   labs(x = names(ss)[1]) +
+  ggthemes::theme_hc() +
   ggthemes::scale_color_fivethirtyeight()
 }
 
-plot_probs(probs, probs$demsat)
+plot_probs(probs, probs$globalism)
 
+table(mlogit_ess$cntry)
 
+probs %<>% 
+  mutate(estab = ifelse(populism2 == "Establishment", T, F)) %>% 
+  mutate(lib = ifelse(populism2 == "Liberal Populism", T, F)) %>% 
+  mutate(illib = ifelse(populism2 == "Illiberal Populism", T, F)) 
 
-ss <- probs %>% 
-  mutate(stsfd_econ = as.numeric(stsfd_econ)) %>% 
-  select(stsfd_econ, `Illiberal Populism`, `Liberal Populism`, Establishment) %>% 
-#  mutate(id = n()) %>% 
-  gather(key = stsfd_econ)  
-
- # 
-names(ss) <- c("stsfd_econ", "type", "value")
-
-
-ss %>% 
-   ggplot(aes(stsfd_econ, value, colour = type)) +
-   geom_smooth()
+table(probs$`Illiberal Populism`>probs$`Liberal Populism` & probs$`Illiberal Populism`>probs$Establishment, probs$illib)
+table(probs$`Liberal Populism`>probs$`Illiberal Populism` & probs$`Liberal Populism`>probs$Establishment, probs$lib)
+table(probs$Establishment>probs$`Liberal Populism` & probs$Establishment>probs$`Illiberal Populism`, probs$estab)
+table(probs$populism2)
 
 ```
 
+# Crap
 
+
+## Human Values
 
 ```{r}
+# selected <- binoculaR::binoculaR(ess)
+# 
+# 
+# fa_dat <- ess %>%
+#   select(selected$var_codes)
+
+#save(fa_dat, file = "data/fa_dat.Rdata")
+load("data/fa_dat.Rdata")
+
+# fa_dat %<>% 
+#   cbind(ess %>% select(pweight))
+fa_dat
+fa_dat %>%
+  psych::describe() %>% 
+  knitr::kable()
+
+# fa_fit <- fa_dat %>%
+#   psych::fa.multi(10, 4, weight = ess$dweight, rotate = "quartimax") 
+# psych::fa.multi.diagram(fa_fit)
+# table(fa_fit$e.values)
+
+table(fa_dat$ipcrtiv)
+
+minus_7 <- function(var) {
+  7 - var
+}
+
+fa_dat %<>% 
+  mutate_all(minus_7) %>% 
+  mutate_all(as.numeric)
+
+# cronbachs alpha
+## openness to change
+
+
+
+
+fa_dat %<>% 
+  mutate_all(as.numeric) %>% 
+#  select(ipcrtiv, impfree, impdiff, ipadvnt, ipgdtim, impfun) %>% 
+  mutate(openness = (ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + impfun)/6) %>% 
+  mutate(conservation = (impsafe + ipstrgv + ipfrule + ipbhprp + ipmodst + imptrad)/6) %>% 
+  mutate(selfenhance = (imprich + iprspot + ipshabt + ipsuces)/4) %>% 
+  mutate(selftrans = (ipeqopt + ipudrst + impenv + iphlppl + iplylfr)/5) %>% 
+  mutate_all(range01) %>% 
+  mutate(opendim = ((openness - conservation)*10)-5) %>% 
+  mutate(selfdim = ((selftrans - selfenhance)*10)-5)
+
+# fa_dat$opendim <- (range01(pp$openness - pp$conservation)*10)-5
+# fa_dat$selfdim <- (range01(pp$selftrans - pp$selfenhance)*10)-5
+
+hist(fa_dat$selfdim)
+
+mlogit_ess <- fa_dat %>% 
+  select(openness, conservation, selfenhance, selftrans, opendim, selfdim) %>% 
+  cbind(mlogit_ess) %>% 
+  na.omit()
+
+# openness_dat <- fa_dat %>% 
+#   select(ipcrtiv, impfree, impdiff, ipadvnt, ipgdtim, impfun) %>% 
+#   psych::pca(1) 
+#   #psych::alpha()
+# 
+# openness_dat %>% 
+#   predict(., data = fa_dat)
+
+# pacman::p_install_gh("yrosseel/lavaan")
+# 
+# fa_model <- 'openness =~ ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + impfun
+#              ipgdtim ~~ impfun
+#              ipcrtiv ~~ impfree
+#              ipcrtiv ~~ impdiff
+#              impfree ~~ ipadvnt'
+# 
+# 
+# fit <- cfa(fa_model, data=fa_dat, 
+#                    estimator= "MLM")
+# 
+# summary(fit, standardized=TRUE, 
+#         fit.measures = TRUE, rsq = T)
+# 
+# openness <- lavaan::lavPredict(fit, newdata = fa_dat, fsm = T)
+# 
+# #Modifikationsindizes
+# modheit <- modificationindices(fit, sort=T, minimum.value = 5)
+# modheit
+```
+
+## crap 2
+
+```{r}
+
+library(rstan)
 
 p <- predict(test)
 table(p)
@@ -199,22 +383,25 @@ exp(coef(test))
 head(pp <- fitted(test))
 
 library(mlogit)
-m <- mlogit(populism2 ~ cltre_ndrmnd, data = mlogit_ess)
+m <- mlogit(populism2 ~ imm_culture, data = mlogit_ess)
 # compute a data.frame containing the mean value of the covariates in the sample
 z <- with(mlogit_ess, data.frame(price = tapply(price, index(m)$alt, mean), 
 	catch = tapply(catch, index(m)$alt, mean), 
-income = mean(income)))
+econ_insec = mean(econ_insec)))
 # compute the marginal effects (the second one is an elasticity
-effects(m, covariate = "income", data = z)
+effects(m, covariate = "econ_insec", data = z)
 effects(m, covariate = "price", type = "rr", data = z)
 effects(m, covariate = "catch", type = "ar", data = z)
 
 library(mnlogit)
 #data(Fish, package = "mnlogit")
-fm <- formula(populism2 ~ cltre_ndrmnd )
+fm <- formula(populism2 ~ imm_culture )
 fit <- mnlogit(fm, mlogit_ess, choiceVar="Establishment", ncores = 2)
 
-system.time (b1 <- brm (populism ~ cltre_ndrmnd, 
+### With improper prior it takes about 12 minutes, with about 40% CPU utilization and fans running,
+### so you probably don't want to casually run the next line...
+
+system.time (b1 <- brm (populism ~ imm_culture, 
                         data=mlogit_ess,
                         family="categorical", 
                         n.chains=3, 
