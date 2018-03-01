@@ -8,7 +8,7 @@ output: html_notebook
 ```{r}
 load("data/ess.Rdata")
 
-pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, car, psych, knitr, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, brms, questionr, lavaan, car, BBmisc )
+pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, car, psych, knitr, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, brms, questionr, lavaan, car, BBmisc, stargazer, caret, DescTools, rcompanion, tidyeval, mgcv)
 
 range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.rm = T))}
 ```
@@ -16,39 +16,6 @@ range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.
 
 
 
-## Descriptives
-
-```{r}
-
-# pacman::p_install_gh("systats/binoculaR")
-# 
-# binoculaR::binoculaR(ess)
-
-# ess %>% 
-#   select(prtvede1, prtvede2) %>% na.omit() %>% mutate_all(sjmisc::to_label)
-
-#var_label(ess$imueclt)
-
-#ir <- data.frame (scale (iris[, -5]), Species=iris[, 5])
-
-mlogit_ess <- ess %>% 
-  mutate(target = as.factor(target)) %>% 
-  drop_na(target) %>% 
-  mutate(imm_culture = 10 - imueclt) %>% 
-  mutate(econ_unsat = 10 - stfeco)
-
-mlogit_ess %>% 
-  ggplot(aes(target, imm_culture, group = target, fill = target)) +
-  geom_boxplot() +
-  ggthemes::theme_fivethirtyeight() +
-  ggthemes::scale_fill_fivethirtyeight()
-
-mlogit_ess %>% 
-  ggplot(aes(target, econ_unsat, group = target, fill = target)) +
-  geom_boxplot() +
-  ggthemes::theme_fivethirtyeight() +
-  ggthemes::scale_fill_fivethirtyeight()
-```
 
 
 
@@ -115,9 +82,7 @@ mlogit_ess <- ess %>%
     ethnic = ifelse(blgetmg == "1", 1, 0),
     welfare = ifelse(hincsrca %in% c(5,6), 1, 0)
   ) %>% 
-  select(target, imm_culture, imm_badecon, imm_worselive, econ_unsat, econ_insec, aut_safe, aut_behave, aut_rules, aut_trad, aut_govstrong, demsat, age, trust_un, trust_eu, trust_gov, govsat, religion, rural, educ, unemployed, sex, ethnic, welfare, lrscale, pweight, cntry) %>% 
-  na.omit()
-
+  select(target, imm_culture, imm_badecon, imm_worselive, econ_unsat, econ_insec, aut_safe, aut_behave, aut_rules, aut_trad, aut_govstrong, demsat, age, trust_un, trust_eu, trust_gov, govsat, religion, rural, educ, unemployed, sex, ethnic, welfare, lrscale, pweight, cntry) 
 var_checks <- function(vars) {
   list(
     table = table(vars),
@@ -186,6 +151,10 @@ mlogit_ess <- global_dat %>%
   transmute(globalism = range01(globalism)*10) %>%
   cbind(mlogit_ess) 
 
+mlogit_ess %<>%
+  na.omit()
+
+
 
 ```
 
@@ -193,11 +162,6 @@ mlogit_ess <- global_dat %>%
 # Mlogit
 
 ```{r}
-
-
-set.seed(3875)
-
-
 library(nnet)
 mlogit_ess$populism2 <- relevel(mlogit_ess$target, ref = "Establishment")
 
@@ -208,7 +172,7 @@ test <- multinom(
     # cultural backlash
     anti_imm + authoritarianism + globalism +
     # control variables
-    demsat + trust_gov + govsat + age + educ +  + sex ,
+    demsat + trust_gov + govsat + age + educ + sex + lrscale + ethnic + religion,
     #data
     data = mlogit_ess, weights = pweight)
 
@@ -221,7 +185,23 @@ stargazer::stargazer(test, type="text",coef=list(multi1.rrr), p.auto=FALSE)
 
 summary(test)
 
+car::Anova(test)
+
+PseudoR2(test)
+
+```
+
+## Predictions
+
+```{r}
+
 head(pp <- fitted(test))
+#head(pp <- predict(test, newdata = mlogit_ess, type = "class"))
+
+conf.beta <- confint(object = test , level = 0.95)
+conf.beta # Results are in a 3D array
+
+table(pp, mlogit_ess$populism2)
 
 broom::tidy(test)
 
@@ -229,9 +209,6 @@ probs <- pp %>%
   as_tibble() %>% 
   cbind(mlogit_ess) %>%
   as.data.frame()
-
-
-  
 
 plot_probs <- function(probs = probs, variable = probs$anti_imm) {
   ss <- probs %>% 
@@ -242,19 +219,100 @@ plot_probs <- function(probs = probs, variable = probs$anti_imm) {
 
 names(ss) <- c("variable", "type", "value")
 
-
 ss %>% 
+  mutate(value = value * 100) %>% 
    ggplot(aes(variable, value, colour = type)) +
-   geom_smooth(method = "lm") +
-   geom_point(alpha = 0.1) +
-#   labs(x = names(ss)[1]) +
+   geom_smooth(method = "gam", 
+               formula = y ~ s(x, k = 1), 
+               size = 1.2) +
+ #  geom_jitter(alpha = 0.01) +
+  labs(x = str_glue("{names(ss)[1]}"), y = "Marginal Probability") +
   ggthemes::theme_hc() +
-  ggthemes::scale_color_fivethirtyeight()
+  ggthemes::scale_color_fivethirtyeight() + 
+  facet_wrap(~type, scales = "free") +
+  scale_y_continuous(breaks = seq(0,100, by = 5), 
+                     labels = paste0(seq(0,100, by = 5),"%"))
 }
 
-plot_probs(probs, probs$globalism)
+plot_ints <- function(probs, variable = NULL, 
+                      variable2 = NULL, type = "minmax", legend_title = "variable") {
+#  if (type == "minmax") {
 
-table(mlogit_ess$cntry)
+#}
+  
+ss <- probs %>% 
+  mutate(variable = as.numeric(variable)) %>% 
+  mutate(variable2 = as.numeric(variable2)) %>% 
+  select(variable, variable2, `Illiberal Populism`, 
+         `Liberal Populism`, Establishment) %>% 
+    mutate(variable2 = case_when(
+    variable2 == max(variable2) ~ max(variable2),
+    variable2 == min(variable2) ~ min(variable2),  
+    TRUE ~ NA_real_
+  )) %>% 
+  drop_na(variable2) %>% 
+#  mutate(id = n()) %>% 
+  gather(key = "type", value = "value", -variable, -variable2) %>% 
+  mutate(value = value * 100) 
+
+
+
+# if (type == "sd") {
+#   ss <- probs %>% 
+#     mutate(variable2 = case_when(
+#     variable2 == mean(variable2, na.rm = T) + 2*sd(variable2) max(variable2) ~ max(variable2),
+#     variable2 == min(variable2) ~ min(variable2),  
+#     TRUE ~ NA_real_
+#   )) %>% 
+#   drop_na(variable2) 
+# }
+
+ss %>% 
+   ggplot(aes(variable, value, 
+              colour = as.factor(variable2), group = variable2)) +
+   geom_smooth(method = "gam", 
+               formula = y ~ s(x, k = 1), 
+               size = 1.2) +
+ #  geom_jitter(alpha = 0.01) +
+  labs(x = str_glue("{names(ss)[1]}"), y = "Marginal Probability") +
+  ggthemes::theme_hc() +
+#  scale_colour_hue("", l = 70, c = 150, h = c(90, 20)) + 
+  scale_colour_manual(legend_title, values = c("blue", "red")) +
+  facet_wrap(~type, scales = "free") +
+  scale_y_continuous(breaks = seq(0,100, by = 5), 
+                     labels = paste0(seq(0,100, by = 5),"%"))
+}
+
+plot_probs(probs, probs$religion)
+
+ggsave(filename = "images/probabs.png", height = 5, width = 12)
+# 
+# variable <- mlogit_ess$econ_unsat
+# variable2 <- mlogit_ess$anti_imm
+
+
+
+
+plot_ints(probs, probs$anti_imm, probs$unemployed)
+
+plot_ints(probs, probs$anti_imm, probs$unemployed, legend_title = "Unemployed over 3 Months") +
+  xlab("Anti-Immigration Sentiment")
+
+ggsave(filename = "images/interaction1.png", height = 5, width = 12)
+
+
+plot_ints(probs, probs$anti_imm, probs$econ_insec, legend_title = "Economic Insecurity") +
+  xlab("Anti-Immigration Sentiment")
+
+ggsave(filename = "images/interaction2.png", height = 5, width = 12)
+
+
+```
+
+## Appropriateness
+
+```{r}
+ table(mlogit_ess$cntry)
 
 probs %<>% 
   mutate(estab = ifelse(populism2 == "Establishment", T, F)) %>% 
@@ -266,7 +324,77 @@ table(probs$`Liberal Populism`>probs$`Illiberal Populism` & probs$`Liberal Popul
 table(probs$Establishment>probs$`Liberal Populism` & probs$Establishment>probs$`Illiberal Populism`, probs$estab)
 table(probs$populism2)
 
+checkers <- probs %>% 
+  filter(populism2 != "Establishment")
+
+table(checkers$`Illiberal Populism`>checkers$`Liberal Populism`, checkers$illib)
+table(checkers$`Liberal Populism`>checkers$`Illiberal Populism`, checkers$lib)
+table(probs$populism2)
 ```
+
+
+# Logistic Regression
+
+```{r}
+mlogit_ess %<>% 
+  mutate(progressive_populism = ifelse(target == "Liberal Populism", 1, 0)) %>% 
+  mutate(trad_populism = ifelse(target == "Illiberal Populism", 1, 0))   
+
+glmfit <- glm(progressive_populism ~ 
+    # economic deprivation
+    econ_unsat + econ_insec + unemployed +
+    # cultural backlash
+    anti_imm + authoritarianism + globalism +
+    # control variables
+    demsat + trust_gov + govsat + age + educ +  + sex ,
+    #data
+    data = mlogit_ess, weights = pweight, family = "binomial")
+
+plot_model(glmfit)
+screenreg(glmfit)
+stargazer(glmfit, type = "text")
+
+
+nagelkerke(glmfit)
+
+plot_model(glmfit, type = "pred", terms = c("econ_unsat", "unemployed"))
+
+predict(glmfit, mlogit_ess, type = "response") %>% 
+  data.frame(predict_prog = .) %>% 
+  transmute(predict_prog = predict_prog>=0.5) %>% 
+  cbind(mlogit_ess) %>% 
+  select(predict_prog, progressive_populism) %>% 
+  table()
+
+# Use your model to make predictions, in this example newdata = training set, but replace with your test set    
+pdata <- predict(glmfit, newdata = mlogit_ess, type = "response")
+
+# use caret and compute a confusion matrix
+confusionMatrix(data = as.numeric(pdata>0.5), reference = mlogit_ess$progressive_populism)
+
+glmfit <- glm(trad_populism ~ 
+    # economic deprivation
+    econ_unsat + econ_insec + unemployed +
+    # cultural backlash
+    anti_imm + authoritarianism + globalism +
+    # control variables
+    demsat + trust_gov + govsat + age + educ +  + sex ,
+    #data
+    data = mlogit_ess, weights = pweight, family = "binomial")
+
+predict(glmfit, mlogit_ess, type = "response") %>% 
+  data.frame(predict_trad = .) %>% 
+  transmute(predict_trad = predict_trad>=0.5) %>% 
+  cbind(mlogit_ess) %>% 
+  select(predict_trad, trad_populism) %>% 
+  table()
+
+plot_model(glmfit)
+screenreg(glmfit)
+
+plot_model(glmfit, type = "pred", terms = c("econ_unsat"))
+```
+
 
 # Crap
 
@@ -409,3 +537,38 @@ system.time (b1 <- brm (populism ~ imm_culture,
                         n.warmup=600))
 ```
 
+
+
+## Descriptives
+
+```{r}
+
+# pacman::p_install_gh("systats/binoculaR")
+# 
+# binoculaR::binoculaR(ess)
+
+# ess %>% 
+#   select(prtvede1, prtvede2) %>% na.omit() %>% mutate_all(sjmisc::to_label)
+
+#var_label(ess$imueclt)
+
+#ir <- data.frame (scale (iris[, -5]), Species=iris[, 5])
+
+# mlogit_ess <- ess %>% 
+#   mutate(target = as.factor(target)) %>% 
+#   drop_na(target) %>% 
+#   mutate(imm_culture = 10 - imueclt) %>% 
+#   mutate(econ_unsat = 10 - stfeco)
+# 
+# mlogit_ess %>% 
+#   ggplot(aes(target, imm_culture, group = target, fill = target)) +
+#   geom_boxplot() +
+#   ggthemes::theme_fivethirtyeight() +
+#   ggthemes::scale_fill_fivethirtyeight()
+# 
+# mlogit_ess %>% 
+#   ggplot(aes(target, econ_unsat, group = target, fill = target)) +
+#   geom_boxplot() +
+#   ggthemes::theme_fivethirtyeight() +
+#   ggthemes::scale_fill_fivethirtyeight()
+```
