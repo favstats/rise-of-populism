@@ -1,0 +1,165 @@
+---
+title: "Populist Tables"
+author: "Fabio Votta"
+date: "3 März 2018"
+output: html_document
+#classoption: landscape
+---
+
+<table style="text-align:center"><tr><td colspan="9" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="8"><em>Dependent variable:</em></td></tr>
+<tr><td></td><td colspan="8" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td>Illiberal Populism</td><td>Liberal Populism</td><td>Illiberal Populism</td><td>Liberal Populism</td><td>Illiberal Populism</td><td>Liberal Populism</td><td>Illiberal Populism</td><td>Liberal Populism</td></tr>
+<tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td><td>(5)</td><td>(6)</td><td>(7)</td><td>(8)</td></tr>
+<tr><td colspan="9" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">econ_unsat</td><td></td><td></td><td>1.140<sup>***</sup></td><td>1.031<sup>***</sup></td><td></td><td></td><td>1.015</td><td>0.953<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(0.011)</td><td>(0.011)</td><td></td><td></td><td>(0.014)</td><td>(0.014)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">econ_insec</td><td></td><td></td><td>1.248<sup>***</sup></td><td>1.027</td><td></td><td></td><td>1.138<sup>***</sup></td><td>1.026</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(0.035)</td><td>(0.033)</td><td></td><td></td><td>(0.036)</td><td>(0.034)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">unemployed</td><td></td><td></td><td>1.275<sup>***</sup></td><td>1.296<sup>***</sup></td><td></td><td></td><td>1.265<sup>***</sup></td><td>1.261<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(0.053)</td><td>(0.049)</td><td></td><td></td><td>(0.055)</td><td>(0.050)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">welfare</td><td></td><td></td><td>0.917</td><td>1.469<sup>***</sup></td><td></td><td></td><td>1.000</td><td>1.497<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(0.117)</td><td>(0.103)</td><td></td><td></td><td>(0.122)</td><td>(0.105)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">anti_imm</td><td></td><td></td><td></td><td></td><td>1.318<sup>***</sup></td><td>0.942<sup>***</sup></td><td>1.312<sup>***</sup></td><td>0.942<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td>(0.013)</td><td>(0.013)</td><td>(0.013)</td><td>(0.013)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">openness</td><td></td><td></td><td></td><td></td><td>1.052<sup>***</sup></td><td>1.046<sup>***</sup></td><td>1.056<sup>***</sup></td><td>1.047<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td>(0.017)</td><td>(0.016)</td><td>(0.017)</td><td>(0.016)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">conservation</td><td></td><td></td><td></td><td></td><td>1.043<sup>**</sup></td><td>0.946<sup>***</sup></td><td>1.039<sup>*</sup></td><td>0.944<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td>(0.020)</td><td>(0.017)</td><td>(0.020)</td><td>(0.017)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">selfenhance</td><td></td><td></td><td></td><td></td><td>0.967<sup>**</sup></td><td>0.983</td><td>0.970<sup>**</sup></td><td>0.986</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td>(0.014)</td><td>(0.013)</td><td>(0.014)</td><td>(0.013)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">selftrans</td><td></td><td></td><td></td><td></td><td>0.923<sup>***</sup></td><td>1.020</td><td>0.920<sup>***</sup></td><td>1.016</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td>(0.022)</td><td>(0.022)</td><td>(0.022)</td><td>(0.022)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">globalism</td><td></td><td></td><td></td><td></td><td>0.885<sup>***</sup></td><td>0.952<sup>***</sup></td><td>0.887<sup>***</sup></td><td>0.956<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td>(0.013)</td><td>(0.012)</td><td>(0.013)</td><td>(0.012)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">govsat</td><td></td><td></td><td></td><td></td><td>0.918<sup>***</sup></td><td>0.891<sup>***</sup></td><td>0.938<sup>***</sup></td><td>0.868<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td>(0.014)</td><td>(0.014)</td><td>(0.017)</td><td>(0.017)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">age</td><td>0.989<sup>***</sup></td><td>0.987<sup>***</sup></td><td>0.989<sup>***</sup></td><td>0.988<sup>***</sup></td><td>0.985<sup>***</sup></td><td>0.988<sup>***</sup></td><td>0.986<sup>***</sup></td><td>0.990<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.002)</td><td>(0.002)</td><td>(0.002)</td><td>(0.002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">educ</td><td>0.788<sup>***</sup></td><td>1.004</td><td>0.822<sup>***</sup></td><td>1.021</td><td>0.858<sup>***</sup></td><td>0.996</td><td>0.871<sup>***</sup></td><td>1.004</td></tr>
+<tr><td style="text-align:left"></td><td>(0.014)</td><td>(0.012)</td><td>(0.014)</td><td>(0.013)</td><td>(0.015)</td><td>(0.013)</td><td>(0.015)</td><td>(0.014)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">sex</td><td>0.817<sup>***</sup></td><td>0.872<sup>***</sup></td><td>0.752<sup>***</sup></td><td>0.857<sup>***</sup></td><td>0.808<sup>***</sup></td><td>0.858<sup>***</sup></td><td>0.790<sup>***</sup></td><td>0.866<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.048)</td><td>(0.047)</td><td>(0.048)</td><td>(0.047)</td><td>(0.051)</td><td>(0.048)</td><td>(0.051)</td><td>(0.048)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">lrscale</td><td>1.370<sup>***</sup></td><td>0.754<sup>***</sup></td><td>1.384<sup>***</sup></td><td>0.760<sup>***</sup></td><td>1.318<sup>***</sup></td><td>0.774<sup>***</sup></td><td>1.323<sup>***</sup></td><td>0.774<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.011)</td><td>(0.011)</td><td>(0.011)</td><td>(0.011)</td><td>(0.012)</td><td>(0.011)</td><td>(0.012)</td><td>(0.011)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">ethnic</td><td>0.604<sup>***</sup></td><td>0.698<sup>**</sup></td><td>0.540<sup>***</sup></td><td>0.663<sup>***</sup></td><td>0.616<sup>***</sup></td><td>0.706<sup>**</sup></td><td>0.580<sup>***</sup></td><td>0.680<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.151)</td><td>(0.142)</td><td>(0.154)</td><td>(0.143)</td><td>(0.157)</td><td>(0.143)</td><td>(0.157)</td><td>(0.144)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">religion</td><td>0.971<sup>***</sup></td><td>0.885<sup>***</sup></td><td>0.978<sup>***</sup></td><td>0.888<sup>***</sup></td><td>1.007</td><td>0.905<sup>***</sup></td><td>1.007</td><td>0.908<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.008)</td><td>(0.008)</td><td>(0.008)</td><td>(0.008)</td><td>(0.009)</td><td>(0.008)</td><td>(0.009)</td><td>(0.008)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">rural</td><td>1.044<sup>**</sup></td><td>0.916<sup>***</sup></td><td>1.053<sup>**</sup></td><td>0.924<sup>***</sup></td><td>1.018</td><td>0.924<sup>***</sup></td><td>1.025</td><td>0.932<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.021)</td><td>(0.020)</td><td>(0.021)</td><td>(0.020)</td><td>(0.022)</td><td>(0.021)</td><td>(0.022)</td><td>(0.021)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">east</td><td>3.689<sup>***</sup></td><td>1.070</td><td>3.185<sup>***</sup></td><td>1.059</td><td>4.133<sup>***</sup></td><td>1.100</td><td>3.896<sup>***</sup></td><td>1.144</td></tr>
+<tr><td style="text-align:left"></td><td>(0.057)</td><td>(0.095)</td><td>(0.060)</td><td>(0.097)</td><td>(0.064)</td><td>(0.102)</td><td>(0.067)</td><td>(0.103)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">north</td><td>0.645<sup>***</sup></td><td>0.649<sup>***</sup></td><td>0.693<sup>***</sup></td><td>0.636<sup>***</sup></td><td>0.839<sup>***</sup></td><td>0.641<sup>***</sup></td><td>0.850<sup>**</sup></td><td>0.654<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.064)</td><td>(0.074)</td><td>(0.064)</td><td>(0.075)</td><td>(0.067)</td><td>(0.075)</td><td>(0.068)</td><td>(0.076)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">south</td><td>0.140<sup>***</sup></td><td>3.220<sup>***</sup></td><td>0.092<sup>***</sup></td><td>2.869<sup>***</sup></td><td>0.120<sup>***</sup></td><td>2.863<sup>***</sup></td><td>0.110<sup>***</sup></td><td>3.079<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.111)</td><td>(0.053)</td><td>(0.115)</td><td>(0.062)</td><td>(0.117)</td><td>(0.062)</td><td>(0.120)</td><td>(0.066)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>0.123<sup>***</sup></td><td>1.336<sup>**</sup></td><td>0.032<sup>***</sup></td><td>0.835</td><td>0.078<sup>***</sup></td><td>2.798<sup>***</sup></td><td>0.044<sup>***</sup></td><td>2.915<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.139)</td><td>(0.129)</td><td>(0.166)</td><td>(0.153)</td><td>(0.239)</td><td>(0.236)</td><td>(0.268)</td><td>(0.264)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td colspan="9" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Akaike Inf. Crit.</td><td>25,540.510</td><td>25,540.510</td><td>25,192.720</td><td>25,192.720</td><td>24,239.200</td><td>24,239.200</td><td>24,158.030</td><td>24,158.030</td></tr>
+<tr><td colspan="9" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="8" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
+</table>
+<!-- \begin{table}[!htbp] \centering  -->
+<!--   \caption{}  -->
+<!--   \label{}  -->
+<!-- \begin{tabular}{@{\extracolsep{5pt}}lccccccccc}  -->
+<!-- \\[-1.8ex]\hline  -->
+<!-- \hline \\[-1.8ex]  -->
+<!--  & \multicolumn{9}{c}{\textit{Dependent variable:}} \\  -->
+<!-- \cline{2-10}  -->
+<!-- \\[-1.8ex] & Illiberal Populism & Liberal Populism & Illiberal Populism & Liberal Populism & Illiberal Populism & Liberal Populism & Illiberal Populism & Liberal Populism & populism2 \\  -->
+<!-- \\[-1.8ex] & (1) & (2) & (3) & (4) & (5) & (6) & (7) & (8) & (9)\\  -->
+<!-- \hline \\[-1.8ex]  -->
+<!--  econ\_unsat &  &  & 0.131$^{***}$ & 0.031$^{***}$ &  &  & 0.015 & $-$0.048$^{***}$ & $-$0.133 \\  -->
+<!--   &  &  & (0.011) & (0.011) &  &  & (0.014) & (0.014) & (23.328) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  econ\_insec &  &  & 0.222$^{***}$ & 0.027 &  &  & 0.129$^{***}$ & 0.026 & 22.599$^{***}$ \\  -->
+<!--   &  &  & (0.035) & (0.033) &  &  & (0.036) & (0.034) & (0.772) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  unemployed &  &  & 0.243$^{***}$ & 0.259$^{***}$ &  &  & 0.235$^{***}$ & 0.232$^{***}$ & 13.362$^{***}$ \\  -->
+<!--   &  &  & (0.053) & (0.049) &  &  & (0.055) & (0.050) & (0.000) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  welfare &  &  & $-$0.086 & 0.384$^{***}$ &  &  & 0.0002 & 0.404$^{***}$ & $-$595.033$^{***}$ \\  -->
+<!--   &  &  & (0.117) & (0.103) &  &  & (0.122) & (0.105) & (0.000) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  anti\_imm &  &  &  &  & 0.276$^{***}$ & $-$0.060$^{***}$ & 0.271$^{***}$ & $-$0.059$^{***}$ & $-$1.164 \\  -->
+<!--   &  &  &  &  & (0.013) & (0.013) & (0.013) & (0.013) & (31.452) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  openness &  &  &  &  & 0.051$^{***}$ & 0.045$^{***}$ & 0.054$^{***}$ & 0.046$^{***}$ & 0.503 \\  -->
+<!--   &  &  &  &  & (0.017) & (0.016) & (0.017) & (0.016) & (20.460) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  conservation &  &  &  &  & 0.042$^{**}$ & $-$0.055$^{***}$ & 0.039$^{*}$ & $-$0.058$^{***}$ & $-$13.401 \\  -->
+<!--   &  &  &  &  & (0.020) & (0.017) & (0.020) & (0.017) & (12.386) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  selfenhance &  &  &  &  & $-$0.033$^{**}$ & $-$0.017 & $-$0.031$^{**}$ & $-$0.014 & $-$0.956 \\  -->
+<!--   &  &  &  &  & (0.014) & (0.013) & (0.014) & (0.013) & (6.369) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  selftrans &  &  &  &  & $-$0.080$^{***}$ & 0.020 & $-$0.084$^{***}$ & 0.016 & 1.513 \\  -->
+<!--   &  &  &  &  & (0.022) & (0.022) & (0.022) & (0.022) & (23.715) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  globalism &  &  &  &  & $-$0.122$^{***}$ & $-$0.049$^{***}$ & $-$0.120$^{***}$ & $-$0.045$^{***}$ & $-$1.301 \\  -->
+<!--   &  &  &  &  & (0.013) & (0.012) & (0.013) & (0.012) & (9.826) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  govsat &  &  &  &  & $-$0.086$^{***}$ & $-$0.115$^{***}$ & $-$0.064$^{***}$ & $-$0.142$^{***}$ & $-$18.730 \\  -->
+<!--   &  &  &  &  & (0.014) & (0.014) & (0.017) & (0.017) & (14.438) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  age & $-$0.011$^{***}$ & $-$0.013$^{***}$ & $-$0.011$^{***}$ & $-$0.012$^{***}$ & $-$0.015$^{***}$ & $-$0.012$^{***}$ & $-$0.014$^{***}$ & $-$0.010$^{***}$ & 0.020 \\  -->
+<!--   & (0.001) & (0.001) & (0.001) & (0.001) & (0.002) & (0.002) & (0.002) & (0.002) & (9.630) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  educ & $-$0.238$^{***}$ & 0.004 & $-$0.197$^{***}$ & 0.021 & $-$0.153$^{***}$ & $-$0.004 & $-$0.138$^{***}$ & 0.004 & $-$11.183 \\  -->
+<!--   & (0.014) & (0.012) & (0.014) & (0.013) & (0.015) & (0.013) & (0.015) & (0.014) & (9.386) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  sex & $-$0.202$^{***}$ & $-$0.136$^{***}$ & $-$0.285$^{***}$ & $-$0.154$^{***}$ & $-$0.213$^{***}$ & $-$0.153$^{***}$ & $-$0.235$^{***}$ & $-$0.144$^{***}$ & 14.858$^{***}$ \\  -->
+<!--   & (0.048) & (0.047) & (0.048) & (0.047) & (0.051) & (0.048) & (0.051) & (0.048) & (2.031) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  lrscale & 0.315$^{***}$ & $-$0.282$^{***}$ & 0.325$^{***}$ & $-$0.275$^{***}$ & 0.276$^{***}$ & $-$0.256$^{***}$ & 0.280$^{***}$ & $-$0.256$^{***}$ & 21.780$^{***}$ \\  -->
+<!--   & (0.011) & (0.011) & (0.011) & (0.011) & (0.012) & (0.011) & (0.012) & (0.011) & (3.791) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  ethnic & $-$0.505$^{***}$ & $-$0.360$^{**}$ & $-$0.615$^{***}$ & $-$0.410$^{***}$ & $-$0.485$^{***}$ & $-$0.348$^{**}$ & $-$0.545$^{***}$ & $-$0.385$^{***}$ & 55.462$^{***}$ \\  -->
+<!--   & (0.151) & (0.142) & (0.154) & (0.143) & (0.157) & (0.143) & (0.157) & (0.144) & (0.000) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  religion & $-$0.030$^{***}$ & $-$0.123$^{***}$ & $-$0.023$^{***}$ & $-$0.119$^{***}$ & 0.007 & $-$0.099$^{***}$ & 0.007 & $-$0.097$^{***}$ & 3.453 \\  -->
+<!--   & (0.008) & (0.008) & (0.008) & (0.008) & (0.009) & (0.008) & (0.009) & (0.008) & (26.128) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  rural & 0.043$^{**}$ & $-$0.088$^{***}$ & 0.052$^{**}$ & $-$0.079$^{***}$ & 0.018 & $-$0.079$^{***}$ & 0.025 & $-$0.070$^{***}$ & $-$10.248 \\  -->
+<!--   & (0.021) & (0.020) & (0.021) & (0.020) & (0.022) & (0.021) & (0.022) & (0.021) & (23.328) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  east & 1.305$^{***}$ & 0.068 & 1.158$^{***}$ & 0.057 & 1.419$^{***}$ & 0.095 & 1.360$^{***}$ & 0.134 & 0.000 \\  -->
+<!--   & (0.057) & (0.095) & (0.060) & (0.097) & (0.064) & (0.102) & (0.067) & (0.103) & (0.000) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  north & $-$0.438$^{***}$ & $-$0.432$^{***}$ & $-$0.367$^{***}$ & $-$0.452$^{***}$ & $-$0.175$^{***}$ & $-$0.445$^{***}$ & $-$0.163$^{**}$ & $-$0.424$^{***}$ & 0.000 \\  -->
+<!--   & (0.064) & (0.074) & (0.064) & (0.075) & (0.067) & (0.075) & (0.068) & (0.076) & (0.000) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  south & $-$1.965$^{***}$ & 1.169$^{***}$ & $-$2.389$^{***}$ & 1.054$^{***}$ & $-$2.120$^{***}$ & 1.052$^{***}$ & $-$2.208$^{***}$ & 1.125$^{***}$ & 0.000 \\  -->
+<!--   & (0.111) & (0.053) & (0.115) & (0.062) & (0.117) & (0.062) & (0.120) & (0.066) & (0.000) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!--  Constant & $-$2.094$^{***}$ & 0.290$^{**}$ & $-$3.445$^{***}$ & $-$0.180 & $-$2.555$^{***}$ & 1.029$^{***}$ & $-$3.128$^{***}$ & 1.070$^{***}$ & 23.877$^{***}$ \\  -->
+<!--   & (0.139) & (0.129) & (0.166) & (0.153) & (0.239) & (0.236) & (0.268) & (0.264) & (2.031) \\  -->
+<!--   & & & & & & & & & \\  -->
+<!-- \hline \\[-1.8ex]  -->
+<!-- Akaike Inf. Crit. & 25,540.510 & 25,540.510 & 25,192.720 & 25,192.720 & 24,239.200 & 24,239.200 & 24,158.030 & 24,158.030 & 38.000 \\  -->
+<!-- \hline  -->
+<!-- \hline \\[-1.8ex]  -->
+<!-- \textit{Note:}  & \multicolumn{9}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\  -->
+<!-- \end{tabular}  -->
+<!-- \end{table}  -->
