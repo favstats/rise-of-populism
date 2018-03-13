@@ -280,6 +280,9 @@ mlogit_ess %<>%
 ```
 
 
+
+
+
 # Mlogit
 
 ```{r}
@@ -391,7 +394,7 @@ test <- multinom(
     # control variables
     age + educ + sex + lrscale + ethnic + religion + rural + east + north + south +
     # interactions
-    anti_imm*east , 
+    anti_imm*unemployed , 
     #data
     data = mlogit_ess, weights = pweight)
 
@@ -401,21 +404,24 @@ from_to <- as.vector(names(table(mlogit_ess$anti_imm)))
 #table(mlogit_ess$govsat)
 # fit.eff <- effects::effect("anti_imm*south", test, xlevels = list(govsat = from_to))
 
-fit.eff <- effects::Effect(c("anti_imm", "east"), test, xlevels = list(anti_imm = from_to, east = c(0,1)))
+fit.eff <- effects::Effect(c("anti_imm", "unemployed"), 
+                           test, 
+                           xlevels = list(anti_imm = from_to, 
+                                          unemployed = c(0,1)))
 
 
 data.frame(fit.eff$model.matrix, 
            fit.eff$prob, 
            fit.eff$lower.prob, 
            fit.eff$upper.prob) %>% 
-  select(anti_imm, east, # interaction effects
+  select(anti_imm, unemployed, # interaction effects
          prob.Illiberal.Populism, prob.Establishment,
          prob.Liberal.Populism, L.prob.Establishment, 
          U.prob.Establishment, L.prob.Illiberal.Populism, 
          U.prob.Illiberal.Populism, L.prob.Liberal.Populism, 
          U.prob.Liberal.Populism, -X.Intercept.) %>% 
   gather(key = variable, value = value, 
-         -anti_imm, -east, # interaction effects 
+         -anti_imm, -unemployed, # interaction effects 
            -L.prob.Establishment, -U.prob.Establishment,
            -L.prob.Illiberal.Populism, -U.prob.Illiberal.Populism,
          -L.prob.Liberal.Populism, -U.prob.Liberal.Populism) %>% 
@@ -435,14 +441,14 @@ data.frame(fit.eff$model.matrix,
     type == "Tradionalist Populism" ~ U.prob.Illiberal.Populism*100
   )) %>% 
   mutate(value = value * 100) %>% 
-  mutate(east = as.factor(east)) %>% 
-  # mutate(east = as.factor(case_when( 
-  #   east == max(east) ~ max(east),
-  #   east == min(east) ~ min(east),  
+  mutate(Unemployed = as.factor(unemployed)) %>% 
+  # mutate(unemployed = as.factor(case_when( 
+  #   unemployed == max(unemployed) ~ max(unemployed),
+  #   unemployed == min(unemployed) ~ min(unemployed),  
   #   TRUE ~ NA_real_
   # ))) %>% 
-  #drop_na(east) %>% 
-  ggplot(aes(anti_imm, value, group = east, colour = east)) +
+  #drop_na(unemployed) %>% 
+  ggplot(aes(anti_imm, value, group = Unemployed, colour = Unemployed)) +
     geom_smooth(method = "loess", 
                #formula = y ~ s(x, k = 1), 
                size = 1.2, se = F) +
@@ -455,7 +461,20 @@ data.frame(fit.eff$model.matrix,
     ggthemes::scale_color_fivethirtyeight() + 
     facet_wrap(~type, scales = "free") +
     scale_y_continuous(breaks = seq(0,100, by = 5), 
-                     labels = paste0(seq(0,100, by = 5),"%"))
+                     labels = paste0(seq(0,100, by = 5),"%")) +
+  xlab("Anti-Immigration Sentiment") +
+  ggtitle("Probabilities of Support for Establishment/Populist Parties") +
+  labs(subtitle = "Based on Multinomial Logistic Regression",
+       caption = "Source: ESS Data Round 5 - 8") +
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size = 10),
+        legend.text = element_text(size = 10), 
+        legend.title = element_text(size = 10), 
+        title = element_text(size = 12))
+
+
+ggsave(file = here::here("images", "interaction_abstract.png"), 
+       height = 5, width = 8)
 ```
 
 
@@ -1013,4 +1032,25 @@ ggplot(data.sim, aes(x = X, y = Y, group = GR)) +
   xlab("Religiosity") +
   ylab("Probability to vote for party") +
   theme_bw()
+```
+
+
+# Trees
+
+```{r}
+tre_ess <- mlogit_ess %>% 
+  mutate(progressive_populism = ifelse(target == "Liberal Populism", 1, 0)) %>% 
+  mutate(trad_populism = ifelse(target == "Illiberal Populism", 1, 0)) %>%    
+  select(progressive_populism, unemployed, anti_imm)  
+  
+#pacman::p_load(FFTrees)
+fft_populism <- FFTrees(formula = progressive_populism ~.,
+                    data = tre_ess,
+                    main = "Populism",
+                    decision.labels = c("Establishment", "Traditional Populism"))
+
+plot(fft_populism)
+
+
+
 ```

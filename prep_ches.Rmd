@@ -1,5 +1,5 @@
 ---
-title: "My_Template"
+title: "Prepare CHES Data"
 output: html_notebook
 ---
 
@@ -14,123 +14,15 @@ range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.
 
 ```
 
-
 # Load in Data
 
 ```{r}
 ches <- haven::read_dta(here("data", "1999_2014_CHES.dta"))
+
+table(ches$country)
 ```
 
-
-# Filter Data
-
-```{r}
-ches %>% 
-  mutate(cntry = to_label(country))
-
-# create a missing map
-ches %>% 
-  arrange(year, country) %>% 
-  missmap(col=c("black", "grey"), legend=FALSE)
-```
-
-
-# Recoding
-
-```{r}
-mod1 <- lm(antielite_salience ~ position, data = ches)
-
- 
-ches %>% 
-  select(antielite_salience, corrupt_salience, position, eu_budgets, eu_cohesion, eu_foreign) %>% 
-  na.omit() %>% 
-  cor()
-
-ches %>% 
-  select(antielite_salience, corrupt_salience, position, eu_budgets, eu_cohesion, eu_foreign) %>% 
-  na.omit() %>% 
-  fa(2)
-
-
-plot_model(mod1, show.data = T)
-
-
-ches %>% 
-  select(antielite_salience, position, nationalism) %>% 
-  na.omit() %>% 
-  cor()
-
-```
-
-
-# Analysis
-
-```{r}
-ches %>% 
-  select(sociallifestyle, civlib_laworder, galtan) %>% 
-  na.omit() %>% 
-  cor()
-
-ches %>% 
-  select(sociallifestyle, civlib_laworder, galtan) %>% 
-  pca()
-```
-
-
-```{r}
-ches %<>% 
-  mutate(populism = antielite_salience + corrupt_salience) %>% 
-  mutate(populism2 = range01(range01(antielite_salience) + 
-                               (1 - range01(position)))*100) %>% #+ 
-                           #    (1 - range01(eu_budgets)))*100) %>% 
-  mutate(liberalism = sociallifestyle + civlib_laworder + galtan) %>% 
-  mutate(populism = range01(populism)*100) %>% 
-  mutate(liberalism = range01(liberalism)*100) %>% 
-  mutate(party_cntry = paste0(to_label(country), "_", party)) %>% 
-  mutate(family = to_label(family)) %>%
-  filter(year > 2009)
-
-ches %>% 
-  ggplot(aes(liberalism, populism, color = family)) + 
-  geom_point() +
-  geom_text_repel(aes(liberalism, populism, label = party_cntry)) +
-  guides(text = F) +
-  ggthemes::theme_hc() +
-  ggthemes::scale_color_hc()
-
-ggsave(file = here("images", "party_alignment.png"), height = 10, width = 10)
-
-
-ches_pop <- ches %>% 
-  filter(populism >= 60)
-
-length(unique(ches_pop$country))
-length(unique(ches$country))
-
-table(1-range01(ches$position))
-```
-```{r}
-ches %>% 
-  ggplot(aes(liberalism, antielite_salience, color = family)) + 
-  geom_point() +
-  geom_text_repel(aes(liberalism, antielite_salience, label = party_cntry)) +
-  guides(text = F) +
-  ggthemes::theme_hc() #+
-#  ggthemes::scale_color_hc() 
-
-ggsave(file = here("images", "party_alignment2.png"), height = 10, width = 10)
-
-
-ches_elite <- ches %>% 
-  filter(antielite_salience >= 7.5)
-
-length(unique(ches_elite$country))
-length(unique(ches$country))
-
-#table(to_label(ches_elite$country))
-```
-
-# extracting party and country names 
+## extracting party and country names 
 
 ```{r}
 #devtools::install_github("expersso/pdftables")
@@ -179,6 +71,322 @@ ches %<>%
   left_join(country_names, by = "cntry_short")
 ```
 
+# Correlations and PCAs
+
+```{r}
+ches %>% 
+  select(antielite_salience, position, corrupt_salience) %>% 
+  na.omit() %>% 
+  cor()
+
+ches %>% 
+  select(sociallifestyle, civlib_laworder, galtan, multiculturalism, lrgen) %>% 
+  na.omit() %>% 
+  cor()
+
+ches %>% 
+  select(sociallifestyle, civlib_laworder, galtan, multiculturalism, lrgen) %>% 
+  pca()
+
+ches %>% 
+  select(sociallifestyle, 
+         civlib_laworder, 
+         galtan, 
+         multiculturalism, 
+         lrgen) %>% 
+  fa()
+
+ches %>% 
+  mutate(antieu = 1-range01(position)) %>% 
+  select(antielite_salience, 
+         antieu,
+         corrupt_salience,
+         sociallifestyle, 
+         civlib_laworder, 
+         galtan, 
+         multiculturalism, 
+         lrgen) %>% 
+  fa(2, rotate = "varimax", fm = "ml")
+
+
+```
+
+
+# Recoding
+
+```{r}
+
+# Attempt 1
+# anti-elite, anti eu + additive
+# anti-elite, anti eu + factor
+
+# Attempt 2
+# anti-elite, anti eu, corruption + additive
+# anti-elite, anti eu, corruption  + factor
+
+# Attempt 3
+# sociallifestyle, civlib_laworder, galtan + additive
+# sociallifestyle, civlib_laworder, galtan + factor
+
+# Attempt 4
+# sociallifestyle, civlib_laworder, galtan multiculturalism, + additive
+# sociallifestyle, civlib_laworder, galtan, multiculturalism + factor
+
+# Attempt 5
+# sociallifestyle, civlib_laworder, galtan, lrgen + additive
+# sociallifestyle, civlib_laworder, galtan, lrgen + factor
+
+# Attempt 6
+# sociallifestyle, civlib_laworder, galtan, multiculturalism, lrgen + additive
+# sociallifestyle, civlib_laworder, galtan, multiculturalism, lrgen + factor
+
+ches %<>% 
+  mutate(antieu = 1 - range01(position)) %>% 
+  select(antielite_salience, corrupt_salience, 
+         antieu, sociallifestyle, 
+         civlib_laworder, galtan, country, 
+         party, family, multiculturalism, 
+         lrgen, lrecon, nationalism, year,
+         party_name, party_name_english) %>% 
+  mutate_at(vars(antielite_salience, 
+                 corrupt_salience, 
+                 antieu, 
+                 sociallifestyle, 
+                 civlib_laworder, 
+                 galtan, 
+                 multiculturalism, 
+                 lrgen,
+                 nationalism,
+                 lrecon), range01) %>% 
+  mutate_at(vars(antielite_salience, 
+                 corrupt_salience, 
+                 antieu, 
+                 sociallifestyle, 
+                 civlib_laworder, 
+                 galtan, 
+                 multiculturalism, 
+                 lrgen,
+                 nationalism,
+                 lrecon), as.numeric) %>% 
+  mutate(party_cntry = paste0(to_label(country), "_", party)) %>% 
+  mutate(family = to_label(family)) %>%
+  filter(year > 2013)
+
+
+ches_add <- ches %>% 
+  mutate(populism_e_eu_corr = range01(antielite_salience + 
+                                        corrupt_salience + 
+                                        antieu)*100) %>%
+  mutate(populism_e_eu = range01(antielite_salience + 
+                                   antieu)*100) %>% 
+  mutate(liberalism_s_c_g = range01(sociallifestyle + 
+                                      civlib_laworder + 
+                                      galtan)*100) %>% 
+  mutate(liberalism_s_c_g_m = range01(sociallifestyle + 
+                                      civlib_laworder + 
+                                      galtan + 
+                                      multiculturalism)*100) %>% 
+  mutate(liberalism_s_c_g_lr = range01(sociallifestyle + 
+                                      civlib_laworder + 
+                                      galtan + 
+                                      lrgen)*100) %>% 
+  mutate(liberalism_s_c_g_lr_m = range01(sociallifestyle + 
+                                      civlib_laworder + 
+                                      galtan + 
+                                      lrgen +
+                                      multiculturalism)*100) %>% 
+  select(party_cntry, 
+         party_name, 
+         party_name_english,
+         populism_e_eu_corr:liberalism_s_c_g_lr_m)
+
+ches_add %>% 
+  arrange(party_cntry)
+# 
+# ches %>% 
+#   ggplot(aes(liberalism_s_c_g_lr_m, 
+#              populism_e_eu_corr, 
+#              color = family)) + 
+#   geom_point() +
+#   geom_text_repel(aes(liberalism_s_c_g_lr_m, 
+#                       populism_e_eu_corr, 
+#                       label = party_cntry)) +
+#   guides(text = F) +
+#   ggthemes::theme_hc() +
+#   ggthemes::scale_color_hc()
+
+
+# ches_pop <- ches %>% 
+#   filter(populism >= 60)
+# 
+# length(unique(ches_pop$country))
+# length(unique(ches$country))
+
+
+# ches_elite <- ches %>% 
+#   filter(antielite_salience >= 7.5)
+# 
+# length(unique(ches_elite$country))
+# length(unique(ches$country))
+
+
+
+```
+
+## Factor Attempt
+
+```{r}
+#ff = fa_dat
+fa_dat <- ches %>% 
+  select(antielite_salience, antieu, 
+         sociallifestyle, civlib_laworder, 
+         galtan, multiculturalism, lrgen) %>% 
+  mutate_all(as.numeric) 
+
+# Check out a factor analysis
+fa_pop <- fa_dat %>% 
+  fa(2, rotate = "varimax", fm = "ml")
+
+#save(fa_pop, file = "text/data/fa_pop.Rdata")
+
+fa_dat_fin <- fa_dat %>% 
+  fa(2, rotate = "varimax", fm = "ml") %>% 
+  predict(fa_dat) %>% 
+  as.data.frame() %>% 
+  mutate(populism_e_eu_fac = range01(ML2)*100) %>% 
+  mutate(liberalism_s_c_g_lr_m_fac = range01(ML1)*100) %>% 
+  select(-ML2, -ML1) %>% 
+  cbind(ches) 
+
+  
+#   #fa(1, rotate = "cluster")
+# 
+# HS.model <- 'pop =~ 1*antielite_salience + position_r + corrupt_salience
+#              lib =~ 1*sociallifestyle + civlib_laworder + galtan + multiculturalism
+#              sociallifestyle ~~ galtan
+#              antielite_salience ~~ corrupt_salience'
+#  
+#  fit <- lavaan::cfa(HS.model, data=ss, estimator ="MLM")
+#  
+#  lavaan::summary(fit, fit.measures=TRUE, std = T)
+#  
+#  lavaan::modificationindices(fit)
+
+```
+
+# Clustering
+
+## function
+
+```{r}
+source("helper_functions.R")
+
+plot_coords(ches_add, 
+            liberalism_s_c_g_lr_m, 
+            populism_e_eu)
+  
+ggsave(file = here("images", 
+                   "diffs", 
+                   "liberalism_s_c_g_lr_m.png"), 
+       height = 10, width = 10)
+
+
+
+plot_coords(fa_dat_fin, 
+            liberalism_s_c_g_lr_m_fac, 
+            populism_e_eu_fac)
+  
+ggsave(file = here("images", 
+                   "diffs", 
+                   "populism_liberalism_fac.png"), 
+       height = 10, width = 10)
+```
+
+## by hand
+
+```{r}
+set.seed(2018)
+ches_cluster <- ches_add %>% 
+  select(party_cntry, liberalism_s_c_g_m, populism_e_eu) %>% 
+  rename(prog_trad = liberalism_s_c_g_m,
+         populism = populism_e_eu) %>% 
+  #na.omit() %>% 
+  as.data.frame()
+
+row_names <- ches_cluster$party_cntry
+
+ches_cluster %<>% 
+  select(-party_cntry) %>% 
+  mutate_all(scale) 
+
+rownames(ches_cluster) <- row_names
+
+k3 <- kmeans(ches_cluster, centers = 4, nstart = 25)
+
+
+# 
+# ches %>%
+#   select(party_cntry, prog_trad, populism) %>% 
+#   na.omit() %>% 
+#   mutate(cluster = k3$cluster,
+#          state = row.names(ches_cluster)) %>%
+#   ggplot(aes(prog_trad, populism, color = factor(cluster))) + 
+#   geom_point() +
+#   geom_text_repel(aes(prog_trad, populism, label = party_cntry), 
+#                   show.legend = F) +
+#   guides(text = F) +
+#   ggthemes::theme_hc() +
+#   ggthemes::scale_color_gdocs() +
+#   xlab("<<Progressivism - Traditionalism>>") + 
+#   ylab("<<Establishment - Populism>>") +
+#   guides(color=guide_legend("Cluster")) +
+#   ggtitle("Classification of European Parties") +
+#   labs(subtitle = "Based on K-Nearest Neighbour Clustering",
+#        caption = "Source: CHES Data 1999 - 2014") +
+#   theme(axis.text = element_text(size = 15),
+#         axis.title = element_text(size = 15),
+#         legend.text = element_text(size = 15), 
+#         legend.title = element_text(size = 15), 
+#         title = element_text(size = 17))
+#   
+# ggsave(file = here("images", "diffs", "populism_e_eu_corr.png"), 
+#        height = 10, width = 10)
+
+
+```
+
+# Save Cluster Data
+
+```{r}
+ches_final <- ches_add %>% 
+  rename(prog_trad = liberalism_s_c_g_m,
+         populism = populism_e_eu) %>%
+  select(party_cntry, 
+         party_name, 
+         party_name_english,
+         populism, 
+         prog_trad) %>%
+ # na.omit() %>%
+  mutate(cluster = k3$cluster) %>%
+  mutate(cluster = case_when(
+    cluster == 4 ~ "Traditionalist Populism",
+    cluster == 1 ~ "Progressive Populism",
+    TRUE ~ "Establishment"
+  ))
+
+save(ches_final, file = "data/ches_final.Rdata")
+#load("data/ches_pop3.Rdata")
+
+populist_parties <- ches_final %>%
+  filter(cluster != "Establishment") %>% 
+  arrange(party_cntry)
+
+save(populist_parties, file = "data/populist_parties.Rdata")
+```
+
+# Crap
+
+
 ```{r}
 ches %>% 
   ggplot(aes(liberalism, populism2, color = family)) + 
@@ -192,7 +400,8 @@ ches %>%
 ggsave(file = here("images", "party_alignment3.png"), height = 10, width = 10)
 ```
 
-# Function for getting website.
+## Function for getting website.
+
 ```{r}
 getWebsite <- function(name)
 {
@@ -292,78 +501,7 @@ table(ches$year)
 
 ```
 
-
-# Clustering
-
-```{r}
-set.seed(2018)
-ches_cluster <- ches %>% 
-  select(party_cntry, liberalism, populism2) %>% 
-  na.omit() %>% 
-  as.data.frame()
-
-row_names <- ches_cluster$party_cntry
-
-ches_cluster %<>% 
-  select(-party_cntry) %>% 
-  mutate_all(scale) 
-
-rownames(ches_cluster) <- row_names
-
-distance <- get_dist(ches_cluster)
-png("images/distance_matrix.png", width = 1800, height = 1600)
-fviz_dist(distance, 
-                             gradient = list(low = "#00AFBB", 
-                                             mid = "white",
-                                             high = "#FC4E07"))
-dev.off()
-
-k3 <- kmeans(ches_cluster, centers = 4, nstart = 25)
-
-fviz_cluster(k3, data = ches_cluster)
-
-
-ches %>%
-  select(party_cntry, liberalism, populism2) %>% 
-  na.omit() %>% 
-  mutate(cluster = k3$cluster,
-         state = row.names(ches_cluster)) %>%
-  ggplot(aes(liberalism, populism2, color = factor(cluster))) + 
-  geom_point() +
-  geom_text_repel(aes(liberalism, populism2, label = party_cntry)) +
-  guides(text = F) +
-  ggthemes::theme_hc() +
-  ggthemes::scale_color_gdocs()
-
-ggsave(file = here("images", "party_alignment5.png"), height = 10, width = 10)
-
-
-```
-
-# Save Cluster Data
-
-```{r}
-ches_pop3 <- ches %>%
-  select(party_cntry, party_name, party_name_english, populism2, liberalism, family, links) %>%
-  na.omit() %>%
-  mutate(cluster = k3$cluster) %>%
-  mutate(cluster = case_when(
-    cluster == 1 ~ "Illiberal Populism",
-    cluster == 2 ~ "Liberal Populism",
-    TRUE ~ "Establishment"
-  ))
-
-#load("data/ches_pop3.Rdata")
-
-
-table(ches_pop3$cluster)
-
-populist_parties <- ches_pop3 %>%
-  filter(cluster != "Establishment")
-
-save(populist_parties, file = "data/populist_parties.Rdata")
-```
-
+## more Crap
 
 ```{r}
 set.seed(123)
@@ -380,7 +518,7 @@ fviz_gap_stat(gap_stat)
 ```{r}
 ches_cluster <- ches %>% 
   select(party_cntry, antielite_salience, position, sociallifestyle, galtan, civlib_laworder) %>% 
-  na.omit() %>% 
+  #na.omit() %>% 
   as.data.frame()
 
 row_names <- ches_cluster$party_cntry
@@ -442,3 +580,17 @@ ess <- read_spss("data/ess_round8.sav")
 
 ```
 
+## Filter Data
+
+```{r}
+ches %>% 
+  mutate(cntry = to_label(country))
+
+# create a missing map
+ches %>% 
+  arrange(year, country) %>% 
+  missmap(col=c("black", "grey"), legend=FALSE)
+
+mod1 <- lm(antielite_salience ~ position, data = ches)
+
+```

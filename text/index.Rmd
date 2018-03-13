@@ -14,7 +14,24 @@ csl: university-of-stuttgart-sowi-standards.csl
 link-citations: yes
 ---
 
+```{r globalchunks, include=FALSE}
+# Default Options - kann bei Gebrauch geändert werden
+knitr::opts_chunk$set(
+  echo = T # Whether to display code along with its results
+  , eval = T # Whether to evaluate the code and include its results
+  , results = "asis" # this at deafult is in end much more efficient
+  , cache = F # Whether to cache results for future renders (efficient!)
+  , warning = F # Whether to display errors
+  , message = F # Whether to display messages
+  , error = F # maybe turn on
+  , tidy = F # Whether to reformat code in a tidy way when displaying it
+  , fig.width = 6 # plot width at 6
+  , fig.height = 4 # plot height at 4
+  , fig.align = "left" # plot alignment center
+)
 
+options(xtable.comment = FALSE, scipen = 9999)
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -73,7 +90,7 @@ Smith says blah [-@easton1975re].
 ```{r child = '2_theory.Rmd'}
 ```
 
-# Methodology
+# Methodological and Analytical Section
 
 ```{r child = '3_methods.Rmd'}
 ```
