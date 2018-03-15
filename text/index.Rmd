@@ -9,7 +9,7 @@ output:
 #     after_body: appendix.tex
 documentclass: article
 bibliography: references.bib
-cls: systats.cls
+#cls: systats.cls
 csl: university-of-stuttgart-sowi-standards.csl
 link-citations: yes
 ---

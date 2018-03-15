@@ -324,7 +324,18 @@ rownames(ches_cluster) <- row_names
 k3 <- kmeans(ches_cluster, centers = 4, nstart = 25)
 
 
-# 
+gap_stat <- clusGap(ches_cluster, FUN = kmeans, nstart = 25,
+                    K.max = 10, B = 50)
+# Print the result
+print(gap_stat, method = "firstmax")
+fviz_gap_stat(gap_stat) +
+  ggthemes::theme_hc() +
+  ggthemes::scale_color_gdocs()
+
+ggsave(file = here("text", "images", "optim_cluster.png"), 
+        height = 6, width = 10)
+
+
 # ches %>%
 #   select(party_cntry, prog_trad, populism) %>% 
 #   na.omit() %>% 
