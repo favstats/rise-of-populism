@@ -25,7 +25,7 @@ range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.
 
 ```{r}
 #load("data/ess.Rdata")
-binoculaR::binoculaR(ess)
+#binoculaR::binoculaR(ess)
 
 mlogit_ess <- ess 
 
@@ -132,14 +132,14 @@ data.frame(stringsAsFactors=FALSE,
 cntry_dat %<>% 
   mutate(cntry = countrycode::countrycode(cntry, "country.name", "country.name")) 
 
-uk <- mlogit_ess %>% 
-  filter(cntry == "United Kingdom") %>% 
-  mutate(regional = "north")
+# uk <- mlogit_ess %>%
+#   filter(cntry == "United Kingdom") %>%
+#   mutate(regional = "north")
 
 
-mlogit_ess <- merge(cntry_dat, mlogit_ess, by = "cntry") 
+mlogit_ess <- left_join(cntry_dat, mlogit_ess, by = "cntry") 
 
-mlogit_ess <- rbind(mlogit_ess, uk)
+# mlogit_ess <- rbind(mlogit_ess, uk)
 
 mlogit_ess %<>% 
   mutate(north = ifelse(regional == "north", 1, 0)) %>% 
@@ -148,6 +148,8 @@ mlogit_ess %<>%
   mutate(west = ifelse(regional == "west", 1, 0)) 
 
 table(mlogit_ess$regional, mlogit_ess$target)
+
+table(mlogit_ess$regional, mlogit_ess$cntry)
 ```
 
 
@@ -309,7 +311,7 @@ test <- multinom(
 
 multi1.rrr <- exp(coef(test))
 
-stargazer::stargazer(test, type="text",coef=list(multi1.rrr), p.auto=FALSE)
+stargazer::stargazer(test, type = "text",coef=list(multi1.rrr), p.auto=FALSE)
 
 summary(test)
 
@@ -317,7 +319,28 @@ summary(test)
 
 PseudoR2(test)
 
+regm2 <- step(test)
+
+GGally::ggcoef(regm2, exponentiate = TRUE) + facet_grid(~y.level)
+
+tidy(regm2, exponentiate = T, conf.int = TRUE) %>% 
+  filter(term != "south") %>% 
+  filter(term != "east") %>% 
+  filter(term != "north") %>% 
+  filter(term != "(Intercept)") %>% 
+  ggplot() + aes(x = term, y = estimate, 
+                 ymin = conf.low, 
+                 ymax = conf.high, color = y.level) + 
+  geom_hline(yintercept = 1, 
+             color = "gray25", 
+             linetype = "dotted") + 
+  geom_errorbar(position = position_dodge(0.5), width = 0) + 
+  geom_point(position = position_dodge(width = 0.5)) + scale_y_log10() + 
+  coord_flip()
+
 ```
+
+xx$estimate[1]
 
 ## Plot Predictions - Singular
 

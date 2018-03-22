@@ -8,7 +8,7 @@ output: html_notebook
 # ikashnitsky.github.io 2017-05-25
 # Map urb/rur
 # Ilya Kashnitsky, ilya.kashnitsky@gmail.com
-#                                                                                                    
+#                                                                                         
 ################################################################################
 
 # additional packages
