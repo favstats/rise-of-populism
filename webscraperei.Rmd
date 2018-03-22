@@ -1,0 +1,39 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+ 
+## Load Packages
+  
+```{r}
+pacman::p_load(tidyverse, wdman, jsonlite, rvest, xml2, RSelenium, here, crayon, here, magrittr)
+```
+
+
+```{r}
+library(RSelenium)
+port <- sample(4000L:5000L, 1)
+rD <- RSelenium::rsDriver(verbose = FALSE, port = port)
+rD
+
+remDr <- rD$client
+
+url <- "http://ec.europa.eu/eurostat/tercet/localityChangeNutsVersion.do"
+
+read_html(url) %>% 
+  rvest::html_nodes("#countrySelect") %>% 
+  html_nodes("option") %>% 
+  html_attr("value")
+
+
+remDr$navigate(url)
+
+
+webElem <- remDr$findElement(using = 'xpath', value = )
+  )
+  
+  webElem$clickElement()
+
+```
+

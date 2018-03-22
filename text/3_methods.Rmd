@@ -289,10 +289,12 @@ TODO: **Descriptives?**
 
 TODO: **Description of INDEPENDENT VARIABLES?**
 
-Measuring this or that (just check Inglehart on how hey have done it)
+Next, the hypotheses will be operationalized with corresponding ESS variables. *Economic deprivation* will be captured with two variables: Economic Insecurity and Unemployment (0/1). The *cultural value hypothesis* will be measured with an index for anti-immigration sentiment and four Schwartz Human Value dimensions (Openness to Experience, Conservation, Self-Enhancement and Self-Transendence). The models further include common socio-demographic control variables, for example, age, education and sex but also includes a Left-Right Scale, Religiosity, Government Satisfaction, Minority Status, Trust in the EU & UN and Rural vs. Urban. Lastly, regional dummies (East, West, North and South Europe) and time dummies for each year will be included in the model as controls.
 
-The models include standard social and demographic controls, including sex, age, education, and ethnicity. Economic inequality was monitored through experience of unemployment, households dependent upon social benefits (excluding pensions) for their main source of income, urbanization, and subjective feelings of income insecurity. Principal Component Factor analysis with Varimax Rotation was used to determine the dimensionality of a range of cultural items which were included in all waves of the ESS and which were expected to be particularly salient for the division between Populist and Cosmopolitan Liberal values. Five values scales were produced through this process, including scales on attitudes towards immigration, trust in global governance, trust in national governance, authoritarian values, and left-right ideological self-placement. The value scales were each standardized to 100-points, for ease of comparison. All models were checked by tolerance tests to be free of problems of multicollinearity. The inclusion of items consistently asked across all rounds of the ESS maximized the size of the pooled sample of populist voters, and therefore strengthened confidence in the reliability of the results, although unfortunately it also restricted the full range of items which ideally could be included, for example concerning gender equality. The descriptive means and standard deviations of all the items are presented in Appendix C.
+A more detailed description of the used variables as well as general statistics of all the used variables can be found in the Appendix.
 
+**CHECK THIS**
+All models were checked by tolerance tests to be free of problems of multicollinearity.. 
 
 
 ## Statistical Methodology

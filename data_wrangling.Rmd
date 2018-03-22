@@ -6,9 +6,12 @@ output: html_notebook
 # Loading in Data and packages
 
 ```{r}
-load("data/ess.Rdata")
+load("data/ess_vote.Rdata")
 
 pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, car, psych, knitr, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, brms, questionr)
+
+# ess %<>%
+#   select(-prtmb, -prtcl, -prtvt)
 ```
 
 
@@ -465,7 +468,7 @@ UK, Österreich, Ungarn, Spanien, Italien, Griechenland, Dänemark, Belgien, Nie
 
 ```{r}
 
-load("data/ess_vote.Rdata")
+#load("data/ess_vote.Rdata")
 
 not_in_ches <- c("Switzerland", "Iceland", "Norway", "Slovenia", "Ukraine", "Russia")
 
@@ -523,143 +526,143 @@ ess %<>%
   mutate(populism = case_when(
     
     #Austria
-    prtvt == "BZÖ" ~ "Illiberal Populism",
-    prtvt == "FPÖ" ~ "Illiberal Populism",    
-    prtvt == "Team Frank Stronach" ~ "Illiberal Populism", 
+    prtvt == "BZÖ" ~ "Traditionalist Populism",
+    prtvt == "FPÖ" ~ "Traditionalist Populism",    
+    prtvt == "Team Frank Stronach" ~ "Traditionalist Populism", 
     
     #Bulgaria
-    prtvt == "PP Ataka" ~ "Illiberal Populism",
-    str_detect(prtvt, "VMRO") ~ "Illiberal Populism",   
-    # prtvt == "PP VMRO - Balgarsko natsionalno dvizhenie" ~ "Illiberal Populism", 
-    prtvt == "Partia Ataka" ~ "Illiberal Populism",     
-    prtvt == "PP Natsionalen front za dpasenie na Bulgaria" ~ "Illiberal Populism", 
+    prtvt == "PP Ataka" ~ "Traditionalist Populism",
+    str_detect(prtvt, "VMRO") ~ "Traditionalist Populism",   
+    # prtvt == "PP VMRO - Balgarsko natsionalno dvizhenie" ~ "Traditionalist Populism", 
+    prtvt == "Partia Ataka" ~ "Traditionalist Populism",     
+    prtvt == "PP Natsionalen front za dpasenie na Bulgaria" ~ "Traditionalist Populism", 
     #bul_BBT	Bulgaria bez Tsenzura wasn't there in 2014
 
     #Belgium
-    prtvt == "Parti Populaire" ~ "Illiberal Populism",
-    prtvt == "PVDA+" ~ "Liberal Populism",
-    prtvt == "Vlaams Belang" ~ "Illiberal Populism",
+    prtvt == "Parti Populaire" ~ "Traditionalist Populism",
+    prtvt == "PVDA+" ~ "Progressive Populism",
+    prtvt == "Vlaams Belang" ~ "Traditionalist Populism",
     
     #Croatia; 
-    prtvt == "Hrvatska stranka prava (HSP)" ~ "Illiberal Populism",
+    prtvt == "Hrvatska stranka prava (HSP)" ~ "Traditionalist Populism",
 
     #Cyprus; 
-    prtvt == "Progressive Party of Working People (AKEL)" ~ "Liberal Populism",
-    prtvt == "The Cyprus Green Party" ~ "Liberal Populism",
+    prtvt == "Progressive Party of Working People (AKEL)" ~ "Progressive Populism",
+    prtvt == "The Cyprus Green Party" ~ "Progressive Populism",
 
     #Czech Republic
-    prtvt == "KSČM" ~ "Liberal Populism",
-    prtvt == "ANO 2011" ~ "Liberal Populism",
-    prtvt == "Úsvit přímé demokracie Tomia Okamury" ~ "Illiberal Populism", 
+    prtvt == "KSČM" ~ "Progressive Populism",
+    prtvt == "ANO 2011" ~ "Progressive Populism",
+    prtvt == "Úsvit přímé demokracie Tomia Okamury" ~ "Traditionalist Populism", 
     #cz_SVOBODNI.... miss you    
     
     #Denmark
-    prtvt == "Enhedslisten, De Rød-Grønne - The Red-Green Alliance" ~ "Liberal Populism",
-    prtvt == "Enhedslisten - Unity List - The Red-Green Alliance" ~ "Liberal Populism",
-    str_detect(prtvt, "Enhedlisten") ~ "Liberal Populism",
-    prtvt == "Dansk Folkeparti - Danish peoples party" ~ "Illiberal Populism",
+    prtvt == "Enhedslisten, De Rød-Grønne - The Red-Green Alliance" ~ "Progressive Populism",
+    prtvt == "Enhedslisten - Unity List - The Red-Green Alliance" ~ "Progressive Populism",
+    str_detect(prtvt, "Enhedlisten") ~ "Progressive Populism",
+    prtvt == "Dansk Folkeparti - Danish peoples party" ~ "Traditionalist Populism",
     #Folkebevægelsen mod EU is missing   
  
     #Spain
-    prtvt == "AMAIUR" ~ "Liberal Populism",
-    prtvt == "Izquierda Unida (IU)" ~ "Liberal Populism",
-    prtvt == "Izquierda Unida (IU) - (ICV en Cataluña)" ~ "Liberal Populism",
+    prtvt == "AMAIUR" ~ "Progressive Populism",
+    prtvt == "Izquierda Unida (IU)" ~ "Progressive Populism",
+    prtvt == "Izquierda Unida (IU) - (ICV en Cataluña)" ~ "Progressive Populism",
     #PODEMOS was created in 2014
     
     #Finland  
-    prtvt == "True Finns" ~ "Illiberal Populism",
-    prtvt == "Left Alliance" ~ "Liberal Populism",
-    prtvt == "The Left Alliance" ~ "Liberal Populism", 
+    prtvt == "True Finns" ~ "Traditionalist Populism",
+    prtvt == "Left Alliance" ~ "Progressive Populism",
+    prtvt == "The Left Alliance" ~ "Progressive Populism", 
     
     #Frankreich
-    prtvt == "FN (Front National)" ~ "Illiberal Populism",
-    prtvt == "MPF (Mouvement pour la France)" ~ "Illiberal Populism",
-    prtvt == "FDG (Front de Gauche)" ~ "Liberal Populism",
-    #prtvt == "Parti Radical de Gauche" ~ "Liberal Populism",    
+    prtvt == "FN (Front National)" ~ "Traditionalist Populism",
+    prtvt == "MPF (Mouvement pour la France)" ~ "Traditionalist Populism",
+    prtvt == "FDG (Front de Gauche)" ~ "Progressive Populism",
+    #prtvt == "Parti Radical de Gauche" ~ "Progressive Populism",    
     #fr_PCF	Parti Communiste Français	
     #fr_PG	Parti de Gauche	
     #fr_Ensemble	Ensemble  --> unter FDG
     #PG, MPF, PCF und Ensamble fehlt
        
     #Deutschland
-    prtvt == "NPD" ~ "Illiberal Populism",
-    prtvt == "AfD" ~ "Illiberal Populism",
-    str_detect(prtvt, "Die Linke") ~ "Liberal Populism",
-    prtvt == "Piratenpartei" ~ "Liberal Populism",
+    prtvt == "NPD" ~ "Traditionalist Populism",
+    prtvt == "AfD" ~ "Traditionalist Populism",
+    str_detect(prtvt, "Die Linke") ~ "Progressive Populism",
+    prtvt == "Piratenpartei" ~ "Progressive Populism",
     #Die Tierpartei not included
     
     #Greece
-    prtvt == "Golden Dawn (Xrusi Augi)" ~ "Illiberal Populism",
-    prtvt == "The Coalition of the Radical Left (SYRIZA)" ~ "Liberal Populism",
-    prtvt == "The Communist Party of Greece (KKE)" ~ "Liberal Populism",
-    prtvt == "The Popular Orthodox Rally (LAOS)" ~ "Illiberal Populism",
-    #prtvt == "Independent Citizens' Movement (SPITHA)" ~ "Illiberal Populism",
+    prtvt == "Golden Dawn (Xrusi Augi)" ~ "Traditionalist Populism",
+    prtvt == "The Coalition of the Radical Left (SYRIZA)" ~ "Progressive Populism",
+    prtvt == "The Communist Party of Greece (KKE)" ~ "Progressive Populism",
+    prtvt == "The Popular Orthodox Rally (LAOS)" ~ "Traditionalist Populism",
+    #prtvt == "Independent Citizens' Movement (SPITHA)" ~ "Traditionalist Populism",
     #ANEL gab es 2010 noch gar nicht :(
 
     #Hungary
-    #prtvt == "Fidesz - KDNP (Fidesz – Magyar Polgári Szövetség Keresztényd" ~ "Illiberal Populism",
-    str_detect(prtvt, "Fidesz") ~ "Illiberal Populism",
-    str_detect(prtvt, "Jobbik") ~ "Illiberal Populism",
-    #prtvt == "Jobbik (Jobbik Magyarországért Mozgalom)" ~ "Illiberal Populism",
-    str_detect(prtvt, "LMP") ~ "Liberal Populism",
+    #prtvt == "Fidesz - KDNP (Fidesz – Magyar Polgári Szövetség Keresztényd" ~ "Traditionalist Populism",
+    str_detect(prtvt, "Fidesz") ~ "Traditionalist Populism",
+    str_detect(prtvt, "Jobbik") ~ "Traditionalist Populism",
+    #prtvt == "Jobbik (Jobbik Magyarországért Mozgalom)" ~ "Traditionalist Populism",
+    str_detect(prtvt, "LMP") ~ "Progressive Populism",
 
     #Ireland
-    prtvt == "Green Party" & cntryname == "Ireland" ~ "Liberal Populism",
-    prtvt == "Sinn Féin" ~ "Liberal Populism",
-    prtvt == "Anti-Austerity Alliance - People Before Profit" ~ "Liberal Populism",
-    prtvt == "People Before Profit" ~ "Liberal Populism",
-    str_detect(prtvt, "United Left Alliance") ~ "Liberal Populism",
-    #prtvt == "Socialist Party - United Left Alliance" ~ "Liberal Populism",
+    prtvt == "Green Party" & cntryname == "Ireland" ~ "Progressive Populism",
+    prtvt == "Sinn Féin" ~ "Progressive Populism",
+    prtvt == "Anti-Austerity Alliance - People Before Profit" ~ "Progressive Populism",
+    prtvt == "People Before Profit" ~ "Progressive Populism",
+    str_detect(prtvt, "United Left Alliance") ~ "Progressive Populism",
+    #prtvt == "Socialist Party - United Left Alliance" ~ "Progressive Populism",
 
     #Italy
-    prtvt == "Movimento 5 Stelle" ~ "Liberal Populism",
-    prtvt == "Fratelli d'Italia" ~ "Illiberal Populism",
-    prtvt == "Lega Nord" ~ "Illiberal Populism",
-    prtvt == "Sinistra Ecologia e Libertà (SEL)" ~ "Liberal Populism",
+    prtvt == "Movimento 5 Stelle" ~ "Progressive Populism",
+    prtvt == "Fratelli d'Italia" ~ "Traditionalist Populism",
+    prtvt == "Lega Nord" ~ "Traditionalist Populism",
+    prtvt == "Sinistra Ecologia e Libertà (SEL)" ~ "Progressive Populism",
     #it_RC	Partito della Rifondazione Comunista	missing
 
     #Lithuania
-    prtvt == "Electoral Action of Poles in Lithuania (LLRA)" ~ "Illiberal Populism",
-    prtvt == "Party Order and Justice (TT)" ~ "Illiberal Populism",
-    prtvt == "Political Party 'The Way of Courage' (DK)" ~ "Illiberal Populism",    
+    prtvt == "Electoral Action of Poles in Lithuania (LLRA)" ~ "Traditionalist Populism",
+    prtvt == "Party Order and Justice (TT)" ~ "Traditionalist Populism",
+    prtvt == "Political Party 'The Way of Courage' (DK)" ~ "Traditionalist Populism",    
     
     #Netherland
-    prtvt == "Socialist Party" ~ "Liberal Populism",
-    prtvt == "Party for Freedom" ~ "Illiberal Populism", 
-    prtvt == "Party for the Animals" ~ "Liberal Populism",
-    #prtvt == "50PLUS" ~ "Liberal Populism",
+    prtvt == "Socialist Party" ~ "Progressive Populism",
+    prtvt == "Party for Freedom" ~ "Traditionalist Populism", 
+    prtvt == "Party for the Animals" ~ "Progressive Populism",
+    #prtvt == "50PLUS" ~ "Progressive Populism",
     
     #Poland
-    prtvt == "Law and Justice" ~ "Illiberal Populism",
-    prtvt == "Together Party" ~ "Illiberal Populism",
-    prtvt == "Kukiz'15" ~ "Illiberal Populism",
+    prtvt == "Law and Justice" ~ "Traditionalist Populism",
+    prtvt == "Together Party" ~ "Traditionalist Populism",
+    prtvt == "Kukiz'15" ~ "Traditionalist Populism",
     #pol_KNP	Kongres Nowej Prawicy könnte auch Kukiz'15 sein
 
     #Portugal
-    prtvt == "Bloco de Esquerda (BE)" ~ "Liberal Populism",
-    prtvt == "Coligação Democrática Unitária (CDU)" ~ "Liberal Populism",
+    prtvt == "Bloco de Esquerda (BE)" ~ "Progressive Populism",
+    prtvt == "Coligação Democrática Unitária (CDU)" ~ "Progressive Populism",
     #por_MPT	Partido da Terra missing
 
     #Slovakia; 
-    prtvt == "Freedom and Solidarity (SaS)" ~ "Liberal Populism",
-    prtvt == "Ordinary People and Independent Personalities (OLaNO)" ~ "Illiberal Populism",
-    prtvt == "Slovak National Party (SNS)" ~ "Illiberal Populism",    
+    prtvt == "Freedom and Solidarity (SaS)" ~ "Progressive Populism",
+    prtvt == "Ordinary People and Independent Personalities (OLaNO)" ~ "Traditionalist Populism",
+    prtvt == "Slovak National Party (SNS)" ~ "Traditionalist Populism",    
     #slo_SNS	Slovenská národná strana	 Missing    
     
     #Sweden
-    prtvt == "FI (Feministiskt initiativ)" ~ "Liberal Populism",
-    prtvt == "Piratpartiet" ~ "Liberal Populism", 
-#    prtvt == "Sverigedomkraterna" ~ "Illiberal Populism", 
-    stringr::str_detect(ess$prtvt, pattern = "Sverig") ~ "Illiberal Populism",
-    prtvt == "Vänsterpartiet" ~ "Liberal Populism",
+    prtvt == "FI (Feministiskt initiativ)" ~ "Progressive Populism",
+    prtvt == "Piratpartiet" ~ "Progressive Populism", 
+#    prtvt == "Sverigedomkraterna" ~ "Traditionalist Populism", 
+    stringr::str_detect(ess$prtvt, pattern = "Sverig") ~ "Traditionalist Populism",
+    prtvt == "Vänsterpartiet" ~ "Progressive Populism",
       
     #UK
-    prtvt == "Green Party" ~ "Liberal Populism",
-    prtvt == "UK Independence Party" ~ "Illiberal Populism",
+    prtvt == "Green Party" ~ "Progressive Populism",
+    prtvt == "UK Independence Party" ~ "Traditionalist Populism",
 
     # #Estonia
-    # prtvt == "Erakond Eestimaa Rohelised" ~ "Liberal Populism",
-    # prtvt == "Eesti Vabaerakond" ~ "Liberal Populism",
+    # prtvt == "Erakond Eestimaa Rohelised" ~ "Progressive Populism",
+    # prtvt == "Eesti Vabaerakond" ~ "Progressive Populism",
 
     is.na(prtvt) ~ NA_character_,
     TRUE ~ "Establishment"
@@ -828,52 +831,52 @@ ess %<>%
   mutate(popul2 = case_when(
 
     #Österreich
-    prtcl == "BZÖ" ~ "Illiberal Populism",
-    prtcl == "FPÖ" ~ "Illiberal Populism",    
-    prtcl == "Team Frank Stronach" ~ "Illiberal Populism",  
+    prtcl == "BZÖ" ~ "Traditionalist Populism",
+    prtcl == "FPÖ" ~ "Traditionalist Populism",    
+    prtcl == "Team Frank Stronach" ~ "Traditionalist Populism",  
     
     #Belgium
-    prtcl == "Parti Populaire" ~ "Illiberal Populism",
-    prtcl == "PVDA+" ~ "Liberal Populism",
-    prtcl == "Vlaams Belang" ~ "Illiberal Populism",
+    prtcl == "Parti Populaire" ~ "Traditionalist Populism",
+    prtcl == "PVDA+" ~ "Progressive Populism",
+    prtcl == "Vlaams Belang" ~ "Traditionalist Populism",
     
     #Bulgaria
-    str_detect(prtcl, "Ataka") ~ "Illiberal Populism",
-    str_detect(prtcl, "VMRO") ~ "Illiberal Populism", 
-    #prtcl == "PP Natsionalen front za dpasenie na Bulgaria" ~ "Illiberal Populism", 
+    str_detect(prtcl, "Ataka") ~ "Traditionalist Populism",
+    str_detect(prtcl, "VMRO") ~ "Traditionalist Populism", 
+    #prtcl == "PP Natsionalen front za dpasenie na Bulgaria" ~ "Traditionalist Populism", 
     #bul_BBT    Bulgaria bez Tsenzura wasn't there in 2014
     #PP Natsionalen front za dpasenie na Bulgaria -> not included
  
     #Croatia; 
-    prtcl == "Hrvatska stranka prava (HSP)" ~ "Illiberal Populism",    
+    prtcl == "Hrvatska stranka prava (HSP)" ~ "Traditionalist Populism",    
     
     #Czech Republic
-    prtcl == "KSCM" ~ "Liberal Populism",
-    prtcl == "ANO 2011" ~ "Liberal Populism",
-    prtcl == "Úsvit prímé demokracie Tomia Okamury" ~ "Illiberal Populism", 
+    prtcl == "KSCM" ~ "Progressive Populism",
+    prtcl == "ANO 2011" ~ "Progressive Populism",
+    prtcl == "Úsvit prímé demokracie Tomia Okamury" ~ "Traditionalist Populism", 
     #cz_SVOBODNI.... miss you
     #String bei Úsvit prímé demokracie Tomia Okamury geändert, da anders geschrieben wurde...
     #String KSCM verändert, da ebenso anders geschrieben
 
     #Denmark
-    prtcl == "Dansk Folkeparti - Danish peoples party" ~ "Illiberal Populism",
-    str_detect(prtcl, "Enhedlisten") ~ "Liberal Populism",
-    #prtcl == "Enhedslisten - Unity List - The Red-Green Alliance" ~ "Liberal Populism",
+    prtcl == "Dansk Folkeparti - Danish peoples party" ~ "Traditionalist Populism",
+    str_detect(prtcl, "Enhedslisten") ~ "Progressive Populism",
+    #prtcl == "Enhedslisten - Unity List - The Red-Green Alliance" ~ "Progressive Populism",
     #Folkebevægelsen mod EU is missing   
     
     #Deutschland
-    prtcl == "NPD" ~ "Illiberal Populism",
-    prtcl == "AfD" ~ "Illiberal Populism",
-    str_detect(prtcl, "Linke") ~ "Liberal Populism",
-    prtcl == "Piratenpartei" ~ "Liberal Populism",
+    prtcl == "NPD" ~ "Traditionalist Populism",
+    prtcl == "AfD" ~ "Traditionalist Populism",
+    str_detect(prtcl, "Linke") ~ "Progressive Populism",
+    prtcl == "Piratenpartei" ~ "Progressive Populism",
     #Die Tierpartei not included
     
     #Frankreich
-    prtcl == "FN (Front National)" ~ "Illiberal Populism",
-    prtcl == "MPF (Mouvement pour la France)" ~ "Illiberal Populism",
-    #prtcl == "FDG (Front de Gauche)" ~ "Liberal Populism",
-    prtcl == "PCF (Parti Communiste Francais)" ~ "Liberal Populism",
-    prtcl == "PG (Parti de Gauche)" ~ "Liberal Populism",
+    prtcl == "FN (Front National)" ~ "Traditionalist Populism",
+    prtcl == "MPF (Mouvement pour la France)" ~ "Traditionalist Populism",
+    #prtcl == "FDG (Front de Gauche)" ~ "Progressive Populism",
+    prtcl == "PCF (Parti Communiste Francais)" ~ "Progressive Populism",
+    prtcl == "PG (Parti de Gauche)" ~ "Progressive Populism",
     #fr_PCF    Parti Communiste Français    
     #fr_PG    Parti de Gauche    
     #fr_Ensemble    Ensemble  --> unter FDG
@@ -881,94 +884,94 @@ ess %<>%
     #Front de Gauche ist eine Wahlplattform, daher wurden die teilnehmenden Parteien hinzugefügt (PG und PCF) und FDG auskommentiert
     
     #Spain
-    str_detect(prtcl, "AMAIUR") ~ "Liberal Populism",
-    str_detect(prtcl, "Izquierda Unida") ~ "Liberal Populism",
-    prtcl == "Podemos" ~ "Liberal Populism",
+    str_detect(prtcl, "AMAIUR") ~ "Progressive Populism",
+    str_detect(prtcl, "Izquierda Unida") ~ "Progressive Populism",
+    prtcl == "Podemos" ~ "Progressive Populism",
     #PODEMOS was created in 2014
     
     #Finland  
-    prtcl == "True Finns" ~ "Illiberal Populism",
-    prtcl == "Left Alliance" ~ "Liberal Populism",
-    prtcl == "The Left Alliance " ~ "Liberal Populism",
+    prtcl == "True Finns" ~ "Traditionalist Populism",
+    str_detect(prtcl, "Left Alliance") ~ "Progressive Populism",
+    #prtcl == "The Left Alliance " ~ "Progressive Populism",
 
     #Greece
-    prtcl == "Golden Dawn (Xrusi Augi)" ~ "Illiberal Populism",
-    prtcl == "The Coalition of the Radical Left (SYRIZA)" ~ "Liberal Populism",
-    prtcl == "The Communist Party of Greece (KKE)" ~ "Illiberal Populism",
-    prtcl == "The Popular Orthodox Rally (LAOS)" ~ "Illiberal Populism",
-    #prtcl == "Independent Citizens' Movement (SPITHA)" ~ "Illiberal Populism",
+    prtcl == "Golden Dawn (Xrusi Augi)" ~ "Traditionalist Populism",
+    prtcl == "The Coalition of the Radical Left (SYRIZA)" ~ "Progressive Populism",
+    prtcl == "The Communist Party of Greece (KKE)" ~ "Progressive Populism",
+    prtcl == "The Popular Orthodox Rally (LAOS)" ~ "Traditionalist Populism",
+    #prtcl == "Independent Citizens' Movement (SPITHA)" ~ "Traditionalist Populism",
     #ANEL gab es 2010 noch gar nicht :(
 
     #Hungary
-    str_detect(prtcl, "Jobbik") ~ "Illiberal Populism",
-    str_detect(prtcl, "LMP") ~ "Liberal Populism",
-    #prtcl == "Fidesz (Fidesz Magyar Polgári Párt)" ~ "Illiberal Populism",
-    str_detect(prtcl, "Fidesz") ~ "Illiberal Populism",
+    str_detect(prtcl, "Jobbik") ~ "Traditionalist Populism",
+    str_detect(prtcl, "LMP") ~ "Progressive Populism",
+    #prtcl == "Fidesz (Fidesz Magyar Polgári Párt)" ~ "Traditionalist Populism",
+    str_detect(prtcl, "Fidesz") ~ "Traditionalist Populism",
     #Fidez geändert, da keine Koalition...
 
     #Ireland
-    prtcl == "Green Party" ~ "Liberal Populism",
-    prtcl == "Sinn Féin" ~ "Liberal Populism",
-    prtcl == "Anti-Austerity Alliance - People Before Profit" ~ "Liberal Populism",
-    prtcl == "People Before Profit" ~ "Liberal Populism",
-    str_detect(prtcl, "United Left Alliance") ~ "Liberal Populism",
+    prtcl == "Green Party" ~ "Progressive Populism",
+    prtcl == "Sinn Féin" ~ "Progressive Populism",
+    prtcl == "Anti-Austerity Alliance - People Before Profit" ~ "Progressive Populism",
+    prtcl == "People Before Profit" ~ "Progressive Populism",
+    str_detect(prtcl, "United Left Alliance") ~ "Progressive Populism",
 
     #Italy
-    prtcl == "Movimento 5 Stelle" ~ "Liberal Populism",
-    prtcl == "Fratelli d'Italia" ~ "Illiberal Populism",
-    prtcl == "Lega Nord" ~ "Illiberal Populism",
-    prtcl == "Sinistra Ecologia e Libertà (SEL)" ~ "Liberal Populism",
+    prtcl == "Movimento 5 Stelle" ~ "Progressive Populism",
+    prtcl == "Fratelli d'Italia" ~ "Traditionalist Populism",
+    prtcl == "Lega Nord" ~ "Traditionalist Populism",
+    prtcl == "Sinistra Ecologia e Libertà (SEL)" ~ "Progressive Populism",
     #it_RC    Partito della Rifondazione Comunista    missing
 
     #Lithuania
-    prtcl == "Electoral Action of Poles in Lithuania (LLRA)" ~ "Illiberal Populism",
-    prtcl == "Party Order and Justice (TT)" ~ "Illiberal Populism",
-    prtcl == "Political Party 'The Way of Courage' (DK)" ~ "Illiberal Populism",
+    prtcl == "Electoral Action of Poles in Lithuania (LLRA)" ~ "Traditionalist Populism",
+    prtcl == "Party Order and Justice (TT)" ~ "Traditionalist Populism",
+    prtcl == "Political Party 'The Way of Courage' (DK)" ~ "Traditionalist Populism",
 
     #Netherlands
-    prtcl == "Socialist Party" ~ "Liberal Populism",
-    prtcl == "Party for Freedom" ~ "Illiberal Populism", 
-    prtcl == "Party for the Animals" ~ "Liberal Populism",
-    prtcl == "PVV (List Wilders)" ~ "Illiberal Populism",
+    prtcl == "Socialist Party" ~ "Progressive Populism",
+    prtcl == "Party for Freedom" ~ "Traditionalist Populism", 
+    prtcl == "Party for the Animals" ~ "Progressive Populism",
+    prtcl == "PVV (List Wilders)" ~ "Traditionalist Populism",
     
     #Poland
-    prtcl == "Law and Justice" ~ "Illiberal Populism",
-    prtcl == "Together Party" ~ "Illiberal Populism",
-    prtcl == "Kukiz'15" ~ "Illiberal Populism",
-    prtcl == "United Poland" ~ "Illiberal Populism",
+    prtcl == "Law and Justice" ~ "Traditionalist Populism",
+    prtcl == "Together Party" ~ "Traditionalist Populism",
+    prtcl == "Kukiz'15" ~ "Traditionalist Populism",
+    prtcl == "United Poland" ~ "Traditionalist Populism",
     #pol_KNP    Kongres Nowej Prawicy könnte auch Kukiz'15 sein
     #Kukiz drin, dahe rhinzugefügt
     
     #UK
-    prtcl == "Green Party" ~ "Liberal Populism",
-    prtcl == "UK Independence Party" ~ "Illiberal Populism",
+    prtcl == "Green Party" ~ "Progressive Populism",
+    prtcl == "UK Independence Party" ~ "Traditionalist Populism",
 
     #Portugal
-    prtcl == "Bloco de Esquerda (BE)" ~ "Liberal Populism",
-    prtcl == "CDU - Coligação Democrática Unitária (PCP-PEV)" ~ "Liberal Populism",
+    prtcl == "Bloco de Esquerda (BE)" ~ "Progressive Populism",
+    prtcl == "CDU - Coligação Democrática Unitária (PCP-PEV)" ~ "Progressive Populism",
     #por_MPT    Partido da Terra missing
 
     #Sweden
-    prtcl == "FI (Feministiskt initiativ)" ~ "Liberal Populism",
-    prtcl == "Piratpartiet" ~ "Liberal Populism", 
-    str_detect(prtc, "Sverige") ~ "Illiberal Populism", 
-    prtcl == "Vänsterpartiet" ~ "Liberal Populism",
+    prtcl == "FI (Feministiskt initiativ)" ~ "Progressive Populism",
+    prtcl == "Piratpartiet" ~ "Progressive Populism", 
+    str_detect(prtcl, "Sverige") ~ "Traditionalist Populism", 
+    prtcl == "Vänsterpartiet" ~ "Progressive Populism",
 
 # 
 #     #Estonia
-#     prtcl == "Erakond Eestimaa Rohelised" ~ "Liberal Populism",
-#     prtcl == "Eesti Vabaerakond" ~ "Liberal Populism",
+#     prtcl == "Erakond Eestimaa Rohelised" ~ "Progressive Populism",
+#     prtcl == "Eesti Vabaerakond" ~ "Progressive Populism",
 
     #Slovakia; 
-    prtcl == "Freedom and Solidarity (SaS)" ~ "Liberal Populism",
-    prtcl == "Ordinary People and Independent Personalities (OLaNO)" ~ "Illiberal Populism",
-    prtcl == "Slovak National Party (SNS)" ~ "Illiberal Populism",    
+    prtcl == "Freedom and Solidarity (SaS)" ~ "Progressive Populism",
+    prtcl == "Ordinary People and Independent Personalities (OLaNO)" ~ "Traditionalist Populism",
+    prtcl == "Slovak National Party (SNS)" ~ "Traditionalist Populism",    
 
     #slo_SNS    Slovenská národná strana     Missing
 
     #Cyprus; 
-    prtcl == "Progressive Party of Working People (AKEL)" ~ "Liberal Populism",
-    prtcl == "The Cyprus Green Party" ~ "Liberal Populism",
+    prtcl == "Progressive Party of Working People (AKEL)" ~ "Progressive Populism",
+    prtcl == "The Cyprus Green Party" ~ "Progressive Populism",
     
     is.na(prtcl) ~ NA_character_,
     TRUE ~ "Establishment"

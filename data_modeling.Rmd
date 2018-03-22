@@ -8,7 +8,7 @@ output: html_notebook
 ```{r}
 load("data/ess.Rdata")
 
-pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, car, psych, knitr, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, brms, questionr, lavaan, car, BBmisc, stargazer, caret, DescTools, rcompanion, tidyeval, mgcv)
+pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, car, psych, knitr, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, brms, questionr, lavaan, car, BBmisc, stargazer, caret, DescTools, rcompanion, tidyeval, mgcv, countrycode)
 
 
 range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.rm = T))}
@@ -24,7 +24,8 @@ range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.
 # Data prep
 
 ```{r}
-load("data/ess.Rdata")
+#load("data/ess.Rdata")
+binoculaR::binoculaR(ess)
 
 mlogit_ess <- ess 
 
@@ -92,6 +93,9 @@ var_checks <- function(vars) {
 # table(mlogit_ess$unemployed)
 # 
 # mlogit_ess %>% dplyr::select(educ) %>% table()
+
+
+
 ```
 
 # Regions
@@ -186,7 +190,7 @@ fa_dat <- openness_dat %>%
   psych::fa() %>%
   predict.psych(data = openness_dat) %>%
   as.data.frame() %>%
-  transmute(openness = range01(MR1)*10) %>%
+  transmute(openness = (1-range01(MR1))*10) %>%
   cbind(fa_dat)
 
 
@@ -332,42 +336,49 @@ test <- multinom(
 
 screenreg(test)
 
-# plot_effects <- function(model = test, voi = anti_imm, as_string = "anti_imm", from_to = c(0:10)) {
-from_to <- as.vector(names(table(mlogit_ess$globalism)))
-#table(mlogit_ess$globalism)
-fit.eff <- effects::effect("globalism", test, xlevels = list(globalism = from_to))
-
+## Automatic Picking of Scales
+#from_to <- as.vector(names(table(ess_mlogit$openness)))
+#fit.eff <- effects::effect("openness", 
+#                           test, 
+#                           xlevels = list(openness = from_to))
+## or
+#fit.eff <- effects::effect("openness", 
+#                           test)
+## or put them in by hand
+fit.eff <- effects::effect("anti_imm", 
+                           test, 
+                           xlevels = list(anti_imm = c(1:10)))
 
 data.frame(fit.eff$model.matrix, 
            fit.eff$prob, 
            fit.eff$lower.prob, 
            fit.eff$upper.prob) %>% 
-  select(globalism, prob.Illiberal.Populism, prob.Establishment,
-         prob.Liberal.Populism, L.prob.Establishment, 
-         U.prob.Establishment, L.prob.Illiberal.Populism, 
-         U.prob.Illiberal.Populism, L.prob.Liberal.Populism, 
-         U.prob.Liberal.Populism, -X.Intercept.) %>% 
-  gather(key = variable, value = value, -globalism, 
+  select(anti_imm, prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism, L.prob.Establishment, 
+         U.prob.Establishment, L.prob.Traditionalist.Populism, 
+         U.prob.Traditionalist.Populism, L.prob.Progressive.Populism, 
+         U.prob.Progressive.Populism, -X.Intercept.) %>% 
+  gather(key = variable, value = value, -anti_imm, 
            -L.prob.Establishment, -U.prob.Establishment,
-           -L.prob.Illiberal.Populism, -U.prob.Illiberal.Populism,
-         -L.prob.Liberal.Populism, -U.prob.Liberal.Populism) %>% 
+           -L.prob.Traditionalist.Populism, -U.prob.Traditionalist.Populism,
+         -L.prob.Progressive.Populism, -U.prob.Progressive.Populism) %>% 
   mutate(type = case_when(
-    str_detect(variable, "Illiberal") ~ "Tradionalist Populism",
-    str_detect(variable, "Liberal") ~ "Progressive Populism",
+    str_detect(variable, "Traditionalist") ~ "Tradionalist Populism",
+    str_detect(variable, "Progressive") ~ "Progressive Populism",
     str_detect(variable, "Establishment") ~ "Establishment"
-  )) %>% 
+  )) %>%
     mutate(lower = case_when(
     type == "Establishment" ~ L.prob.Establishment*100,
-    type == "Progressive Populism" ~ L.prob.Liberal.Populism*100,
-    type == "Tradionalist Populism" ~ L.prob.Illiberal.Populism*100
+    type == "Progressive Populism" ~ L.prob.Progressive.Populism*100,
+    type == "Tradionalist Populism" ~ L.prob.Traditionalist.Populism*100
   )) %>% 
     mutate(upper = case_when(
     type == "Establishment" ~ U.prob.Establishment*100,
-    type == "Progressive Populism" ~ U.prob.Liberal.Populism*100,
-    type == "Tradionalist Populism" ~ U.prob.Illiberal.Populism*100
+    type == "Progressive Populism" ~ U.prob.Progressive.Populism*100,
+    type == "Tradionalist Populism" ~ U.prob.Traditionalist.Populism*100
   )) %>% 
   mutate(value = value * 100) %>% 
-  ggplot(aes(globalism, value, colour = type)) +
+  ggplot(aes(anti_imm, value, colour = type)) +
     geom_smooth(method = "loess", 
                #formula = y ~ s(x, k = 1), 
                size = 1.2, se = F) +
@@ -378,8 +389,8 @@ data.frame(fit.eff$model.matrix,
     ggthemes::theme_hc() +
     ggthemes::scale_color_fivethirtyeight() + 
     facet_wrap(~type, scales = "free") +
-    scale_y_continuous(breaks = seq(0,100, by = 5), 
-                     labels = paste0(seq(0,100, by = 5),"%"))
+    scale_y_continuous(breaks = seq(0,100, by = 2.5), 
+                     labels = paste0(seq(0,100, by = 2.5),"%"))
 ```
 
 ## Plot Predictions - Interactions
@@ -407,7 +418,7 @@ from_to <- as.vector(names(table(mlogit_ess$anti_imm)))
 fit.eff <- effects::Effect(c("anti_imm", "unemployed"), 
                            test, 
                            xlevels = list(anti_imm = from_to, 
-                                          unemployed = c(0,1)))
+                                          unemployed = c(0, 1)))
 
 
 data.frame(fit.eff$model.matrix, 
@@ -415,30 +426,30 @@ data.frame(fit.eff$model.matrix,
            fit.eff$lower.prob, 
            fit.eff$upper.prob) %>% 
   select(anti_imm, unemployed, # interaction effects
-         prob.Illiberal.Populism, prob.Establishment,
-         prob.Liberal.Populism, L.prob.Establishment, 
-         U.prob.Establishment, L.prob.Illiberal.Populism, 
-         U.prob.Illiberal.Populism, L.prob.Liberal.Populism, 
-         U.prob.Liberal.Populism, -X.Intercept.) %>% 
+         prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism, L.prob.Establishment, 
+         U.prob.Establishment, L.prob.Traditionalist.Populism, 
+         U.prob.Traditionalist.Populism, L.prob.Progressive.Populism, 
+         U.prob.Progressive.Populism, -X.Intercept.) %>% 
   gather(key = variable, value = value, 
          -anti_imm, -unemployed, # interaction effects 
            -L.prob.Establishment, -U.prob.Establishment,
-           -L.prob.Illiberal.Populism, -U.prob.Illiberal.Populism,
-         -L.prob.Liberal.Populism, -U.prob.Liberal.Populism) %>% 
+           -L.prob.Traditionalist.Populism, -U.prob.Traditionalist.Populism,
+         -L.prob.Progressive.Populism, -U.prob.Progressive.Populism) %>% 
   mutate(type = case_when(
-    str_detect(variable, "Illiberal") ~ "Tradionalist Populism",
-    str_detect(variable, "Liberal") ~ "Progressive Populism",
+    str_detect(variable, "Traditionalist") ~ "Tradionalist Populism",
+    str_detect(variable, "Progressive") ~ "Progressive Populism",
     str_detect(variable, "Establishment") ~ "Establishment"
   )) %>% 
     mutate(lower = case_when(
     type == "Establishment" ~ L.prob.Establishment*100,
-    type == "Progressive Populism" ~ L.prob.Liberal.Populism*100,
-    type == "Tradionalist Populism" ~ L.prob.Illiberal.Populism*100
+    type == "Progressive Populism" ~ L.prob.Progressive.Populism*100,
+    type == "Tradionalist Populism" ~ L.prob.Traditionalist.Populism*100
   )) %>% 
     mutate(upper = case_when(
     type == "Establishment" ~ U.prob.Establishment*100,
-    type == "Progressive Populism" ~ U.prob.Liberal.Populism*100,
-    type == "Tradionalist Populism" ~ U.prob.Illiberal.Populism*100
+    type == "Progressive Populism" ~ U.prob.Progressive.Populism*100,
+    type == "Tradionalist Populism" ~ U.prob.Traditionalist.Populism*100
   )) %>% 
   mutate(value = value * 100) %>% 
   mutate(Unemployed = as.factor(unemployed)) %>% 
@@ -473,8 +484,8 @@ data.frame(fit.eff$model.matrix,
         title = element_text(size = 12))
 
 
-ggsave(file = here::here("images", "interaction_abstract.png"), 
-       height = 5, width = 8)
+# ggsave(file = here::here("images", "interaction_abstract.png"), 
+#        height = 5, width = 8)
 ```
 
 
@@ -501,19 +512,19 @@ probs <- pp %>%
 
 probs %<>% 
   mutate(estab = ifelse(populism2 == "Establishment", T, F)) %>% 
-  mutate(lib = ifelse(populism2 == "Liberal Populism", T, F)) %>% 
-  mutate(illib = ifelse(populism2 == "Illiberal Populism", T, F)) 
+  mutate(lib = ifelse(populism2 == "Progressive Populism", T, F)) %>% 
+  mutate(illib = ifelse(populism2 == "Traditionalist Populism", T, F)) 
 
-table(probs$`Illiberal Populism`>probs$`Liberal Populism` & probs$`Illiberal Populism`>probs$Establishment, probs$illib)
-table(probs$`Liberal Populism`>probs$`Illiberal Populism` & probs$`Liberal Populism`>probs$Establishment, probs$lib)
-table(probs$Establishment>probs$`Liberal Populism` & probs$Establishment>probs$`Illiberal Populism`, probs$estab)
+table(probs$`Traditionalist Populism`>probs$`Progressive Populism` & probs$`Traditionalist Populism`>probs$Establishment, probs$illib)
+table(probs$`Progressive Populism`>probs$`Traditionalist Populism` & probs$`Progressive Populism`>probs$Establishment, probs$lib)
+table(probs$Establishment>probs$`Progressive Populism` & probs$Establishment>probs$`Traditionalist Populism`, probs$estab)
 table(probs$populism2)
 
 checkers <- probs %>% 
   filter(populism2 != "Establishment")
 
-table(checkers$`Illiberal Populism`>checkers$`Liberal Populism`, checkers$illib)
-table(checkers$`Liberal Populism`>checkers$`Illiberal Populism`, checkers$lib)
+table(checkers$`Traditionalist Populism`>checkers$`Progressive Populism`, checkers$illib)
+table(checkers$`Progressive Populism`>checkers$`Traditionalist Populism`, checkers$lib)
 table(probs$populism2)
 ```
 
@@ -526,7 +537,7 @@ table(probs$populism2)
 plot_probs <- function(probs = probs, variable = probs$anti_imm) {
   ss <- probs %>% 
   mutate(variable = as.numeric(variable)) %>% 
-  select(variable, `Illiberal Populism`, `Liberal Populism`, Establishment) %>% 
+  select(variable, `Traditionalist Populism`, `Progressive Populism`, Establishment) %>% 
 #  mutate(id = n()) %>% 
   gather(key = variable, value = value)  
 
@@ -557,8 +568,8 @@ plot_ints <- function(probs, variable = NULL,
 ss <- probs %>% 
   mutate(variable = as.numeric(variable)) %>% 
   mutate(variable2 = as.numeric(variable2)) %>% 
-  select(variable, variable2, `Illiberal Populism`, 
-         `Liberal Populism`, Establishment) %>% 
+  select(variable, variable2, `Traditionalist Populism`, 
+         `Progressive Populism`, Establishment) %>% 
     mutate(variable2 = case_when(
     variable2 == max(variable2) ~ max(variable2),
     variable2 == min(variable2) ~ min(variable2),  
@@ -627,8 +638,8 @@ ggsave(filename = "images/interaction2.png", height = 5, width = 12)
 
 ```{r}
 mlogit_ess %<>% 
-  mutate(progressive_populism = ifelse(target == "Liberal Populism", 1, 0)) %>% 
-  mutate(trad_populism = ifelse(target == "Illiberal Populism", 1, 0))   
+  mutate(progressive_populism = ifelse(target == "Progressive Populism", 1, 0)) %>% 
+  mutate(trad_populism = ifelse(target == "Traditionalist Populism", 1, 0))   
 
 glmfit <- glm(progressive_populism ~ 
     # economic deprivation
@@ -940,8 +951,8 @@ sim.pred <- MASS::mvrnorm(n, betas, varcov)
 
 
 #Extract the variable names.
-c.n.2 <- names(betas)[names(betas) %>% str_detect("Illiberal Populism")]
-c.n.3 <- names(betas)[names(betas) %>% str_detect("Liberal Populism")]
+c.n.2 <- names(betas)[names(betas) %>% str_detect("Traditionalist Populism")]
+c.n.3 <- names(betas)[names(betas) %>% str_detect("Progressive Populism")]
 
 
 #Set the independent variables to some meaningful values storing them into an object.
@@ -1039,8 +1050,8 @@ ggplot(data.sim, aes(x = X, y = Y, group = GR)) +
 
 ```{r}
 tre_ess <- mlogit_ess %>% 
-  mutate(progressive_populism = ifelse(target == "Liberal Populism", 1, 0)) %>% 
-  mutate(trad_populism = ifelse(target == "Illiberal Populism", 1, 0)) %>%    
+  mutate(progressive_populism = ifelse(target == "Progressive Populism", 1, 0)) %>% 
+  mutate(trad_populism = ifelse(target == "Traditionalist Populism", 1, 0)) %>%    
   select(progressive_populism, unemployed, anti_imm)  
   
 #pacman::p_load(FFTrees)

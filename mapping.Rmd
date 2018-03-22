@@ -1,0 +1,189 @@
+---
+title: "Our Map"
+output: html_notebook
+---
+
+# additional packages
+
+```{r}
+pacman::p_load(tidyverse, ggthemes, rgdal, viridis, extrafont, magrittr)
+myfont <- "Roboto Condensed"
+
+# load the already prepared data
+load(url("https://ikashnitsky.github.io/doc/misc/map-subplots/df-27-261-urb-rur.RData"))
+load(url("https://ikashnitsky.github.io/doc/misc/map-subplots/spatial-27-261.RData"))
+
+library(rgdal)
+library(maptools)
+if (!require(gpclib)) install.packages("gpclib", type="source")
+gpclibPermit()
+```
+
+
+
+# fortify spatial objects
+
+```{r}
+
+bord <- fortify(Sborders)
+fort <- fortify(Sn2, region = "id")
+
+fort_map <- left_join(df,fort,"id")
+
+# create a blank map
+basemap <- ggplot() +
+        geom_polygon(data = fortify(Sneighbors),aes(x = long, y = lat, group = group),
+                     fill = "grey90",color = "grey90")+
+        coord_equal(ylim = c(1350000,5450000), xlim = c(2500000, 6600000)) +
+        theme_map(base_family = myfont) +
+        theme(panel.border = element_rect(color = "black",size = .5,fill = NA),
+              legend.position = c(1, 1),
+              legend.justification = c(1, 1),
+              legend.background = element_rect(colour = NA, fill = NA),
+              legend.title = element_text(size = 15),
+              legend.text = element_text(size = 15)) +
+        scale_x_continuous(expand = c(0,0)) +
+        scale_y_continuous(expand = c(0,0)) +
+        labs(x = NULL, y = NULL)
+
+ggsave(filename = "maps/basemap.png", basemap, width = 5, height = 5)
+
+read_csv("data/nuts2.csv")
+
+
+
+
+
+```
+
+# Data load in
+
+```{r}
+load("data/ess.Rdata")
+
+#table(ess$cregion)
+#table(ess$region)
+#table(ess$regunit)
+
+ess_map <- ess %>% 
+  mutate(target = as.factor(target)) %>% 
+  mutate(prog_dum = ifelse(target == "Progressive Populism", 1, 0)) %>% 
+  mutate(trad_dum = ifelse(target == "Traditionalist Populism", 1, 0)) %>% 
+  mutate(estab_dum = ifelse(target == "Establishment", 1, 0)) %>% 
+  group_by(cregion) %>% 
+  summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+            progressive = sum(prog_dum, na.rm = T)/total,
+            traditionalist = sum(trad_dum, na.rm = T)/total,
+            establishment = sum(estab_dum, na.rm = T)/total) %>% 
+  mutate(cregion = ifelse(cregion == 99999, NA, as.character(cregion))) %>% 
+  mutate(id = cregion) %>% 
+  na.omit()
+```
+
+
+
+
+# get nuts data
+
+```{r}
+nuts_singles <- dir("data/nuts_dat")
+
+read_csv2("data/nuts_dat/at.csv")
+
+nuts_data <- list()
+for (jj in seq_along(nuts_singles)) {
+  nuts_data[[jj]] <- read_csv2(paste0("data/nuts_dat/", nuts_singles[jj]))
+}
+
+nuts_data <- bind_rows(nuts_data)
+
+nuts_data %<>% 
+  janitor::clean_names() %>% 
+  mutate(country = str_extract(nuts_1, "^.{2}")) %>% 
+  mutate(nuts1 = str_extract(nuts_1, "^.{3}")) %>% 
+  mutate(nuts2 = str_extract(nuts2, "^.{4}")) %>% 
+  mutate(nuts3 = str_extract(nuts3, "^.{5}")) %>% 
+  select(country, nuts1, nuts2, nuts3) %>% 
+  gather("nuts", "id", -country)
+
+# nuts_data %<>% 
+#   rename(country = cntry)
+#save(nuts_data, file = "data/nuts_data.Rdata")
+
+load("data/nuts_data.Rdata")
+
+ess_map %<>% 
+   mutate(country = str_extract(id, "^.{2}")) 
+
+nuts_data %>% 
+  mutate()
+
+ss <- fort_map %>% 
+  full_join(nuts_data, by = "country") %>% 
+  left_join(ess_map, by = c("id", "country")) %>% 
+  # group_by(id, nuts1, long, order, lat, group) %>% 
+  # summarise(progressive = mean(progressive, na.rm = T)) %>% 
+  # ungroup() 
+  # 
+
+# ss <- fort_map %>% 
+#   full_join(ess_map, by = c("id", "country")) %>% 
+#   left_join(nuts_data, by = c("id", "country")) %>% 
+#   group_by(id, long, order, lat, group) %>% 
+#   summarise(progressive = mean(progressive, na.rm = T)) %>% 
+#   ungroup() 
+#  group_by(id) %>% 
+#  mutate(drop = is.na())
+ # na.omit()# %>% 
+  ##filter(country == "DE")
+  
+ff <- ss %>% 
+  #group_by(id, ) %>% 
+  summarise(progressive = mean(progressive, na.rm = T)) %>% 
+  ungroup() 
+
+ff %>% 
+  select(progressive) %>% is.na()  %>% table()
+
+
+```
+
+# a nice small function to overcome some mapping problems with nested polygons
+
+```{r}
+# see more at SO
+# https://stackoverflow.com/questions/21748852
+gghole <- function (fort) {
+        poly <- fort[fort$id %in% fort[fort$hole, ]$id, ]
+        hole <- fort[!fort$id %in% fort[fort$hole, ]$id, ]
+        out <- list(poly, hole)
+        names(out) <- c("poly", "hole")
+        return(out)
+}
+
+ess_map2 <- ess_map %>% 
+  left_join(fort_map)
+
+unique(fort_map$id)
+unique(ess_map$id)
+table(ess_map2$country)
+table(fort_map$country)
+# annotate a small map of the subregions of Europe
+#an_sub <- 
+basemap +
+        geom_polygon(data = gghole(ss)[[1]], 
+                     aes(x = long, y = lat, group = group, fill = progressive),
+                     color = NA)+
+        geom_polygon(data  =  gghole(ss)[[2]], 
+                     aes(x = long, y = lat, group = group, fill = progressive),
+                     color = NA)+
+        #scale_fill_manual(values = rev(brbg3)) +
+        theme(legend.position = "none")
+
+ggsave(filename = "sub.png", an_sub, width = 4, height = 4)
+
+ess_map %>% 
+  mutate(cntryid = stringi::stri_sub(id, 1, 2))
+
+ff %>% select(id) %>% table()
+```
