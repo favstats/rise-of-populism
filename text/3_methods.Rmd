@@ -224,13 +224,30 @@ In order to validate the clusters, let's take a look at them in greater detail a
 
 **Top Left** shows progressive populists such as: 
 
-Syriza, Podemos and Partie de Gauche (or Partie Communiste Francais PCF)
+**Syriza**
+
+After winning the parliamentary elections in January 2015, SYRIZA (*Coalition of the Radical Left*) attempted to carry out the difficult balancing act between extreme left-wing positions, opposition to EU imposed austerity and yet supposedly pro-European commitments. In social policy, Syriza is particularly committed to the socially disadvantaged in society with policies such as guaranteeing that unemployed, homeless and low-income people should be allowed to use the health facilities free of charge or that family reunification should be made easier for individuals with a migration background.
+
+**Podemos**
+
+In the general elections held on December 20, 2015, the left-wing political party Podemos that emerged from a protest movement obtained 20.68% of the votes and 69 deputies in the whole of the State. The Spanish "Indignados", the "indignants" of the Podemos movement, practice critique of globalization and capitalism often symbolized in the overarching EU bureacracy. Among other measures, they defend abortion, want to stop house evictions, suppress church privileges, promote renewable energies and are in favor of curbing nuclear energy. With regard to political parties, they propose to stop gauging, reduce subsidies and expand restrictions on connections between politicians and companies.
+
+**Red–Green Alliance (Denmark)**
+
+The Red–Green Alliance (Enhedslisten) was formed as a collaboration between the Left Socialists (VS), the Danish Communist Party (DKP) and the Socialist Labor Party (SAP) in 1989. During the last parliamentary elections in 2015, the Red–Green Alliance gained 7,8% of the popular vote. Enhedslisten does not stand in European elections, but supports Folkebevægelsen mod EU (*Popular Movement against the EU*), a heavily anti-EU political party that only competes for the European elections. The party attaches great importance to combating social inequality and poverty, as well as advocating strengthening and expanding the welfare state. Politically, the party is in favor of more space for all forms of diversity, including gender, sexuality, disability and ethnic background.
+
 
 **DESCRIBE THEM**
 
 **Top Right** shows traditionalist populists such as:
 
-Golden Dawn, AfD and Front National
+**AfD**
+
+The alternative for Germany (AfD) is a political party founded in 2013 in Germany. As of 2014, it gradually moved into 14 state parliaments and in the 2017 general election, the AfD received 12.6% of the vote and thus became the third strongest force and the strongest opposition party in the German Bundestag. Regarding the EU, they have been in favor of renationalization of policies that are currently situated in the EU. The AfD represents conservative-antifeminist positions in gender politics and rejects gender equality policies and relies thereby on Christian fundamentalist and nationalist ideas. According to the AfD, Islam does not belong to Germany. In particular, the party calls for a ban on minarets and the face veiling. 
+
+**Front National**
+
+**UKIP**
 
 **DESCRIBE THEM**
 
@@ -293,6 +310,8 @@ Next, the hypotheses will be operationalized with corresponding ESS variables. *
 
 A more detailed description of the used variables as well as general statistics of all the used variables can be found in the Appendix.
 
+**TODO: How many point scales?**
+
 **CHECK THIS**
 All models were checked by tolerance tests to be free of problems of multicollinearity.. 
 
@@ -301,17 +320,17 @@ All models were checked by tolerance tests to be free of problems of multicollin
 
 Here comes a description of the multinomial model (might need to change the name of the title)
 
-## Descriptives
+Multinomial logistic regression is an extension of binary logistic regression, which makes it possible to predict three or more outcomes of a variable. In this case, each category of the variable of interest will be compared to the *reference category* that is specified by the researcher with the consequence that estimated parameters (logits and/or odds ratios) are interpreted in reference to that category.
 
-**TODO:**
+In the multinomial logit model we assume that the log-odds of each response follow a linear model
 
-- Populist Parties by Region
-- Populist Parties by Country (map)
+$$\eta_{ij} = \log\frac{\pi_{ij}}{\pi_{iJ}} = \alpha_j + \boldsymbol{x}_i'\boldsymbol{\beta}_j$$
 
+where $\alpha_j$ is a constant and $\beta_j$ is a vector of regression coefficients, for $j = 1, 2, \ldots, J-1$. Note that we have written the constant explicitly, so we will assume henceforth that the model matrix $\boldsymbol{X}$ does not include a column of ones.
 
-Descriptive Statistics and Exploratory Evaluation of the Hypotheses
+This model is analogous to a logistic regression model, except that the probability distribution of the response is multinomial instead of binomial and we have $J-1$ equations instead of one. The $J-1$ multinomial logit equations contrast each of categories $j = 1, 2, \ldots, J-1$ with category $J$, whereas the single logistic regression equation is a contrast between successes and failures. If $J=2$ the multinomial logit model reduces to the usual logistic regression model.
 
-## Multinomial Logistic Regression
+Note that we need only $J-1$ equations to describe a variable with $J$ response categories and that it really makes no difference which category we pick as the reference cell, because we can always convert from one formulation to another. 
 
-Here comes the Analysis Part
+Theoretically a multilevel model would have been needed to estimate the model properly, but given that there are some countries with almost none or no populist supporters in our data, this would lead to problems. In order to still account for the hierarchical order of our data, we decided to use regional variables of Europe, based on the four classifications by the UN: Eastern, Western, Southern and Northern  Europe.
 

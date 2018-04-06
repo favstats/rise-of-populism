@@ -45,8 +45,7 @@ z <- 34.876
 <!-- \onehalfspacing -->
 \setstretch{1.5}
 
-# Introduction
-
+\section{Introduction} 
 
 ```{r child = '1_intro.Rmd'}
 ```
@@ -62,11 +61,9 @@ This is a great way to test whether $`r x`$ really works in the way it is intend
 The following subsection will conceptualize regime support and introduce possible explanatory frameworks that were gathered from the relevant literature (Section 2.1). In this section, the concept of deliberation is clarified (Section 2.2) and a link between deliberation and regime support is established, from which research hypotheses are subsequently derived (Section 2.3). 
 
 
-# Theory
-
 **Some Citations**
 
-This is an example introduction. Let's cite someone here [@easton1965systems]. And in text as well: @habermas1994three says that we can cite people in text. Or we can write the name, and than use the citation thingy to print the year: Blabla states something about something [-@easton1975re]. Or how about multiple citations [@habermas1994three; @habermas1994three]. Or we citation with a little of text around it [for example see @habermas1994three: 92-93].
+This is an example introduction. Let's cite someone here [@tibshirani2001estimating]. And in text as well: @habermas1994three says that we can cite people in text. Or we can write the name, and than use the citation thingy to print the year: Blabla states something about something [-@easton1975re]. Or how about multiple citations [@habermas1994three; @habermas1994three]. Or we citation with a little of text around it [cf. @habermas1994three: 92-93].
 
 ALLE Zitierweisen von Zotero gibts [HIER](https://www.zotero.org/styles).
 
@@ -85,22 +82,25 @@ Smith says blah [-@easton1975re].
 
 @habermas1994three [p. 33] says blah.
 
-
+\section{Introduction} 
 
 ```{r child = '2_theory.Rmd'}
 ```
 
-# Methodological and Analytical Section
+\newpage
+\section{Methods and Data Preparation} \label{methods}
 
 ```{r child = '3_methods.Rmd'}
 ```
 
-# Analysis
+\newpage
+\section{Analysis} \label{analysis}
 
 ```{r child = '4_analysis.Rmd'}
 ```
 
-# Conclusions
+\newpage
+\section{Conclusions} \label{conclusion}
 
 ```{r child = '5_conclusions.Rmd'}
 ```
@@ -108,6 +108,13 @@ Smith says blah [-@easton1975re].
 
 \setstretch{1}
 
+\clearpage
 \newpage
 
+
 # References
+
+\setlength{\parindent}{-0.2in}
+\setlength{\leftskip}{0.2in}
+\setlength{\parskip}{8pt}
+\noindent

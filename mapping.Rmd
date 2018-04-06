@@ -78,6 +78,8 @@ ess_map <- ess %>%
   mutate(cregion = ifelse(cregion == 99999, NA, as.character(cregion))) %>% 
   mutate(id = cregion) %>% 
   na.omit()
+
+ess %>% filter(cntry == "DE") %>% select(cregion) %>% table()
 ```
 
 
@@ -85,7 +87,10 @@ ess_map <- ess %>%
 
 # get nuts data
 
+ 
 ```{r}
+# TODO Cant' make the maps because from the nuts data some regions are missing (for example Germany's subregions.. fuck that shit)
+
 nuts_singles <- dir("data/nuts_dat")
 
 read_csv2("data/nuts_dat/at.csv")
@@ -103,8 +108,8 @@ nuts_data %<>%
   mutate(nuts1 = str_extract(nuts_1, "^.{3}")) %>% 
   mutate(nuts2 = str_extract(nuts2, "^.{4}")) %>% 
   mutate(nuts3 = str_extract(nuts3, "^.{5}")) %>% 
-  select(country, nuts1, nuts2, nuts3) %>% 
-  gather("nuts", "id", -country)
+  select(country, nuts1, nuts2, nuts3) #%>% 
+  #gather("nuts", "id", -country)
 
 # nuts_data %<>% 
 #   rename(country = cntry)
@@ -145,7 +150,30 @@ ff <- ss %>%
 ff %>% 
   select(progressive) %>% is.na()  %>% table()
 
+table(ess_map$id)
 
+ess_map %<>% 
+  mutate(country = str_extract(id, "^.{2}")) %>% 
+  mutate(nuts1 = str_extract(id, "^.{3}")) %>% 
+  mutate(nuts2 = str_extract(id, "^.{4}")) %>% 
+  mutate(nuts3 = str_extract(id, "^.{5}")) 
+
+ess_map %>% filter(country == "UK") %>% select(nuts1) %>% table()
+
+ess_map %>% 
+  arrange(country) %>% select(nuts2) %>% table()
+
+nuts_data %>% #filter(country == "UK") 
+  full_join(ess_map %>% select(-country, -nuts2, -nuts3), by = c("nuts1")) %>% 
+  arrange(nuts1) %>% #filter(country == "DE") #%>% select(nuts2) %>% table()
+  group_by(nuts1) %>% 
+  summarise(progressive = mean(progressive, na.rm = T)) %>% 
+  mutate(id = nuts1) %>% 
+  mutate(progressive = ifelse(is.nan(progressive), NA, progressive)) %>% 
+  na.omit() %>% 
+  full_join(nuts_data, by = c("nuts1")) %>%  
+  select(-nuts1) %>% 
+  full_join(fort_map)
 ```
 
 # a nice small function to overcome some mapping problems with nested polygons
@@ -173,10 +201,10 @@ table(fort_map$country)
 basemap +
         geom_polygon(data = gghole(ss)[[1]], 
                      aes(x = long, y = lat, group = group, fill = progressive),
-                     color = NA)+
+                     color = NA) +
         geom_polygon(data  =  gghole(ss)[[2]], 
                      aes(x = long, y = lat, group = group, fill = progressive),
-                     color = NA)+
+                     color = NA) +
         #scale_fill_manual(values = rev(brbg3)) +
         theme(legend.position = "none")
 
