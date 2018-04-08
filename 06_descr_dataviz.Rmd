@@ -1,0 +1,594 @@
+---
+title: "descr_dataviz"
+output: html_notebook
+---
+
+**TODO**
+*methods*
+fixing the factor analysis plot
+description of parties
+citation citations citations
+*descriptives*
+Populist Parties by Country (map)
+*analysis*
+Probability Plots for the main hypotheses
+*coding*
+TODO: Globalism und Govsat fixen
+TODO: Choose which interactions
+
+# Loading in Data and packages
+
+```{r}
+load("data/mlogit_ess.Rdata")
+
+pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, psych, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, car, BBmisc, stargazer, caret, DescTools, rcompanion, tidyeval, mgcv, countrycode)
+
+#pacman::p_install_gh("wilkelab/cowplot")
+#devtools::install_github("gadenbuie/regexplain")
+
+range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.rm = T))}
+```
+
+# Data prep
+
+```{r}
+load("data/ess.Rdata")
+#binoculaR::binoculaR(ess)
+
+
+# 1025	impsafe	Important to live in secure and safe surroundings
+# 1027	ipfrule	Important to do what is told and follow rules
+# 1036	ipbhprp	Important to behave properly
+# 1040	imptrad	Important to follow traditions and customs
+# 1034	ipstrgv	Important that government is strong and ensures safety
+
+# 1197	wmcpwrk	Women should be prepared to cut down on paid work for sake of family
+# 1198	mnrgtjb	Men should have more right to job than women when jobs are scarce
+
+mlogit_ess <- ess %>% 
+  mutate(target = as.factor(target)) %>% 
+#  drop_na(target) %>% 
+  mutate(imm_culture = 10 - imueclt) %>% 
+  mutate(imm_badecon = 10 - imbgeco) %>%
+  mutate(imm_worselive = 10 - imwbcnt) %>%
+  mutate(econ_unsat = 10 - stfeco) %>% 
+  mutate(aut_safe = 7 - impsafe) %>% 
+  mutate(aut_rules = 7 - ipfrule) %>%
+  mutate(aut_behave = 7 - ipbhprp) %>%
+  mutate(aut_trad = 7 - imptrad) %>% 
+  mutate(aut_govstrong = 7 - ipstrgv) %>% 
+  rename(
+    econ_insec = hincfel,
+    demsat = stfdem,
+    age = agea,
+#    year = inwyys,
+    trust_un = trstun,
+    trust_eu = trstep,
+    trust_gov = trstplt,
+    # trust_parliament = trstprl,
+    # trust_police = trstplc,
+    # trust_courts = trstlgl,
+    stfgov = stfgov,
+    religion = rlgdgr,
+    rural = domicil
+ #   educ = edulvlb
+  ) %>%
+  mutate(
+    cntry = cntryname,
+    educ = ifelse(eisced == 55, NA, eisced),
+    work = ifelse(mnactic == 1, 1, 0),
+    unemployed = ifelse(uemp3m == 1, 1, 0),
+    sex = gndr - 1, # sex variable erstellen
+    ethnic = ifelse(blgetmg == "1", 1, 0),
+    welfare = ifelse(hincsrca %in% c(5,6), 1, 0)
+  ) %>%
+  mutate(
+    id = 1:n(),
+    year = case_when(
+      essround == 8 ~ "2016",
+      essround == 7 ~ "2014",
+      essround == 6 ~ "2012",
+      essround == 5 ~ "2010",
+      essround == 4 ~ "2008",
+      essround == 3 ~ "2006",
+      essround == 2 ~ "2004",
+      essround == 1 ~ "2002",
+      TRUE ~ "") %>% 
+      as.numeric
+    ) %>% 
+  mutate(year_2016 = ifelse(year == 2016, 1, 0)) %>% 
+  mutate(year_2014 = ifelse(year == 2014, 1, 0)) %>% 
+  mutate(year_2012 = ifelse(year == 2012, 1, 0)) %>% 
+  mutate(year_2010 = ifelse(year == 2010, 1, 0))
+
+var_checks <- function(vars) {
+  list(
+    table = table(vars),
+    var_label = var_label(vars),
+    val_labels = val_labels(vars),
+    is.character = is.character(vars),
+    is.numeric = is.numeric(vars)
+  )
+}
+# var_checks(ess$mnrgtjb)
+# 
+# var_checks(mlogit_ess$imm_culture)
+# 
+# table(mlogit_ess$unemployed)
+# 
+# mlogit_ess %>% dplyr::select(educ) %>% table()
+
+table(mlogit_ess$year)
+
+ess_year <- mlogit_ess %>% 
+  group_by(year, target) %>% 
+  tally() %>% 
+  na.omit() %>% 
+  tidyr::spread("target", "n") %>% 
+  ungroup() %>% 
+  mutate(total = Establishment + `Progressive Populism` + `Traditionalist Populism`) %>% 
+  mutate(Establishment = 100*round(Establishment / total, 4)) %>% 
+  mutate(`Progressive Populism` = 100*round(`Progressive Populism` / total, 4)) %>% 
+  mutate(`Traditionalist Populism` = 100*round(`Traditionalist Populism` / total, 4)) %>% 
+  select(-total) %>% 
+  gather(type, value, -year) 
+
+ess_year %>% 
+  ggplot(aes(year, value, color = type)) +
+  geom_line() +
+  geom_point(size = 2) +
+  facet_wrap(~type, scales = "free_y", ncol = 1) +
+  scale_y_continuous(breaks = seq(0,100, by = 2), 
+                     labels = paste0(seq(0,100, by = 2), "%")) +
+  ggrepel::geom_text_repel(aes(label = paste0(value, "%")), 
+            # vjust = 1.5,
+            # hjust = 1,
+            color = "black", size = 5) +
+  ggthemes::theme_hc() +
+  ggthemes::scale_color_fivethirtyeight() +
+  guides(color = F) +
+  xlab("") +
+  ylab("Support for Parties in %") +
+  theme(axis.text=element_text(size = 10), 
+        title = element_text(size = 18, face = "bold"), 
+        plot.caption = element_text(size = 10),
+        axis.title=element_text(size = 10),
+        axis.text.y = element_text(face = "bold")) #+
+  #ggtitle("Support for Establishment/Populist Parties Across Years") +
+ # labs(caption = "Source: ESS Data Round 5 - 8; N = 87238") 
+
+
+ggsave(filename = "text/images/yearplot.png", width = 10, height = 10)
+save(ess_year, file = "text/data/ess_year.Rdata")
+```
+
+# Regions
+
+```{r}
+cntry_dat <- plyr::rbind.fill(
+data.frame(stringsAsFactors=FALSE,
+          cntry = c("Denmark", "Estonia", "Faroe Islands", "Finland", "Iceland",
+                 "Ireland", "Isle of Man", "Latvia", "Lithuania", "Norway",
+                 "Svalbard and Jan Mayen Islands", "Sweden",
+                 "United Kingdom"),
+          regional = "north"),
+data.frame(stringsAsFactors=FALSE,
+          cntry = c("Albania", "Andorra", "Bosnia and Herzegovina",
+                   "Croatia", "Gibraltar", "Greece", "Holy See", "Italy",
+                   "Malta", "Montenegro", "Portugal", "San Marino", "Serbia",
+                   "Slovenia", "Spain", "Cyprus",
+                   "The former Yugoslav Republic of Macedonia"),
+          regional = "south"),
+data.frame(stringsAsFactors=FALSE,
+          cntry = c("Austria", "Belgium", "France", "Germany",
+                    "Liechtenstein", "Luxembourg", "Monaco", "Netherlands",
+                    "Switzerland"),
+          regional = "west"),
+data.frame(stringsAsFactors=FALSE,
+           cntry = c("Belarus", "Bulgaria", "Czech Republic", "Hungary", "Poland", 
+                     "Republic of Moldova", "Romania", "Russian Federation", "Slovakia",
+                     "Ukraine"), 
+           regional = "east")
+)
+
+# https://unstats.un.org/unsd/methodology/m49/
+
+cntry_dat %<>% 
+  mutate(cntry = countrycode::countrycode(cntry, "country.name", "country.name")) 
+
+# uk <- mlogit_ess %>%
+#   filter(cntry == "United Kingdom") %>%
+#   mutate(regional = "north")
+
+
+mlogit_ess <- left_join(cntry_dat, mlogit_ess, by = "cntry") 
+
+# mlogit_ess <- rbind(mlogit_ess, uk)
+
+mlogit_ess %<>% 
+  mutate(north = ifelse(regional == "north", 1, 0)) %>% 
+  mutate(south = ifelse(regional == "south", 1, 0)) %>% 
+  mutate(east = ifelse(regional == "east", 1, 0)) %>% 
+  mutate(west = ifelse(regional == "west", 1, 0)) 
+
+table(mlogit_ess$regional, mlogit_ess$target)
+
+table(mlogit_ess$regional, mlogit_ess$cntry)
+
+regional_ess <- mlogit_ess %>% 
+  group_by(regional, target) %>% 
+  tally() %>% 
+  na.omit() %>% 
+  tidyr::spread("target", "n") %>% 
+  ungroup() %>% 
+  mutate(regional = capitalizeStrings(regional)) %>% 
+  mutate(total = Establishment + `Progressive Populism` + `Traditionalist Populism`) %>% 
+  mutate(Establishment = 100*round(Establishment / total, 4)) %>% 
+  mutate(`Progressive Populism` = 100*round(`Progressive Populism` / total, 4)) %>% 
+  mutate(`Traditionalist Populism` = 100*round(`Traditionalist Populism` / total, 4)) %>% 
+  select(-total) %>% 
+  gather(type, value, -regional) 
+
+regional_ess %>% 
+  ggplot(aes(regional, value, fill = type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  #coord_flip() +
+  geom_text(aes(ymax = 100, label = paste0(value, "%")), 
+            vjust = -0.5,
+            hjust = 0.5,
+            color = "black",
+            position = position_dodge(0.9), size = 4) +
+  ggthemes::theme_hc() +
+  ggthemes::scale_color_fivethirtyeight() + 
+  facet_wrap(~type, scale = "fixed") +
+  scale_y_continuous(breaks = seq(0,100, by = 25), 
+                   labels = paste0(seq(0,100, by = 25),"%")) +
+  #scale_x_discrete("", labels = )
+  guides(fill = F) +
+  xlab("") +
+  ylab("Support for Parties in %")  +
+  theme(axis.text=element_text(size = 10), 
+        title = element_text(size = 18, face = "bold"), 
+        plot.caption = element_text(size = 10),
+        axis.title=element_text(size = 10),
+        axis.text.y = element_text(face = "bold")) #+
+ # ggtitle("Support for Establishment/Populist Parties Across European Regions") +
+#  labs(caption = "Source: ESS Data Round 5 - 8; N = 87238") 
+  
+ggsave(filename = "text/images/regionalplot.png", width = 10, height = 6)
+save(regional_ess, file = "text/data/regional_ess.Rdata")
+```
+
+
+
+
+# Factorscores
+
+```{r}
+anti_imm_dat <- mlogit_ess %>%
+  select(imm_culture, imm_badecon, imm_worselive) %>%
+  mutate_all(as.numeric) 
+
+mlogit_ess <- anti_imm_dat %>%
+  psych::fa() %>%
+  predict.psych(data = anti_imm_dat) %>%
+  as.data.frame() %>%
+  transmute(anti_imm = range01(MR1)*10) %>%
+  cbind(mlogit_ess)
+
+minus_7 <- function(var) {
+  7 - var
+}
+
+fa_dat <- mlogit_ess %>%
+  select(ipcrtiv, impfree, impdiff, ipadvnt, ipgdtim, impfun,
+         impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad,
+         imprich , iprspot , ipshabt , ipsuces,
+         ipeqopt , ipudrst , impenv , iphlppl , iplylfr
+         ) %>% 
+    mutate_all(as.numeric) %>% 
+    mutate_all(minus_7) 
+
+
+# cronbachs alpha
+## openness to change
+
+openness_dat <- fa_dat %>%
+  select(ipcrtiv , impfree , impdiff , ipadvnt , ipgdtim , impfun) %>%
+  mutate_all(as.numeric) 
+
+fa_dat <- openness_dat %>%
+  psych::fa() %>%
+  predict.psych(data = openness_dat) %>%
+  as.data.frame() %>%
+  transmute(openness = (1-range01(MR1))*10) %>%
+  cbind(fa_dat)
+
+
+conservation_dat <- fa_dat %>%
+  select(impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad) %>%
+  mutate_all(as.numeric) 
+
+fa_dat <- conservation_dat %>%
+  psych::fa() %>%
+  predict.psych(data = conservation_dat) %>%
+  as.data.frame() %>%
+  transmute(conservation = range01(MR1)*10) %>%
+  cbind(fa_dat)
+
+
+selfenhance_dat <- fa_dat %>%
+  select(imprich , iprspot , ipshabt , ipsuces) %>%
+  mutate_all(as.numeric) 
+
+fa_dat <- selfenhance_dat %>%
+  psych::fa() %>%
+  predict.psych(data = selfenhance_dat) %>%
+  as.data.frame() %>%
+  transmute(selfenhance = (1-range01(MR1))*10) %>%
+  cbind(fa_dat)
+
+
+selftrans_dat <- fa_dat %>%
+  select(ipeqopt , ipudrst , impenv , iphlppl , iplylfr) %>%
+  mutate_all(as.numeric) 
+
+fa_dat <- selftrans_dat %>%
+  psych::fa() %>%
+  predict.psych(data = selftrans_dat) %>%
+  as.data.frame() %>%
+  transmute(selftrans = range01(MR1)*10) %>%
+  cbind(fa_dat)
+
+
+
+fa_dat <- fa_dat %>% 
+  # mutate_all(range01) %>% 
+  # mutate(openness = (ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + impfun)/6) %>% 
+  # mutate(conservation = (impsafe + ipstrgv + ipfrule + ipbhprp + ipmodst + imptrad)/6) %>% 
+  # mutate(selfenhance = (imprich + iprspot + ipshabt + ipsuces)/4) %>% 
+  # mutate(selftrans = (ipeqopt + ipudrst + impenv + iphlppl + iplylfr)/5) %>% 
+  # mutate_all(range01) %>% 
+  mutate(opendim = (range01((openness - conservation))*10)-5) %>% 
+  mutate(selfdim = (range01((selftrans - selfenhance))*10)-5)
+
+hist(fa_dat$opendim)
+max(fa_dat$opendim, na.rm=T)
+min(fa_dat$opendim, na.rm=T)
+
+mlogit_ess <- fa_dat %>% 
+  select(openness, conservation, selfenhance, selftrans, opendim, selfdim) %>% 
+  cbind(mlogit_ess) #%>% 
+  #na.omit()
+
+global_dat <- mlogit_ess %>%
+  select(trust_un, trust_eu) %>%
+  mutate_all(as.numeric) 
+
+mlogit_ess <- global_dat %>%
+  psych::fa() %>%
+  predict.psych(data = global_dat) %>%
+  unlist() %>% as.character() %>% as.numeric() %>%
+  data.frame(globalism = .) %>%
+  transmute(globalism = range01(globalism)*5) %>%
+  cbind(mlogit_ess) 
+
+govsat_dat <- mlogit_ess %>%
+  select(stfgov, trust_gov, demsat) %>%
+  mutate_all(as.numeric) 
+
+mlogit_ess <- govsat_dat %>%
+  psych::fa() %>%
+  predict.psych(data = govsat_dat) %>%
+  unlist() %>% as.character() %>% as.numeric() %>%
+  data.frame(govsat = .) %>%
+  transmute(govsat = range01(govsat)*5) %>%
+  cbind(mlogit_ess) 
+
+mlogit_ess %<>%
+#   mutate(anti_imm = range01(
+#                     range01(imm_culture) + 
+#                     range01(imm_badecon) + 
+#                     range01(imm_worselive)
+#                     )*10)
+  dplyr::select(target, imm_culture, imm_badecon, imm_worselive, anti_imm, econ_unsat, globalism, econ_insec, aut_safe, aut_behave, aut_rules, aut_trad, aut_govstrong, demsat, age, trust_un, trust_eu, trust_gov, govsat, religion, rural, educ, unemployed, sex, ethnic, welfare, lrscale, openness, conservation, selfenhance, selftrans, opendim, selfdim, pweight, regional, east, west, north, south, cntry, year_2016, year_2014, year_2012, year_2010, year) %>% 
+  na.omit() %>% 
+  mutate_all(labelled::remove_labels)
+
+
+```
+
+
+# Boxplots
+
+```{r}
+options(scipen = 999)
+source("helper_functions.R")
+my_comparisons <- list(c("Establishment", "Traditionalist Populism"),
+                        c("Establishment", "Progressive Populism"), 
+                        c("Progressive Populism", "Traditionalist Populism"))
+
+symnum.args <- list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+                    symbols = c("p < 0.001", "p < 0.001", "p < 0.01", "p < 0.05", "ns"))
+
+mlogit_ess %>% 
+  drop_na(target) %>% 
+  group_by(target) %>% 
+  summarise(sd_lrscale = sd(lrscale, na.rm = T) %>% 
+            round(., 2),
+            lrscale = mean(lrscale, na.rm = T) %>% 
+            round(., 2)) -> leftright_means
+
+
+leftright <- mlogit_ess %>%
+  drop_na(target) %>% 
+  ggplot(aes(target, lrscale, group = target, fill = target)) +
+  geom_violin()  + 
+  geom_boxplot(width=0.2, fill = "white")  + 
+  geom_hline(yintercept = mean(mlogit_ess$lrscale, na.rm = T), linetype = 2) + #line at base mean
+  ggthemes::theme_hc() +
+  ggthemes::scale_fill_fivethirtyeight() + 
+  ggpubr::stat_compare_means(label = "p.format", 
+                        comparisons = my_comparisons, 
+                             symnum.args = symnum.args) + # Add pairwise comparisons p-value
+  ggpubr::stat_compare_means(label.y = 9.3, label.x = 3.4) +    # Add global p-value
+  guides(fill=F) +
+  xlab("") +
+  ylab("Left-Right Scale") +
+  ggtitle("Left-Right Scale by Party Support") +
+  #labs(caption = "Source: ESS Data Round 5 - 8; N = 87238") +
+  coord_flip() +
+  geom_text(data = leftright_means, 
+            aes(group = target, label = lrscale), nudge_y = 0.5) +
+  theme(axis.text=element_text(size = 10), 
+        title = element_text(size = 18, face = "bold"), 
+        plot.caption = element_text(size = 10),
+        axis.title=element_text(size = 10),
+        axis.text.y = element_text(face = "bold"))
+
+#ggsave(filename = "images/box_leftright.png", width = 10, height = 6)
+
+mlogit_ess %>% 
+  drop_na(target) %>% 
+  group_by(target) %>% 
+  summarise(sd_age = sd(age, na.rm = T) %>% 
+            round(., 2),
+            age = mean(age, na.rm = T) %>% 
+            round(., 2)) -> age_means
+
+age <- mlogit_ess %>%
+  drop_na(target) %>% 
+  ggplot(aes(target, age, group = target, fill = target)) +
+  geom_violin()  + 
+  geom_boxplot(width=0.2, fill = "white")  + 
+  geom_hline(yintercept = mean(mlogit_ess$age, na.rm = T), linetype = 2) + #line at base mean
+  ggthemes::theme_hc() +
+  ggthemes::scale_fill_fivethirtyeight() + 
+  ggpubr::stat_compare_means(label = "p.format", 
+                        comparisons = my_comparisons, 
+                             symnum.args = symnum.args) + # Add pairwise comparisons p-value
+  ggpubr::stat_compare_means(label.y = 90.3, label.x = 3.4) +    # Add global p-value
+  guides(fill=F) +
+  xlab("") +
+  ylab("Age in Years") +
+  ggtitle("Age by Party Support") +
+  #labs(caption = "Source: ESS Data Round 5 - 8; N = 87238") +
+  coord_flip() +
+  geom_text(data = age_means, 
+            aes(group = target, label = age), nudge_y = 8) +
+  theme(axis.text=element_text(size = 10), 
+        title = element_text(size = 18, face = "bold"), 
+        plot.caption = element_text(size = 10),
+        axis.title=element_text(size = 10),
+        axis.text.y = element_text(face = "bold"))
+
+
+#ggsave(filename = "images/box_age.png", width = 10, height = 6)
+
+mlogit_ess %>% 
+  drop_na(target) %>% 
+  group_by(target) %>% 
+  summarise(sd_educ = sd(educ, na.rm = T) %>% 
+            round(., 2),
+            educ = mean(educ, na.rm = T) %>% 
+            round(., 2)) -> educ_means
+
+educ <- mlogit_ess  %>%
+  drop_na(target) %>% 
+  ggplot(aes(target, educ, group = target, fill = target)) +
+  geom_violin()  + 
+  geom_boxplot(width=0.2, fill = "white")  + 
+  geom_hline(yintercept = mean(mlogit_ess$educ, na.rm = T), linetype = 2) + #line at base mean
+  ggthemes::theme_hc() +
+  ggthemes::scale_fill_fivethirtyeight() + 
+  ggpubr::stat_compare_means(label = "p.format", 
+                        comparisons = my_comparisons, 
+                             symnum.args = symnum.args) + # Add pairwise comparisons p-value
+  ggpubr::stat_compare_means(label.y = 6.3, label.x = 3.4) +    # Add global p-value
+  guides(fill=F) +
+  xlab("") +
+  ylab("Education") +
+  ggtitle("Education by Party Support") +
+  #labs(caption = "Source: ESS Data Round 5 - 8; N = 87238") +
+  coord_flip() +
+  geom_text(data = educ_means, 
+            aes(group = target, label = educ), nudge_y = 0.23) +
+  theme(axis.text=element_text(size = 10), 
+        title = element_text(size = 18, face = "bold"), 
+        plot.caption = element_text(size = 10),
+        axis.title=element_text(size = 10),
+        axis.text.y = element_text(face = "bold"))
+
+
+#ggsave(filename = "images/box_education.png", width = 10, height = 6)
+
+mlogit_ess %>% 
+  drop_na(target) %>% 
+  group_by(target) %>% 
+  summarise(sd_religion = sd(religion, na.rm = T) %>% 
+            round(., 2),
+            religion = mean(religion, na.rm = T) %>% 
+            round(., 2)) -> relig_means
+
+pacman::p_load(grDevices)
+
+relig <- mlogit_ess  %>%
+  drop_na(target) %>% 
+  ggplot(aes(target, religion, group = target, fill = target)) +
+  geom_violin()  + 
+  geom_boxplot(width=0.2, fill = "white")  + 
+  geom_hline(yintercept = mean(mlogit_ess$religion, na.rm = T), linetype = 2) + #line at base mean
+  ggthemes::theme_hc() +
+  ggthemes::scale_fill_fivethirtyeight() + 
+  ggpubr::stat_compare_means(label = "p.format", 
+                        comparisons = my_comparisons, 
+                             symnum.args = symnum.args) + # Add pairwise comparisons p-value
+  ggpubr::stat_compare_means(label.y = 9.3, label.x = 3.4) +    # Add global p-value
+  guides(fill=F) +
+  xlab("") +
+  ylab("Religiosity") +
+  ggtitle("Religiosity by Party Support") +
+  #labs(caption = "Source: ESS Data Round 5 - 8; N = 87238") +
+  coord_flip() +
+  geom_text(data = relig_means, 
+            aes(group = target, 
+                label = religion), nudge_y = 0.8) +
+  theme(axis.text=element_text(size = 10), 
+        title = element_text(size = 18, face = "bold"), 
+        plot.caption = element_text(size = 10),
+        axis.title=element_text(size = 10),
+        axis.text.y = element_text(face = "bold"))
+
+
+#ggsave(filename = "images/box_religiosity.png", width = 10, height = 6)
+
+plot2by2 <- cowplot::plot_grid(leftright, age, educ, relig,
+                      labels = c("A", "B", "C", "D"), ncol = 2)
+
+cowplot::save_plot("text/images/plot2by2.png", plot2by2,
+          ncol = 2, # we're saving a grid plot of 2 columns
+          nrow = 2, # and 2 rows
+          base_height = 6,
+          base_width = 10,
+          # each individual subplot should have an aspect ratio of 1.3
+          base_aspect_ratio = 1.3
+          )
+
+leftright_means %>% 
+  left_join(age_means) %>% 
+  left_join(educ_means) %>% 
+  left_join(relig_means) %>%  
+  mutate(cite_lrscale = paste0("(Mean = ", lrscale, "; SD = ", sd_lrscale, ")")) %>%  
+  mutate(cite_age = paste0("(Mean = ", age, "; SD = ", sd_age, ")")) %>%  
+  mutate(cite_educ = paste0("(Mean = ", educ, "; SD = ", sd_educ, ")")) %>%  
+  mutate(cite_religion = paste0("(Mean = ", religion, "; SD = ", sd_religion, ")")) %>% 
+  gather(key, value, -target)  %>% 
+  mutate(target = case_when(
+    str_detect(target,"ressive") ~ "prog", 
+    str_detect(target,"radition") ~ "trad",
+    TRUE ~ "est")) -> boxplot_dat
+
+save(boxplot_dat, file = "text/data/boxplot_dat.Rdata")
+
+
+```

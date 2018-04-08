@@ -1,0 +1,1068 @@
+---
+title: "Populism Data Wrangling"
+output: html_notebook
+---
+
+# Loading in Data and packages
+
+```{r}
+load("data/ess_vote.Rdata")
+
+pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, car, psych, knitr, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, brms, questionr)
+
+# ess %<>%
+#   select(-prtmb, -prtcl, -prtvt)
+```
+
+
+# Populistische Parteien umkodieren
+
+## Partyvote
+
+```{r}
+
+parties <- ess[, stringr::str_detect(names(ess), "prtv")] %>% 
+  mutate_all(sjmisc::to_label) %>% 
+  mutate_all(as.character)
+
+table(ess$prtvt)
+
+ess <- parties %>% 
+  mutate(prtvt = case_when(
+    !is.na(prtvtat) ~ prtvtat,
+    !is.na(prtvtaat) ~ prtvtaat,
+    !is.na(prtvtbat) ~ prtvtbat,
+    !is.na(prtvtbe)  ~ prtvtbe,
+    !is.na(prtvtabe) ~ prtvtabe,
+    !is.na(prtvtbbe) ~ prtvtbbe,
+    !is.na(prtvtcbe) ~ prtvtcbe,
+    !is.na(prtvtbg)  ~ prtvtbg,
+    !is.na(prtvtabg) ~ prtvtabg,
+    !is.na(prtvtbbg) ~ prtvtbbg,
+    !is.na(prtvtcbg) ~ prtvtcbg,
+    !is.na(prtvtch)  ~ prtvtch,
+    !is.na(prtvtach) ~ prtvtach,
+    !is.na(prtvtbch) ~ prtvtbch,
+    !is.na(prtvtcch) ~ prtvtcch,
+    !is.na(prtvtdch) ~ prtvtdch,
+    !is.na(prtvtech) ~ prtvtech,
+    !is.na(prtvtcy)  ~ prtvtcy,
+    !is.na(prtvtacy) ~ prtvtacy,
+    !is.na(prtvtcz)  ~ prtvtcz,
+    !is.na(prtvtacz) ~ prtvtacz,
+    !is.na(prtvtbcz) ~ prtvtbcz,
+    !is.na(prtvtccz) ~ prtvtccz,
+    !is.na(prtvtdcz) ~ prtvtdcz,
+    # !is.na(prtvde1)  ~ prtvde1,
+    # !is.na(prtvade1) ~ prtvade1,
+    # !is.na(prtvbde1) ~ prtvbde1,
+    # !is.na(prtvcde1) ~ prtvcde1,
+    # !is.na(prtvdde1) ~ prtvdde1,
+    # !is.na(prtvede1) ~ prtvede1,
+    !is.na(prtvde2)  ~ prtvde2,
+    !is.na(prtvade2) ~ prtvade2,
+    !is.na(prtvbde2) ~ prtvbde2,
+    !is.na(prtvcde2) ~ prtvcde2,
+    !is.na(prtvdde2) ~ prtvdde2,
+    !is.na(prtvede2) ~ prtvede2,
+    !is.na(prtvtdk)  ~ prtvtdk,
+    !is.na(prtvtadk) ~ prtvtadk,
+    !is.na(prtvtbdk) ~ prtvtbdk,
+    !is.na(prtvtcdk) ~ prtvtcdk,
+    !is.na(prtvtee)  ~ prtvtee,
+    !is.na(prtvtaee) ~ prtvtaee,
+    !is.na(prtvtbee) ~ prtvtbee,
+    !is.na(prtvtcee) ~ prtvtcee,
+    !is.na(prtvtdee) ~ prtvtdee,
+    !is.na(prtvteee) ~ prtvteee,
+    !is.na(prtvtes)  ~ prtvtes,
+    !is.na(prtvtaes) ~ prtvtaes,
+    !is.na(prtvtbes) ~ prtvtbes,
+    !is.na(prtvtces) ~ prtvtces,
+    !is.na(prtvtfi)  ~ prtvtfi,
+    !is.na(prtvtafi) ~ prtvtafi,
+    !is.na(prtvtbfi) ~ prtvtbfi,
+    !is.na(prtvtcfi) ~ prtvtcfi,
+    !is.na(prtvtfr)  ~ prtvtfr,
+    !is.na(prtvtafr) ~ prtvtafr,
+    !is.na(prtvtbfr) ~ prtvtbfr,
+    !is.na(prtvtcfr) ~ prtvtcfr,
+    !is.na(prtvtgb)  ~ prtvtgb,
+    !is.na(prtvtagb) ~ prtvtagb,
+    !is.na(prtvtbgb) ~ prtvtbgb,
+    !is.na(prtvtgr)  ~ prtvtgr,
+    !is.na(prtvtagr) ~ prtvtagr,
+    !is.na(prtvtbgr) ~ prtvtbgr,
+    !is.na(prtvtcgr) ~ prtvtcgr,
+    !is.na(prtvthr)  ~ prtvthr,
+    !is.na(prtvthu)  ~ prtvthu,
+    !is.na(prtvtahu) ~ prtvtahu,
+    !is.na(prtvtbhu) ~ prtvtbhu,
+    !is.na(prtvtchu) ~ prtvtchu,
+    !is.na(prtvtdhu) ~ prtvtdhu,
+    !is.na(prtvtehu) ~ prtvtehu,
+    !is.na(prtvtie)  ~ prtvtie,
+    !is.na(prtvtaie) ~ prtvtaie,
+    !is.na(prtvtil)  ~ prtvtil,
+    !is.na(prtvtail) ~ prtvtail,
+    !is.na(prtvtbil) ~ prtvtbil,
+    !is.na(prtvtcil) ~ prtvtcil,
+    !is.na(prtvtis)  ~ prtvtis,
+    !is.na(prtvtais) ~ prtvtais,
+    !is.na(prtvtit)  ~ prtvtit,
+    !is.na(prtvtait) ~ prtvtait,
+    !is.na(prtvtbit) ~ prtvtbit,
+    !is.na(prtvlt1)  ~ prtvlt1,
+    !is.na(prtvalt1) ~ prtvalt1,
+    # !is.na(prtvlt2)  ~ prtvlt2,
+    # !is.na(prtvalt2) ~ prtvalt2,
+    # !is.na(prtvlt3)  ~ prtvlt3,
+    # !is.na(prtvalt3) ~ prtvalt3,
+    !is.na(prtvtlu)  ~ prtvtlu,
+    !is.na(prtvtnl)  ~ prtvtnl,
+    !is.na(prtvtanl) ~ prtvtanl,
+    !is.na(prtvtbnl) ~ prtvtbnl,
+    !is.na(prtvtcnl) ~ prtvtcnl,
+    !is.na(prtvtdnl) ~ prtvtdnl,
+    !is.na(prtvtenl) ~ prtvtenl,
+    !is.na(prtvtfnl) ~ prtvtfnl,
+    !is.na(prtvtno)  ~ prtvtno,
+    !is.na(prtvtano) ~ prtvtano,
+    !is.na(prtvtbno) ~ prtvtbno,
+    !is.na(prtvtpl)  ~ prtvtpl,
+    !is.na(prtvtapl) ~ prtvtapl,
+    !is.na(prtvtbpl) ~ prtvtbpl,
+    !is.na(prtvtcpl) ~ prtvtcpl,
+    !is.na(prtvtpt)  ~ prtvtpt,
+    !is.na(prtvtapt) ~ prtvtapt,
+    !is.na(prtvtbpt) ~ prtvtbpt,
+    !is.na(prtvtru)  ~ prtvtru,
+    !is.na(prtvtaru) ~ prtvtaru,
+    !is.na(prtvtbru) ~ prtvtbru,
+    !is.na(prtvtcru) ~ prtvtcru,
+    !is.na(prtvtse)  ~ prtvtse,
+    !is.na(prtvtase) ~ prtvtase,
+    !is.na(prtvtbse) ~ prtvtbse,
+    !is.na(prtvtsi)  ~ prtvtsi,
+    !is.na(prtvtasi) ~ prtvtasi,
+    !is.na(prtvtbsi) ~ prtvtbsi,
+    !is.na(prtvtcsi) ~ prtvtcsi,
+    !is.na(prtvtdsi) ~ prtvtdsi,
+    !is.na(prtvtesi) ~ prtvtesi,
+    !is.na(prtvtsk)  ~ prtvtsk,
+    !is.na(prtvtask) ~ prtvtask,
+    !is.na(prtvtbsk) ~ prtvtbsk,
+    !is.na(prtvtcsk) ~ prtvtcsk,
+    !is.na(prtvttr)  ~ prtvttr,
+    !is.na(prtvtatr) ~ prtvtatr,
+    !is.na(prtvtua)  ~ prtvtua,
+    !is.na(prtvtaua) ~ prtvtaua,
+    !is.na(prtvtbua) ~ prtvtbua,
+    !is.na(prtvtcua) ~ prtvtcua,
+    !is.na(prtvtfch) ~ prtvtfch,
+    !is.na(prtvtfee) ~ prtvtfee,
+    !is.na(prtvtdfi) ~ prtvtdfi,
+    !is.na(prtvtbie) ~ prtvtbie,
+    !is.na(prtvtbis) ~ prtvtbis,
+    !is.na(prtvtdpl) ~ prtvtdpl,
+    !is.na(prtvtdru) ~ prtvtdru)) %>% 
+  select(prtvt) %>% 
+  cbind(ess)
+
+
+
+table(ess$prtvt)
+
+#save(ess, file = "data/ess.Rdata")
+```
+
+## Partyclose
+
+```{r}
+parties2 <- ess[, stringr::str_detect(names(ess), "prtc")] %>% 
+  mutate_all(sjmisc::to_label) %>% 
+  mutate_all(as.character)
+
+dput(names(parties2))
+
+ess <- parties2 %>% 
+  mutate(prtcl = case_when(
+  !is.na(prtclat) ~  prtclat ,
+  !is.na(prtclaat) ~ prtclaat,
+  !is.na(prtclcat) ~ prtclcat  ,
+  !is.na(prtclbe) ~  prtclbe  ,
+  !is.na(prtclabe) ~ prtclabe  ,
+  !is.na(prtclbbe) ~ prtclbbe  ,
+  !is.na(prtclcbe) ~ prtclcbe  ,
+  !is.na(prtclbg) ~  prtclbg ,
+  !is.na(prtclabg) ~ prtclabg  ,
+  !is.na(prtclbbg) ~ prtclbbg ,
+  !is.na(prtclcbg) ~ prtclcbg  ,
+  !is.na(prtclch) ~  prtclch ,
+  !is.na(prtclach) ~ prtclach  ,
+  !is.na(prtclbch) ~ prtclbch  ,
+  !is.na(prtclcch) ~ prtclcch  ,
+  !is.na(prtcldch) ~ prtcldch  ,
+  !is.na(prtclech) ~ prtclech  ,
+  !is.na(prtclcy) ~  prtclcy ,
+  !is.na(prtclacy) ~ prtclacy  ,
+  !is.na(prtclcz) ~  prtclcz ,
+  !is.na(prtclacz) ~ prtclacz  ,
+  !is.na(prtclbcz) ~ prtclbcz  ,
+  !is.na(prtclccz) ~ prtclccz  ,
+  !is.na(prtcldcz) ~ prtcldcz  ,
+  !is.na(prtclde) ~  prtclde ,
+  !is.na(prtclade) ~ prtclade  ,
+  !is.na(prtclbde) ~ prtclbde  ,
+  !is.na(prtclcde) ~ prtclcde  ,
+  !is.na(prtcldde) ~ prtcldde  ,
+  !is.na(prtclede) ~ prtclede  ,
+  !is.na(prtcldk) ~  prtcldk ,
+  !is.na(prtcladk) ~ prtcladk  ,
+  !is.na(prtclbdk) ~ prtclbdk  ,
+  !is.na(prtclcdk) ~ prtclcdk  ,
+  !is.na(prtclee) ~  prtclee ,
+  !is.na(prtclaee) ~ prtclaee  ,
+  !is.na(prtclbee) ~ prtclbee  ,
+  !is.na(prtclcee) ~ prtclcee  ,
+  !is.na(prtcldee) ~ prtcldee  ,
+  !is.na(prtcleee) ~ prtcleee  ,
+  !is.na(prtcles) ~  prtcles ,
+  !is.na(prtclaes) ~ prtclaes  ,
+  !is.na(prtclbes) ~ prtclbes  ,
+  !is.na(prtclces) ~ prtclces  ,
+  !is.na(prtcldes) ~ prtcldes  ,
+  !is.na(prtclfi) ~  prtclfi ,
+  !is.na(prtclafi) ~ prtclafi  ,
+  !is.na(prtclbfi) ~ prtclbfi  ,
+  !is.na(prtclcfi) ~ prtclcfi  ,
+  !is.na(prtclfr) ~  prtclfr,
+  !is.na(prtclafr) ~ prtclafr  ,
+  !is.na(prtclbfr) ~ prtclbfr  ,
+  !is.na(prtclcfr) ~ prtclcfr  ,
+  !is.na(prtcldfr) ~ prtcldfr  ,
+  !is.na(prtclgb) ~  prtclgb,
+  !is.na(prtclagb) ~ prtclagb ,
+  !is.na(prtclbgb) ~ prtclbgb  ,
+  !is.na(prtclgr) ~  prtclgr ,
+  !is.na(prtclagr) ~ prtclagr  ,
+  !is.na(prtclbgr) ~ prtclbgr  ,
+  !is.na(prtclcgr) ~ prtclcgr  ,
+  !is.na(prtclhr) ~  prtclhr  ,
+  !is.na(prtclhu) ~  prtclhu ,
+  !is.na(prtclahu) ~  prtclahu ,
+  !is.na(prtclbhu) ~  prtclbhu ,
+  !is.na(prtclchu) ~  prtclchu ,
+  !is.na(prtcldhu) ~  prtcldhu ,
+  !is.na(prtclehu) ~  prtclehu ,
+  !is.na(prtclie) ~  prtclie ,
+  !is.na(prtclaie) ~ prtclaie  ,
+  !is.na(prtclbie) ~ prtclbie  ,
+  !is.na(prtclil) ~  prtclil ,
+  !is.na(prtclail) ~ prtclail  ,
+  !is.na(prtclbil) ~ prtclbil  ,
+  !is.na(prtclcil) ~ prtclcil  ,
+  !is.na(prtcldil) ~ prtcldil  ,
+  !is.na(prtclis) ~  prtclis ,
+  !is.na(prtclais) ~ prtclais  ,
+  !is.na(prtclit) ~  prtclit ,
+  !is.na(prtclait) ~ prtclait  ,
+  !is.na(prtclbit) ~ prtclbit  ,
+  !is.na(prtcllu) ~ prtcllu  ,
+  !is.na(prtcllt) ~ prtcllt  ,
+  !is.na(prtclalt) ~ prtclalt  ,
+  !is.na(prtclnl) ~ prtclnl  ,
+  !is.na(prtclanl) ~ prtclanl  ,
+  !is.na(prtclbnl) ~ prtclbnl,
+  !is.na(prtclcnl) ~ prtclcnl  ,
+  !is.na(prtcldnl) ~ prtcldnl  ,
+  !is.na(prtclenl) ~ prtclenl  ,
+  !is.na(prtclno) ~  prtclno ,
+  !is.na(prtclano) ~ prtclano  ,
+  !is.na(prtclbno) ~ prtclbno  ,
+  !is.na(prtclpl) ~  prtclpl ,
+  !is.na(prtclapl) ~  prtclapl ,
+  !is.na(prtclbpl) ~  prtclbpl ,
+  !is.na(prtclcpl) ~  prtclcpl ,
+  !is.na(prtcldpl) ~  prtcldpl ,
+  !is.na(prtclepl) ~  prtclepl ,
+  !is.na(prtclfpl) ~  prtclfpl ,
+  !is.na(prtclpt) ~  prtclpt ,
+  !is.na(prtclapt) ~ prtclapt  ,
+  !is.na(prtclbpt) ~ prtclbpt  ,
+  !is.na(prtclcpt) ~ prtclcpt  ,
+  !is.na(prtcldpt) ~ prtcldpt  ,
+  !is.na(prtclru) ~  prtclru ,
+  !is.na(prtclaru) ~ prtclaru  ,
+  !is.na(prtclbru) ~ prtclbru  ,
+  !is.na(prtclcru) ~ prtclcru  ,
+  !is.na(prtclse) ~  prtclse ,
+  !is.na(prtclase) ~ prtclase  ,
+  !is.na(prtclbse) ~ prtclbse  ,
+  !is.na(prtclsi) ~  prtclsi ,
+  !is.na(prtclasi) ~ prtclasi  ,
+  !is.na(prtclbsi) ~ prtclbsi  ,
+  !is.na(prtclcsi) ~ prtclcsi  ,
+  !is.na(prtcldsi) ~ prtcldsi  ,
+  !is.na(prtclesi) ~ prtclesi  ,
+  !is.na(prtclsk) ~  prtclsk ,
+  !is.na(prtclask) ~ prtclask  ,
+  !is.na(prtclbsk) ~ prtclbsk  ,
+  !is.na(prtclcsk) ~ prtclcsk  ,
+  !is.na(prtcltr) ~  prtcltr,
+  !is.na(prtclatr) ~ prtclatr  ,
+  !is.na(prtclua) ~  prtclua ,
+  !is.na(prtclaua) ~ prtclaua  ,
+  !is.na(prtclbua) ~ prtclbua  ,
+  !is.na(prtclcua) ~ prtclcua  ,
+  !is.na(prtcldua) ~ prtcldua  ,
+  !is.na(prtclfch) ~ prtclfch  ,
+  !is.na(prtclfee) ~ prtclfee  ,
+  !is.na(prtcldfi) ~ prtcldfi  ,
+  !is.na(prtclefr) ~ prtclefr  ,
+  !is.na(prtclcie) ~ prtclcie  ,
+  !is.na(prtclbis) ~ prtclbis  ,
+  !is.na(prtclgpl) ~ prtclgpl  ,
+  !is.na(prtcldru) ~ prtcldru
+  ))  %>% 
+  select(prtcl) %>% 
+  cbind(ess)
+
+table(ess$prtcl)
+
+#populist_parties
+```
+
+
+## Partymember
+
+```{r}
+#load("data/ess.Rdata")
+
+parties3 <- ess[, stringr::str_detect(names(ess), "prtmb")] %>% 
+  mutate_all(sjmisc::to_label) %>% 
+  mutate_all(as.character)
+
+dput(names(parties3))
+
+ess <- parties3 %>% 
+  mutate(prtmb = case_when(
+  !is.na(prtmbat) ~  prtmbat ,
+  !is.na(prtmbaat) ~ prtmbaat,
+  !is.na(prtmbbe) ~ prtmbbe  ,
+  !is.na(prtmbabe) ~  prtmbabe  ,
+  !is.na(prtmbbbe) ~ prtmbbbe  ,
+  !is.na(prtmbcbe) ~ prtmbcbe  ,
+  !is.na(prtmbbg) ~ prtmbbg  ,
+  !is.na(prtmbabg) ~  prtmbabg ,
+  !is.na(prtmbbbg) ~ prtmbbbg  ,
+  !is.na(prtmbch) ~ prtmbch ,
+  !is.na(prtmbach) ~ prtmbach  ,
+  !is.na(prtmbbch) ~  prtmbbch ,
+  !is.na(prtmbcch) ~ prtmbcch  ,
+  !is.na(prtmbcy) ~ prtmbcy  ,
+  !is.na(prtmbcz) ~ prtmbcz  ,
+  !is.na(prtmbacz) ~ prtmbacz  ,
+  !is.na(prtmbbcz) ~ prtmbbcz  ,
+  !is.na(prtmbde) ~  prtmbde ,
+  !is.na(prtmbade) ~ prtmbade  ,
+  !is.na(prtmbbde) ~  prtmbbde ,
+  !is.na(prtmbcde) ~ prtmbcde  ,
+  !is.na(prtmbdk) ~ prtmbdk  ,
+  !is.na(prtmbadk) ~ prtmbadk  ,
+  !is.na(prtmbbdk) ~ prtmbbdk  ,
+  !is.na(prtmbee) ~  prtmbee ,
+  !is.na(prtmbaee) ~ prtmbaee  ,
+  !is.na(prtmbbee) ~  prtmbbee ,
+  !is.na(prtmbcee) ~  prtmbcee,
+  !is.na(prtmbes) ~  prtmbes,
+  !is.na(prtmbaes) ~  prtmbaes,
+  !is.na(prtmbbes) ~  prtmbbes,
+  !is.na(prtmbfi) ~  prtmbfi,
+  !is.na(prtmbafi) ~  prtmbafi,
+  !is.na(prtmbbfi) ~  prtmbbfi,
+  !is.na(prtmbfr) ~  prtmbfr,
+  !is.na(prtmbafr) ~  prtmbafr,
+  !is.na(prtmbbfr) ~  prtmbbfr,
+  !is.na(prtmbcfr) ~  prtmbcfr,
+  !is.na(prtmbgb) ~  prtmbgb,
+  !is.na(prtmbagb) ~  prtmbagb,
+  !is.na(prtmbgr) ~  prtmbgr,
+  !is.na(prtmbagr) ~  prtmbagr,
+  !is.na(prtmbbgr) ~  prtmbbgr,
+  !is.na(prtmbcgr) ~  prtmbcgr,
+  !is.na(prtmbhr) ~  prtmbhr,
+  !is.na(prtmbhu) ~  prtmbhu,
+  !is.na(prtmbahu) ~  prtmbahu,
+  !is.na(prtmbbhu) ~  prtmbbhu,
+  !is.na(prtmbchu) ~  prtmbchu,
+  !is.na(prtmbie) ~  prtmbie,
+  !is.na(prtmbaie) ~  prtmbaie,
+  !is.na(prtmbil) ~  prtmbil,
+  !is.na(prtmbail) ~  prtmbail,
+  !is.na(prtmbbil) ~  prtmbbil,
+  !is.na(prtmbit) ~  prtmbit,
+  !is.na(prtmbait) ~  prtmbait,
+  !is.na(prtmblu) ~  prtmblu,
+  !is.na(prtmbnl) ~  prtmbnl,
+  !is.na(prtmbanl) ~  prtmbanl,
+  !is.na(prtmbbnl) ~  prtmbbnl,
+  !is.na(prtmbcnl) ~  prtmbcnl,
+  !is.na(prtmbno) ~  prtmbno,
+  !is.na(prtmbano) ~  prtmbano,
+  !is.na(prtmbpl) ~  prtmbpl,
+  !is.na(prtmbapl) ~  prtmbapl,
+  !is.na(prtmbbpl) ~  prtmbbpl,
+  !is.na(prtmbcpl) ~  prtmbcpl,
+  !is.na(prtmbdpl) ~  prtmbdpl,
+  !is.na(prtmbpt) ~  prtmbpt,
+  !is.na(prtmbapt) ~  prtmbapt,
+  !is.na(prtmbbpt) ~  prtmbbpt,
+  !is.na(prtmbru) ~  prtmbru,
+  !is.na(prtmbaru) ~  prtmbaru,
+  !is.na(prtmbbru) ~  prtmbbru,
+  !is.na(prtmbse) ~  prtmbse,
+  !is.na(prtmbase) ~  prtmbase,
+  !is.na(prtmbsi) ~  prtmbsi,
+  !is.na(prtmbasi) ~  prtmbasi,
+  !is.na(prtmbbsi) ~  prtmbbsi,
+  !is.na(prtmbcsi) ~  prtmbcsi,
+  !is.na(prtmbsk) ~  prtmbsk,
+  !is.na(prtmbask) ~  prtmbask,
+  !is.na(prtmbbsk) ~  prtmbbsk,
+  !is.na(prtmbtr) ~  prtmbtr,
+  !is.na(prtmbatr) ~  prtmbatr,
+  !is.na(prtmbua) ~  prtmbua,
+  !is.na(prtmbaua) ~  prtmbaua,
+  !is.na(prtmbbua) ~  prtmbbua,
+  !is.na(prtmbcua) ~  prtmbcua
+  ))  %>% 
+  select(prtmb) %>% 
+  cbind(ess)
+
+table(ess$prtmb)
+
+table(parties3$prtmbit)
+
+# ess %>% 
+#   group_by(cntryname, prtmb) %>% 
+#   tally()
+# 
+# ess %>% 
+#   select(cntryname, prtvt, prtcl, prtmb) %>% 
+#     group_by(cntryname, prtvt, prtcl, prtmb) %>% 
+#   tally()
+
+```
+
+
+# Party Vote for
+
+Important: folgende Länder sind nicht im ESS enthalten:
+Latvia
+
+!!!!Folgende Länder sind umkodiert:
+UK, Österreich, Ungarn, Spanien, Italien, Griechenland, Dänemark, Belgien, Niederlande, Bulgarien, Schweden, Estonia, Czech Republic, Ireland
+
+## Data preparation
+
+```{r}
+
+#load("data/ess_vote.Rdata")
+
+not_in_ches <- c("Switzerland", "Iceland", "Norway", "Slovenia", "Ukraine", "Russia")
+
+# Check all unique names to exclude "Other" categories
+ess %>% 
+  select(prtvt) %>% 
+  unique()
+
+# Exluding Other Categories
+others_na <- c("Other", "Andet - other", "Votó en blanco", "Otros", "Votó nulo", "Andere Partei",
+               "Null", "Invalid", "No one", "Altro", "Does not know if voted for a candidate list", 
+               "Does not know if voted for a candidate in the 2nd round", 
+               "Does not know if voted for a candidate in the 1st round", 
+               "Did not vote for a candidate in the 1st round", 
+               "No 2nd round in SMD", "Did not vote for a candidate in the 2nd round", "Blank vote",
+               "Outro", "Votou em branco / nulo", "Nul", "Blanc", "Autre", 
+               "Did not vote for a candidate list", "Autres mouvements écologistes", "Other (nir)", "Spoiled vote")
+
+ess %<>% 
+  mutate(prtvt = case_when(
+    prtvt %in% others_na ~ NA_character_,
+    TRUE ~ prtvt
+  )) %>% 
+  mutate(prtvt = enc2native(prtvt)) %>%
+  mutate(prtvt = str_replace(prtvt, "–", "-")) %>%
+  filter(!(cntryname %in% not_in_ches))
+
+
+
+#Check how many are Parties are NA
+ess %>% 
+  select(prtvt) %>% is.na() %>% table()
+
+load("data/populist_parties.Rdata")
+
+
+populist_parties %>% 
+  select(party_cntry, party_name, party_name_english, cluster)
+
+ess %>% 
+  filter(cntryname == "Sweden") %>% 
+  select(prtvt) %>% 
+  table()
+#unique(ess$cntryname)
+```
+
+## Party Vote Matching
+
+```{r}
+
+#load("data/ess_vote.Rdata")
+#table(ess$prtvt)
+
+ess %<>% 
+  mutate(populism = case_when(
+    
+    #Austria
+    prtvt == "BZÖ" ~ "Traditionalist Populism",
+    prtvt == "FPÖ" ~ "Traditionalist Populism",    
+    prtvt == "Team Frank Stronach" ~ "Traditionalist Populism", 
+    
+    #Bulgaria
+    prtvt == "PP Ataka" ~ "Traditionalist Populism",
+    str_detect(prtvt, "VMRO") ~ "Traditionalist Populism",   
+    # prtvt == "PP VMRO - Balgarsko natsionalno dvizhenie" ~ "Traditionalist Populism", 
+    prtvt == "Partia Ataka" ~ "Traditionalist Populism",     
+    prtvt == "PP Natsionalen front za dpasenie na Bulgaria" ~ "Traditionalist Populism", 
+    #bul_BBT	Bulgaria bez Tsenzura wasn't there in 2014
+
+    #Belgium
+    prtvt == "Parti Populaire" ~ "Traditionalist Populism",
+    prtvt == "PVDA+" ~ "Progressive Populism",
+    prtvt == "Vlaams Belang" ~ "Traditionalist Populism",
+    
+    #Croatia; 
+    prtvt == "Hrvatska stranka prava (HSP)" ~ "Traditionalist Populism",
+
+    #Cyprus; 
+    prtvt == "Progressive Party of Working People (AKEL)" ~ "Progressive Populism",
+    prtvt == "The Cyprus Green Party" ~ "Progressive Populism",
+
+    #Czech Republic
+    prtvt == "KSČM" ~ "Progressive Populism",
+    prtvt == "ANO 2011" ~ "Progressive Populism",
+    prtvt == "Úsvit přímé demokracie Tomia Okamury" ~ "Traditionalist Populism", 
+    #cz_SVOBODNI.... miss you    
+    
+    #Denmark
+    prtvt == "Enhedslisten, De Rød-Grønne - The Red-Green Alliance" ~ "Progressive Populism",
+    prtvt == "Enhedslisten - Unity List - The Red-Green Alliance" ~ "Progressive Populism",
+    str_detect(prtvt, "Enhedlisten") ~ "Progressive Populism",
+    prtvt == "Dansk Folkeparti - Danish peoples party" ~ "Traditionalist Populism",
+    #Folkebevægelsen mod EU is missing   
+ 
+    #Spain
+    prtvt == "AMAIUR" ~ "Progressive Populism",
+    prtvt == "Izquierda Unida (IU)" ~ "Progressive Populism",
+    prtvt == "Izquierda Unida (IU) - (ICV en Cataluña)" ~ "Progressive Populism",
+    #PODEMOS was created in 2014
+    
+    #Finland  
+    prtvt == "True Finns" ~ "Traditionalist Populism",
+    prtvt == "Left Alliance" ~ "Progressive Populism",
+    prtvt == "The Left Alliance" ~ "Progressive Populism", 
+    
+    #Frankreich
+    prtvt == "FN (Front National)" ~ "Traditionalist Populism",
+    prtvt == "MPF (Mouvement pour la France)" ~ "Traditionalist Populism",
+    prtvt == "FDG (Front de Gauche)" ~ "Progressive Populism",
+    #prtvt == "Parti Radical de Gauche" ~ "Progressive Populism",    
+    #fr_PCF	Parti Communiste Français	
+    #fr_PG	Parti de Gauche	
+    #fr_Ensemble	Ensemble  --> unter FDG
+    #PG, MPF, PCF und Ensamble fehlt
+       
+    #Deutschland
+    prtvt == "NPD" ~ "Traditionalist Populism",
+    prtvt == "AfD" ~ "Traditionalist Populism",
+    str_detect(prtvt, "Die Linke") ~ "Progressive Populism",
+    prtvt == "Piratenpartei" ~ "Progressive Populism",
+    #Die Tierpartei not included
+    
+    #Greece
+    prtvt == "Golden Dawn (Xrusi Augi)" ~ "Traditionalist Populism",
+    prtvt == "The Coalition of the Radical Left (SYRIZA)" ~ "Progressive Populism",
+    prtvt == "The Communist Party of Greece (KKE)" ~ "Progressive Populism",
+    prtvt == "The Popular Orthodox Rally (LAOS)" ~ "Traditionalist Populism",
+    #prtvt == "Independent Citizens' Movement (SPITHA)" ~ "Traditionalist Populism",
+    #ANEL gab es 2010 noch gar nicht :(
+
+    #Hungary
+    #prtvt == "Fidesz - KDNP (Fidesz – Magyar Polgári Szövetség Keresztényd" ~ "Traditionalist Populism",
+    str_detect(prtvt, "Fidesz") ~ "Traditionalist Populism",
+    str_detect(prtvt, "Jobbik") ~ "Traditionalist Populism",
+    #prtvt == "Jobbik (Jobbik Magyarországért Mozgalom)" ~ "Traditionalist Populism",
+    str_detect(prtvt, "LMP") ~ "Progressive Populism",
+
+    #Ireland
+    prtvt == "Green Party" & cntryname == "Ireland" ~ "Progressive Populism",
+    prtvt == "Sinn Féin" ~ "Progressive Populism",
+    prtvt == "Anti-Austerity Alliance - People Before Profit" ~ "Progressive Populism",
+    prtvt == "People Before Profit" ~ "Progressive Populism",
+    str_detect(prtvt, "United Left Alliance") ~ "Progressive Populism",
+    #prtvt == "Socialist Party - United Left Alliance" ~ "Progressive Populism",
+
+    #Italy
+    prtvt == "Movimento 5 Stelle" ~ "Progressive Populism",
+    prtvt == "Fratelli d'Italia" ~ "Traditionalist Populism",
+    prtvt == "Lega Nord" ~ "Traditionalist Populism",
+    prtvt == "Sinistra Ecologia e Libertà (SEL)" ~ "Progressive Populism",
+    #it_RC	Partito della Rifondazione Comunista	missing
+
+    #Lithuania
+    prtvt == "Electoral Action of Poles in Lithuania (LLRA)" ~ "Traditionalist Populism",
+    prtvt == "Party Order and Justice (TT)" ~ "Traditionalist Populism",
+    prtvt == "Political Party 'The Way of Courage' (DK)" ~ "Traditionalist Populism",    
+    
+    #Netherland
+    prtvt == "Socialist Party" ~ "Progressive Populism",
+    prtvt == "Party for Freedom" ~ "Traditionalist Populism", 
+    prtvt == "Party for the Animals" ~ "Progressive Populism",
+    #prtvt == "50PLUS" ~ "Progressive Populism",
+    
+    #Poland
+    prtvt == "Law and Justice" ~ "Traditionalist Populism",
+    prtvt == "Together Party" ~ "Traditionalist Populism",
+    prtvt == "Kukiz'15" ~ "Traditionalist Populism",
+    #pol_KNP	Kongres Nowej Prawicy könnte auch Kukiz'15 sein
+
+    #Portugal
+    prtvt == "Bloco de Esquerda (BE)" ~ "Progressive Populism",
+    prtvt == "Coligação Democrática Unitária (CDU)" ~ "Progressive Populism",
+    #por_MPT	Partido da Terra missing
+
+    #Slovakia; 
+    prtvt == "Freedom and Solidarity (SaS)" ~ "Progressive Populism",
+    prtvt == "Ordinary People and Independent Personalities (OLaNO)" ~ "Traditionalist Populism",
+    prtvt == "Slovak National Party (SNS)" ~ "Traditionalist Populism",    
+    #slo_SNS	Slovenská národná strana	 Missing    
+    
+    #Sweden
+    prtvt == "FI (Feministiskt initiativ)" ~ "Progressive Populism",
+    prtvt == "Piratpartiet" ~ "Progressive Populism", 
+#    prtvt == "Sverigedomkraterna" ~ "Traditionalist Populism", 
+    stringr::str_detect(ess$prtvt, pattern = "Sverig") ~ "Traditionalist Populism",
+    prtvt == "Vänsterpartiet" ~ "Progressive Populism",
+      
+    #UK
+    prtvt == "Green Party" ~ "Progressive Populism",
+    prtvt == "UK Independence Party" ~ "Traditionalist Populism",
+
+    # #Estonia
+    # prtvt == "Erakond Eestimaa Rohelised" ~ "Progressive Populism",
+    # prtvt == "Eesti Vabaerakond" ~ "Progressive Populism",
+
+    is.na(prtvt) ~ NA_character_,
+    TRUE ~ "Establishment"
+   ))
+
+#save(ess, file = "data/ess.Rdata")
+
+# table(is.na(ess$prtvt))
+# table(is.na(ess$prtcl))
+
+# Check if all Partynames have been matched
+ess %>% 
+  group_by(cntryname, populism, prtvt) %>% 
+  tally() %>% 
+  select(cntryname, populism) %>% 
+  table()
+
+```
+
+## Checking Details
+
+```{r}
+table(ess$populism)
+table(sjmisc::to_label(ess$cntry))
+table(ess$prtvede2)
+
+
+
+ess %>% 
+  filter(cntryname == "Sweden") %>% 
+  select(prtvt) %>% table()
+
+ess %>% 
+  filter(cntryname == "Sweden") %>% 
+  select(populism) %>% table()
+
+ess %>% 
+#  mutate(prtvt = stringi::stri_enc_tonative(prtvt)) %>% 
+  mutate(prtvt = enc2native(prtvt)) %>% 
+  mutate(prtvt = str_replace(prtvt, "–", "-")) %>% 
+  filter(prtvt == "PP VMRO - Balgarsko natsionalno dvizhenie")
+
+
+
+ess %>% 
+  filter(cntryname == "Bulgaria") %>% 
+#  mutate(prtvt = stringi::stri_enc_toascii(prtvt)) %>% 
+  mutate(prtvt = enc2native(prtvt)) %>% 
+  mutate(prtvt = str_replace(prtvt, "–", "-")) %>%
+  select(prtvt) %>% table() %>% dput
+
+ess %>% 
+  mutate(prtvt = enc2native(prtvt)) %>%
+  mutate(prtvt = str_replace(prtvt, "–", "-")) %>%
+  select(prtvt) %>% 
+  table()
+
+p_parties <- c("Parti Populaire", "PVDA+", "Vlaams Belang", "Dansk Folkeparti - Danish peoples party", 
+               "Enhedslisten - Unity List - The Red-Green Alliance", "NPD", "AfD", "Die Linke", "Piratenpartei",
+               "Golden Dawn (Xrusi Augi)", "The Coalition of the Radical Left (SYRIZA)", 
+               "The Communist Party of Greece (KKE)", "The Popular Orthodox Rally (LAOS)", "AMAIUR", 
+               "Bloque Nacionalista Galego (BNG)", "Izquierda Unida (IU) - (ICV en Cataluña)", "FN (Front National)",
+               "MPF (Mouvement pour la France)", "FDG (Front de Gauche)", "Green Party", "Sinn Féin", 
+               "Anti-Austerity Alliance - People Before Profit", "Socialist Party - United Left Alliance", 
+               "Movimento 5 Stelle", "Fratelli d'Italia", "Lega Nord", "Sinistra Ecologia e Libertà (SEL)",
+               "Socialist Party", "Party for Freedom", "Party for the Animals", "50PLUS", "Green Party", 
+               "UK Independence Party", "Bloco de Esquerda (BE)", "Coligação Democrática Unitária (CDU)", 
+               "BZÖ", "FPÖ", "Team Frank Stronach", "True Finns", "Left Alliance", 
+               "FI (Feministiskt initiativ)", "Piratpartiet", "Sverigedomkraterna", "Vänsterpartiet", "PP Ataka", 
+               "PP VMRO - Balgarsko natsionalno dvizhenie", "PP Natsionalen front za dpasenie na Bulgaria", 
+               "KSČM", "ANO 2011", "Úsvit přímé demokracie Tomia Okamury", "Erakond Eestimaa Rohelised", 
+               "Eesti Vabaerakond", "Fidesz - KDNP (Fidesz - Magyar Polgári Szövetség Keresztényd", 
+               "Jobbik (Jobbik Magyarországért Mozgalom)", "LMP (Lehet Más A Politika)", 
+               "Electoral Action of Poles in Lithuania (LLRA)", "Party Order and Justice (TT)", 
+               "Political Party 'The Way of Courage' (DK)", "Law and Justice", "Together Party", 
+               "Freedom and Solidarity (SaS)", "Ordinary People and Independent Personalities (OLaNO)", 
+               "Hrvatska stranka prava (HSP)", "Progressive Party of Working People (AKEL)",
+               "The Cyprus Green Party") #%>% 
+#  str_replace("'", "\\'") %>% 
+#  paste(collapse = "|") 
+
+
+#table(str_detect(unique(ess$prtvt), fixed(p_parties)))
+
+compare <- ess %>% 
+#  mutate(prtvt = stringi::stri_enc_tonative(prtvt)) %>% 
+  mutate(prtvt = enc2native(prtvt)) %>% 
+  mutate(prtvt = str_replace(prtvt, "–", "-")) %>% 
+  filter(prtvt %in% p_parties) %>% 
+  select(prtvt) %>% 
+  unique() %>% 
+  rbind(data.frame(prtvt = c(NA, NA))) %>% 
+  arrange(prtvt) %>% 
+  cbind(data.frame(p_parties = sort(p_parties))) %>% 
+  mutate(p_parties = as.character(p_parties)) %>% 
+  filter(!(p_parties %in% prtvt))
+  
+ess %>% 
+  mutate(sv = stringr::str_detect(ess$prtvt, pattern = "Sverig")) %>% 
+  select(sv) %>% table()
+
+
+
+ess %>% 
+  filter(prtvt == "Sverigedomkraterna")
+```
+
+
+# Party feel closer too
+
+
+## Data preparation
+
+```{r}
+#load("data/ess.Rdata")
+
+not_in_ches <- c("Switzerland", "Iceland", "Norway", "Slovenia", "Ukraine", "Russia")
+
+# Check all unique names to exclude "Other" categories
+ess %>% 
+  select(prtcl) %>% 
+  unique()
+
+# Exluding Other Categories
+others_na <- c("Other", "Andet - other", "Votó en blanco", "Otros", "Votó nulo", "Andere Partei",
+               "Null", "Invalid", "No one", "Altro", "Does not know if voted for a candidate list", 
+               "Does not know if voted for a candidate in the 2nd round", 
+               "Does not know if voted for a candidate in the 1st round", 
+               "Did not vote for a candidate in the 1st round", 
+               "No 2nd round in SMD", "Did not vote for a candidate in the 2nd round",
+               "Outro", "Votou em branco / nulo", "Nul", "Blanc", "Autre", 
+               "Did not vote for a candidate list", "Autres mouvements écologistes", "Other (nir)", "Autre (precisez)")
+
+ess %<>% 
+  mutate(prtcl = case_when(
+    prtcl %in% others_na ~ NA_character_,
+    TRUE ~ prtcl
+  )) %>% 
+  mutate(prtcl = enc2native(prtcl)) %>%
+  mutate(prtcl = str_replace(prtcl, "–", "-")) %>%
+  filter(!(cntryname %in% not_in_ches))
+
+
+
+#Check how many are Parties are NA
+ess %>% 
+  select(prtvt) %>% is.na() %>% table()
+
+
+populist_parties %>% 
+  select(party_cntry, party_name, party_name_english, cluster)
+
+ess %>% 
+  filter(cntryname == "United Kingdom") %>% 
+  select(prtcl) %>% 
+  table()
+
+```
+
+## Party Close Matching
+
+```{r}
+#load("data/ess.Rdata")
+
+ess %<>% 
+  mutate(popul2 = case_when(
+
+    #Österreich
+    prtcl == "BZÖ" ~ "Traditionalist Populism",
+    prtcl == "FPÖ" ~ "Traditionalist Populism",    
+    prtcl == "Team Frank Stronach" ~ "Traditionalist Populism",  
+    
+    #Belgium
+    prtcl == "Parti Populaire" ~ "Traditionalist Populism",
+    prtcl == "PVDA+" ~ "Progressive Populism",
+    prtcl == "Vlaams Belang" ~ "Traditionalist Populism",
+    
+    #Bulgaria
+    str_detect(prtcl, "Ataka") ~ "Traditionalist Populism",
+    str_detect(prtcl, "VMRO") ~ "Traditionalist Populism", 
+    #prtcl == "PP Natsionalen front za dpasenie na Bulgaria" ~ "Traditionalist Populism", 
+    #bul_BBT    Bulgaria bez Tsenzura wasn't there in 2014
+    #PP Natsionalen front za dpasenie na Bulgaria -> not included
+ 
+    #Croatia; 
+    prtcl == "Hrvatska stranka prava (HSP)" ~ "Traditionalist Populism",    
+    
+    #Czech Republic
+    prtcl == "KSCM" ~ "Progressive Populism",
+    prtcl == "ANO 2011" ~ "Progressive Populism",
+    prtcl == "Úsvit prímé demokracie Tomia Okamury" ~ "Traditionalist Populism", 
+    #cz_SVOBODNI.... miss you
+    #String bei Úsvit prímé demokracie Tomia Okamury geändert, da anders geschrieben wurde...
+    #String KSCM verändert, da ebenso anders geschrieben
+
+    #Denmark
+    prtcl == "Dansk Folkeparti - Danish peoples party" ~ "Traditionalist Populism",
+    str_detect(prtcl, "Enhedslisten") ~ "Progressive Populism",
+    #prtcl == "Enhedslisten - Unity List - The Red-Green Alliance" ~ "Progressive Populism",
+    #Folkebevægelsen mod EU is missing   
+    
+    #Deutschland
+    prtcl == "NPD" ~ "Traditionalist Populism",
+    prtcl == "AfD" ~ "Traditionalist Populism",
+    str_detect(prtcl, "Linke") ~ "Progressive Populism",
+    prtcl == "Piratenpartei" ~ "Progressive Populism",
+    #Die Tierpartei not included
+    
+    #Frankreich
+    prtcl == "FN (Front National)" ~ "Traditionalist Populism",
+    prtcl == "MPF (Mouvement pour la France)" ~ "Traditionalist Populism",
+    #prtcl == "FDG (Front de Gauche)" ~ "Progressive Populism",
+    prtcl == "PCF (Parti Communiste Francais)" ~ "Progressive Populism",
+    prtcl == "PG (Parti de Gauche)" ~ "Progressive Populism",
+    #fr_PCF    Parti Communiste Français    
+    #fr_PG    Parti de Gauche    
+    #fr_Ensemble    Ensemble  --> unter FDG
+    #PG, MPF, PCF und Ensamble fehlt
+    #Front de Gauche ist eine Wahlplattform, daher wurden die teilnehmenden Parteien hinzugefügt (PG und PCF) und FDG auskommentiert
+    
+    #Spain
+    str_detect(prtcl, "AMAIUR") ~ "Progressive Populism",
+    str_detect(prtcl, "Izquierda Unida") ~ "Progressive Populism",
+    prtcl == "Podemos" ~ "Progressive Populism",
+    #PODEMOS was created in 2014
+    
+    #Finland  
+    prtcl == "True Finns" ~ "Traditionalist Populism",
+    str_detect(prtcl, "Left Alliance") ~ "Progressive Populism",
+    #prtcl == "The Left Alliance " ~ "Progressive Populism",
+
+    #Greece
+    prtcl == "Golden Dawn (Xrusi Augi)" ~ "Traditionalist Populism",
+    prtcl == "The Coalition of the Radical Left (SYRIZA)" ~ "Progressive Populism",
+    prtcl == "The Communist Party of Greece (KKE)" ~ "Progressive Populism",
+    prtcl == "The Popular Orthodox Rally (LAOS)" ~ "Traditionalist Populism",
+    #prtcl == "Independent Citizens' Movement (SPITHA)" ~ "Traditionalist Populism",
+    #ANEL gab es 2010 noch gar nicht :(
+
+    #Hungary
+    str_detect(prtcl, "Jobbik") ~ "Traditionalist Populism",
+    str_detect(prtcl, "LMP") ~ "Progressive Populism",
+    #prtcl == "Fidesz (Fidesz Magyar Polgári Párt)" ~ "Traditionalist Populism",
+    str_detect(prtcl, "Fidesz") ~ "Traditionalist Populism",
+    #Fidez geändert, da keine Koalition...
+
+    #Ireland
+    prtcl == "Green Party" ~ "Progressive Populism",
+    prtcl == "Sinn Féin" ~ "Progressive Populism",
+    prtcl == "Anti-Austerity Alliance - People Before Profit" ~ "Progressive Populism",
+    prtcl == "People Before Profit" ~ "Progressive Populism",
+    str_detect(prtcl, "United Left Alliance") ~ "Progressive Populism",
+
+    #Italy
+    prtcl == "Movimento 5 Stelle" ~ "Progressive Populism",
+    prtcl == "Fratelli d'Italia" ~ "Traditionalist Populism",
+    prtcl == "Lega Nord" ~ "Traditionalist Populism",
+    prtcl == "Sinistra Ecologia e Libertà (SEL)" ~ "Progressive Populism",
+    #it_RC    Partito della Rifondazione Comunista    missing
+
+    #Lithuania
+    prtcl == "Electoral Action of Poles in Lithuania (LLRA)" ~ "Traditionalist Populism",
+    prtcl == "Party Order and Justice (TT)" ~ "Traditionalist Populism",
+    prtcl == "Political Party 'The Way of Courage' (DK)" ~ "Traditionalist Populism",
+
+    #Netherlands
+    prtcl == "Socialist Party" ~ "Progressive Populism",
+    prtcl == "Party for Freedom" ~ "Traditionalist Populism", 
+    prtcl == "Party for the Animals" ~ "Progressive Populism",
+    prtcl == "PVV (List Wilders)" ~ "Traditionalist Populism",
+    
+    #Poland
+    prtcl == "Law and Justice" ~ "Traditionalist Populism",
+    prtcl == "Together Party" ~ "Traditionalist Populism",
+    prtcl == "Kukiz'15" ~ "Traditionalist Populism",
+    prtcl == "United Poland" ~ "Traditionalist Populism",
+    #pol_KNP    Kongres Nowej Prawicy könnte auch Kukiz'15 sein
+    #Kukiz drin, dahe rhinzugefügt
+    
+    #UK
+    prtcl == "Green Party" ~ "Progressive Populism",
+    prtcl == "UK Independence Party" ~ "Traditionalist Populism",
+
+    #Portugal
+    prtcl == "Bloco de Esquerda (BE)" ~ "Progressive Populism",
+    prtcl == "CDU - Coligação Democrática Unitária (PCP-PEV)" ~ "Progressive Populism",
+    #por_MPT    Partido da Terra missing
+
+    #Sweden
+    prtcl == "FI (Feministiskt initiativ)" ~ "Progressive Populism",
+    prtcl == "Piratpartiet" ~ "Progressive Populism", 
+    str_detect(prtcl, "Sverige") ~ "Traditionalist Populism", 
+    prtcl == "Vänsterpartiet" ~ "Progressive Populism",
+
+# 
+#     #Estonia
+#     prtcl == "Erakond Eestimaa Rohelised" ~ "Progressive Populism",
+#     prtcl == "Eesti Vabaerakond" ~ "Progressive Populism",
+
+    #Slovakia; 
+    prtcl == "Freedom and Solidarity (SaS)" ~ "Progressive Populism",
+    prtcl == "Ordinary People and Independent Personalities (OLaNO)" ~ "Traditionalist Populism",
+    prtcl == "Slovak National Party (SNS)" ~ "Traditionalist Populism",    
+
+    #slo_SNS    Slovenská národná strana     Missing
+
+    #Cyprus; 
+    prtcl == "Progressive Party of Working People (AKEL)" ~ "Progressive Populism",
+    prtcl == "The Cyprus Green Party" ~ "Progressive Populism",
+    
+    is.na(prtcl) ~ NA_character_,
+    TRUE ~ "Establishment"
+   ))
+
+  ess %>% 
+    group_by(cntryname, popul2, prtcl) %>% 
+    tally() %>% 
+    select(cntryname, popul2) %>% 
+    table()
+
+
+
+save(ess, file = "data/ess.Rdata")
+```
+
+## Checking Details
+
+```{r}
+
+# Check if Party Names are the different
+ess %>% 
+  filter(cntryname == "Spain") %>% 
+  select(prtvt) %>% table()
+
+# Check if Party Names are found
+ess %>% 
+  filter(prtvt == "Jobbik (Jobbik Magyarországért Mozgalom)")
+
+table(ess$popul2)
+
+ess %>% 
+#  filter(cntryname == "Bulgaria") %>% 
+#  mutate(prtvt = stringi::stri_enc_toascii(prtvt)) %>% 
+  mutate(prtcl = enc2native(prtcl)) %>% 
+  mutate(prtcl = str_replace(prtcl, "–", "-")) %>%
+  mutate(prtcl = as.character(prtcl)) %>% 
+  select(prtcl)  %>% unique %>%  dput()
+
+
+```
+
+# Merging Time
+
+```{r}
+# table(ess$prtvt == ess$prtcl)
+  
+
+ess %<>% 
+  mutate(target = case_when(
+    is.na(populism) ~ popul2,
+    is.na(popul2) ~ populism,
+    populism != popul2 & !is.na(popul2) ~ popul2,
+    TRUE ~ populism
+  )) #%>% 
+  #select(target) %>% 
+  #table()
+
+ess %>% 
+  select(populism) %>% 
+  table()
+
+ess %>%
+  select(populism, popul2, target)
+
+save(ess, file = "data/ess.Rdata")
+```
+
+
+
+
+
+# Calculate Percentages
+
+```{r}
+load("data/ess.Rdata")
+
+library(questionr)
+
+calc_perc <- function(variable = ess$populism, weight = ess$pweight) {
+  
+  perc_table <- questionr::wtd.table(variable, weights = weight) 
+  Illib_Popul <- c((perc_table[2] / (perc_table[1] + perc_table[2] + perc_table[3])) * 100, perc_table[2])
+  Liberal_Popul <- c((perc_table[3] / (perc_table[1] + perc_table[2] + perc_table[3])) * 100, perc_table[3])
+  Establishment <- c((perc_table[1] / (perc_table[1] + perc_table[2] + perc_table[3])) * 100, perc_table[1])
+
+  return(tibble::tibble(Illib_Popul, Liberal_Popul, Establishment))
+}
+
+calc_perc()
+calc_perc(variable = ess$target)
+
+```
+

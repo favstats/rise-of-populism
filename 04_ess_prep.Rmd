@@ -1,0 +1,303 @@
+---
+title: "ESS Preparation"
+output: html_notebook
+---
+
+# Loading in Data and packages
+
+```{r}
+load("data/ess.Rdata")
+
+pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, psych, labelled, broom, magrittr, BaylorEdPsych, lmtest, datapasta, car, BBmisc, stargazer, caret, DescTools, rcompanion, tidyeval, mgcv, countrycode)
+
+#pacman::p_install_gh("wilkelab/cowplot")
+#devtools::install_github("gadenbuie/regexplain")
+
+range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.rm = T))}
+```
+
+
+
+# Data prep
+
+```{r}
+#load("data/ess.Rdata")
+#binoculaR::binoculaR(ess)
+
+# 1025	impsafe	Important to live in secure and safe surroundings
+# 1027	ipfrule	Important to do what is told and follow rules
+# 1036	ipbhprp	Important to behave properly
+# 1040	imptrad	Important to follow traditions and customs
+# 1034	ipstrgv	Important that government is strong and ensures safety
+# 1197	wmcpwrk	Women should be prepared to cut down on paid work for sake of family
+# 1198	mnrgtjb	Men should have more right to job than women when jobs are scarce
+
+mlogit_ess <- ess %>% 
+  mutate(target = as.factor(target)) %>% 
+#  drop_na(target) %>% 
+  mutate(imm_culture = 10 - imueclt) %>% 
+  mutate(imm_badecon = 10 - imbgeco) %>%
+  mutate(imm_worselive = 10 - imwbcnt) %>%
+  mutate(econ_unsat = 10 - stfeco) %>% 
+  mutate(aut_safe = 7 - impsafe) %>% 
+  mutate(aut_rules = 7 - ipfrule) %>%
+  mutate(aut_behave = 7 - ipbhprp) %>%
+  mutate(aut_trad = 7 - imptrad) %>% 
+  mutate(aut_govstrong = 7 - ipstrgv) %>% 
+  rename(
+    econ_insec = hincfel,
+    demsat = stfdem,
+    age = agea,
+#    year = inwyys,
+    trust_un = trstun,
+    trust_eu = trstep,
+    trust_gov = trstplt,
+    # trust_parliament = trstprl,
+    # trust_police = trstplc,
+    # trust_courts = trstlgl,
+    stfgov = stfgov,
+    religion = rlgdgr,
+    rural = domicil
+ #   educ = edulvlb
+  ) %>%
+  mutate(
+    cntry = cntryname,
+    educ = ifelse(eisced == 55, NA, eisced),
+    work = ifelse(mnactic == 1, 1, 0),
+    unemployed = ifelse(uemp3m == 1, 1, 0),
+    sex = gndr - 1, # sex variable erstellen
+    ethnic = ifelse(blgetmg == "1", 1, 0),
+    welfare = ifelse(hincsrca %in% c(5,6), 1, 0)
+  ) %>%
+  mutate(
+    id = 1:n(),
+    year = case_when(
+      essround == 8 ~ "2016",
+      essround == 7 ~ "2014",
+      essround == 6 ~ "2012",
+      essround == 5 ~ "2010",
+      essround == 4 ~ "2008",
+      essround == 3 ~ "2006",
+      essround == 2 ~ "2004",
+      essround == 1 ~ "2002",
+      TRUE ~ "") %>% 
+      as.numeric
+    ) %>% 
+  mutate(year_2016 = ifelse(year == 2016, 1, 0)) %>% 
+  mutate(year_2014 = ifelse(year == 2014, 1, 0)) %>% 
+  mutate(year_2012 = ifelse(year == 2012, 1, 0)) %>% 
+  mutate(year_2010 = ifelse(year == 2010, 1, 0))
+
+var_checks <- function(vars) {
+  list(
+    table = table(vars),
+    var_label = var_label(vars),
+    val_labels = val_labels(vars),
+    is.character = is.character(vars),
+    is.numeric = is.numeric(vars)
+  )
+}
+# var_checks(ess$mnrgtjb)
+# 
+# var_checks(mlogit_ess$imm_culture)
+# 
+# table(mlogit_ess$unemployed)
+# 
+# mlogit_ess %>% dplyr::select(educ) %>% table()
+
+
+```
+
+# Regions
+
+```{r}
+cntry_dat <- plyr::rbind.fill(
+data.frame(stringsAsFactors=FALSE,
+          cntry = c("Denmark", "Estonia", "Faroe Islands", "Finland", "Iceland",
+                 "Ireland", "Isle of Man", "Latvia", "Lithuania", "Norway",
+                 "Svalbard and Jan Mayen Islands", "Sweden",
+                 "United Kingdom"),
+          regional = "north"),
+data.frame(stringsAsFactors=FALSE,
+          cntry = c("Albania", "Andorra", "Bosnia and Herzegovina",
+                   "Croatia", "Gibraltar", "Greece", "Holy See", "Italy",
+                   "Malta", "Montenegro", "Portugal", "San Marino", "Serbia",
+                   "Slovenia", "Spain", "Cyprus",
+                   "The former Yugoslav Republic of Macedonia"),
+          regional = "south"),
+data.frame(stringsAsFactors=FALSE,
+          cntry = c("Austria", "Belgium", "France", "Germany",
+                    "Liechtenstein", "Luxembourg", "Monaco", "Netherlands",
+                    "Switzerland"),
+          regional = "west"),
+data.frame(stringsAsFactors=FALSE,
+           cntry = c("Belarus", "Bulgaria", "Czech Republic", "Hungary", "Poland", 
+                     "Republic of Moldova", "Romania", "Russian Federation", "Slovakia",
+                     "Ukraine"), 
+           regional = "east")
+)
+
+# https://unstats.un.org/unsd/methodology/m49/
+
+cntry_dat %<>% 
+  mutate(cntry = countrycode::countrycode(cntry, "country.name", "country.name")) 
+
+# uk <- mlogit_ess %>%
+#   filter(cntry == "United Kingdom") %>%
+#   mutate(regional = "north")
+
+
+mlogit_ess <- left_join(cntry_dat, mlogit_ess, by = "cntry") 
+
+# mlogit_ess <- rbind(mlogit_ess, uk)
+
+mlogit_ess %<>% 
+  mutate(north = ifelse(regional == "north", 1, 0)) %>% 
+  mutate(south = ifelse(regional == "south", 1, 0)) %>% 
+  mutate(east = ifelse(regional == "east", 1, 0)) %>% 
+  mutate(west = ifelse(regional == "west", 1, 0)) 
+
+table(mlogit_ess$regional, mlogit_ess$target)
+
+table(mlogit_ess$regional, mlogit_ess$cntry)
+
+```
+
+
+
+
+# Factorscores
+
+```{r}
+anti_imm_dat <- mlogit_ess %>%
+  select(imm_culture, imm_badecon, imm_worselive) %>%
+  mutate_all(as.numeric) 
+
+mlogit_ess <- anti_imm_dat %>%
+  psych::fa() %>%
+  predict.psych(data = anti_imm_dat) %>%
+  as.data.frame() %>%
+  transmute(anti_imm = range01(MR1)*10) %>%
+  cbind(mlogit_ess)
+
+minus_7 <- function(var) {
+  7 - var
+}
+
+fa_dat <- mlogit_ess %>%
+  select(ipcrtiv, impfree, impdiff, ipadvnt, ipgdtim, impfun,
+         impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad,
+         imprich , iprspot , ipshabt , ipsuces,
+         ipeqopt , ipudrst , impenv , iphlppl , iplylfr
+         ) %>% 
+    mutate_all(as.numeric) %>% 
+    mutate_all(minus_7) 
+
+
+# cronbachs alpha
+## openness to change
+
+openness_dat <- fa_dat %>%
+  select(ipcrtiv , impfree , impdiff , ipadvnt , ipgdtim , impfun) %>%
+  mutate_all(as.numeric) 
+
+fa_dat <- openness_dat %>%
+  psych::fa() %>%
+  predict.psych(data = openness_dat) %>%
+  as.data.frame() %>%
+  transmute(openness = (1-range01(MR1))*10) %>%
+  cbind(fa_dat)
+
+
+conservation_dat <- fa_dat %>%
+  select(impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad) %>%
+  mutate_all(as.numeric) 
+
+fa_dat <- conservation_dat %>%
+  psych::fa() %>%
+  predict.psych(data = conservation_dat) %>%
+  as.data.frame() %>%
+  transmute(conservation = range01(MR1)*10) %>%
+  cbind(fa_dat)
+
+
+selfenhance_dat <- fa_dat %>%
+  select(imprich , iprspot , ipshabt , ipsuces) %>%
+  mutate_all(as.numeric) 
+
+fa_dat <- selfenhance_dat %>%
+  psych::fa() %>%
+  predict.psych(data = selfenhance_dat) %>%
+  as.data.frame() %>%
+  transmute(selfenhance = (1-range01(MR1))*10) %>%
+  cbind(fa_dat)
+
+
+selftrans_dat <- fa_dat %>%
+  select(ipeqopt , ipudrst , impenv , iphlppl , iplylfr) %>%
+  mutate_all(as.numeric) 
+
+fa_dat <- selftrans_dat %>%
+  psych::fa() %>%
+  predict.psych(data = selftrans_dat) %>%
+  as.data.frame() %>%
+  transmute(selftrans = range01(MR1)*10) %>%
+  cbind(fa_dat)
+
+
+
+fa_dat <- fa_dat %>% 
+  # mutate_all(range01) %>% 
+  # mutate(openness = (ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + impfun)/6) %>% 
+  # mutate(conservation = (impsafe + ipstrgv + ipfrule + ipbhprp + ipmodst + imptrad)/6) %>% 
+  # mutate(selfenhance = (imprich + iprspot + ipshabt + ipsuces)/4) %>% 
+  # mutate(selftrans = (ipeqopt + ipudrst + impenv + iphlppl + iplylfr)/5) %>% 
+  # mutate_all(range01) %>% 
+  mutate(opendim = (range01((openness - conservation))*10)-5) %>% 
+  mutate(selfdim = (range01((selftrans - selfenhance))*10)-5)
+
+hist(fa_dat$opendim)
+max(fa_dat$opendim, na.rm=T)
+min(fa_dat$opendim, na.rm=T)
+
+mlogit_ess <- fa_dat %>% 
+  select(openness, conservation, selfenhance, selftrans, opendim, selfdim) %>% 
+  cbind(mlogit_ess) #%>% 
+  #na.omit()
+
+global_dat <- mlogit_ess %>%
+  select(trust_un, trust_eu) %>%
+  mutate_all(as.numeric) 
+
+mlogit_ess <- global_dat %>%
+  psych::fa() %>%
+  predict.psych(data = global_dat) %>%
+  unlist() %>% as.character() %>% as.numeric() %>%
+  data.frame(globalism = .) %>%
+  transmute(globalism = range01(globalism)*5) %>%
+  cbind(mlogit_ess) 
+
+govsat_dat <- mlogit_ess %>%
+  select(stfgov, trust_gov, demsat) %>%
+  mutate_all(as.numeric) 
+
+mlogit_ess <- govsat_dat %>%
+  psych::fa() %>%
+  predict.psych(data = govsat_dat) %>%
+  unlist() %>% as.character() %>% as.numeric() %>%
+  data.frame(govsat = .) %>%
+  transmute(govsat = range01(govsat)*5) %>%
+  cbind(mlogit_ess) 
+
+mlogit_ess %<>%
+#   mutate(anti_imm = range01(
+#                     range01(imm_culture) + 
+#                     range01(imm_badecon) + 
+#                     range01(imm_worselive)
+#                     )*10)
+  dplyr::select(target, imm_culture, imm_badecon, imm_worselive, anti_imm, econ_unsat, globalism, econ_insec, aut_safe, aut_behave, aut_rules, aut_trad, aut_govstrong, demsat, age, trust_un, trust_eu, trust_gov, govsat, religion, rural, educ, unemployed, sex, ethnic, welfare, lrscale, openness, conservation, selfenhance, selftrans, opendim, selfdim, pweight, regional, east, west, north, south, cntry, year_2016, year_2014, year_2012, year_2010, year) %>% 
+  na.omit() %>% 
+  mutate_all(labelled::remove_labels)
+
+save(mlogit_ess, file = "data/mlogit_ess.Rdata")
+```

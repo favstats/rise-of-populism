@@ -1,0 +1,547 @@
+---
+title: "Our Map"
+output: html_notebook
+---
+
+# additional packages
+
+```{r}
+pacman::p_load(tidyverse, ggthemes, rgdal, viridis, extrafont, magrittr, readxl)
+myfont <- "Roboto Condensed"
+
+# load the already prepared data
+load(url("https://ikashnitsky.github.io/doc/misc/map-subplots/df-27-261-urb-rur.RData"))
+load(url("https://ikashnitsky.github.io/doc/misc/map-subplots/spatial-27-261.RData"))
+
+library(rgdal)
+library(maptools)
+if (!require(gpclib)) install.packages("gpclib", type="source")
+gpclibPermit()
+```
+
+
+
+# fortify spatial objects
+
+```{r}
+
+bord <- fortify(Sborders)
+fort <- fortify(Sn2, region = "id")
+
+fort_map <- left_join(df,fort,"id")
+
+# create a blank map
+basemap <- ggplot() +
+        geom_polygon(data = fortify(Sneighbors),aes(x = long, y = lat, group = group),
+                     fill = "grey90",color = "grey90") +#
+        #coord_equal(ylim = c(1350000,5450000), xlim = c(2500000, 6600000)) +
+        theme_map(base_family = myfont) +
+        theme(#panel.border = element_rect(color = "black",size = .5,fill = NA),
+              title = element_text(size = 17, face = "bold"),
+              plot.title = element_text(hjust = 0.5),
+              legend.position = c(0.98, 0.8),
+              legend.justification = c(1, 0),
+              legend.background = element_rect(colour = NA, fill = NA),
+              legend.title = element_text(size = 15),
+              legend.text = element_text(size = 15),
+              axis.ticks.length = unit(2, "cm"),
+              legend.direction = "horizontal") +
+        scale_x_continuous(expand = c(0,0)) +
+        scale_y_continuous(expand = c(0,0)) +
+        labs(x = NULL, y = NULL) +
+  guides(fill = guide_colorbar(barwidth = 12, barheight = 1,
+                title.position = "top", title.hjust = 0.5),
+         color = guide_legend(override.aes = list(fill = NA)))
+
+ggsave(filename = "maps/basemap.png", basemap, width = 5, height = 5)
+
+read_csv("data/nuts2.csv")
+
+
+
+fort_map %>% 
+  select(id) %>% unique()
+
+```
+
+
+
+
+# yet another way to get nuts
+
+```{r}
+nuts1316 <- read_xls(path = "data/nuts20132016.xls", sheet = 2, col_names = T)  
+names(nuts1316) <- nuts1316[1,]
+
+nuts1316 %>% 
+  .[-1,] %>% 
+  janitor::clean_names() %>% 
+  select(code_2013) %>% 
+  na.omit() %>% 
+  mutate(country = str_extract(code_2013, "^.{2}")) %>% 
+  mutate(nuts1 = str_extract(code_2013, "^.{3}")) %>% 
+  mutate(nuts2 = str_extract(code_2013, "^.{4}")) %>% 
+  mutate(nuts3 = str_extract(code_2013, "^.{5}")) %>% 
+  na.omit() -> nuts2013
+
+nuts1316 %>% 
+  .[-1,] %>% 
+  janitor::clean_names() %>% 
+  select(code_2016) %>% 
+  na.omit() %>% 
+  mutate(country = str_extract(code_2016, "^.{2}")) %>% 
+  mutate(nuts1 = str_extract(code_2016, "^.{3}")) %>% 
+  mutate(nuts2 = str_extract(code_2016, "^.{4}")) %>% 
+  mutate(nuts3 = str_extract(code_2016, "^.{5}")) %>% 
+  na.omit() -> nuts2016
+
+nuts1013 <- read_xls(path = "data/nuts20102013.xls", sheet = 2, col_names = T)
+names(nuts1013) <- nuts1013[1,]
+
+
+nuts1013 %>% 
+  .[-1,] %>% 
+  janitor::clean_names() %>% 
+  select(code_2010) %>% 
+  na.omit() %>% 
+  mutate(country = str_extract(code_2010, "^.{2}")) %>% 
+  mutate(nuts1 = str_extract(code_2010, "^.{3}")) %>% 
+  mutate(nuts2 = str_extract(code_2010, "^.{4}")) %>% 
+  mutate(nuts3 = str_extract(code_2010, "^.{5}")) %>% 
+  na.omit() -> nuts2010
+
+
+nuts0610 <- read_xls(path = "data/nuts20062010.xls", sheet = 1, col_names = T)
+names(nuts0610) <- nuts0610[1,]
+
+
+nuts0610 %>% 
+  .[-1,] %>% 
+  janitor::clean_names() %>% 
+  select(code_2006, code_2010) %>% 
+  na.omit() %>% 
+  mutate(country = str_extract(code_2006, "^.{2}")) %>% 
+  mutate(nuts1 = str_extract(code_2006, "^.{3}")) %>% 
+  mutate(nuts2 = str_extract(code_2006, "^.{4}")) %>% 
+  mutate(nuts3 = str_extract(code_2006, "^.{5}")) %>% 
+
+  na.omit() -> nuts2006
+
+nuts2006 %>% filter(country == "GR")
+
+nuts2006 %>% 
+  full_join(nuts2010) %>% #filter(country == "GR")
+  full_join(nuts2013) %>% 
+  full_join(nuts2016) -> nuts_data_all
+
+nuts_data_all %>% filter(country == "EL")
+
+
+
+```
+
+# Data load in
+
+```{r}
+load("data/ess.Rdata")
+
+#table(ess$cregion)
+#table(ess$region)
+#table(ess$regunit)
+
+ess %>% 
+  mutate(target = as.factor(target)) %>% 
+  mutate(prog_dum = ifelse(target == "Progressive Populism", 1, 0)) %>% 
+  mutate(trad_dum = ifelse(target == "Traditionalist Populism", 1, 0)) %>% 
+  mutate(estab_dum = ifelse(target == "Establishment", 1, 0)) %>% 
+  select(cregion, target, prog_dum, trad_dum, estab_dum) %>% 
+  # group_by(cregion) %>% 
+  # summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+  #           progressive = sum(prog_dum, na.rm = T)/total,
+  #           traditionalist = sum(trad_dum, na.rm = T)/total,
+  #           establishment = sum(estab_dum, na.rm = T)/total) %>% 
+  mutate(cregion = ifelse(cregion == 99999, NA, as.character(cregion))) %>% 
+  # mutate(id = cregion) %>% 
+  # na.omit() %>% 
+  mutate(country = str_extract(cregion, "^.{2}")) %>% 
+  mutate(nuts1 = str_extract(cregion, "^.{3}")) %>% 
+  mutate(nuts2 = str_extract(cregion, "^.{4}")) %>% 
+  mutate(nuts3 = str_extract(cregion, "^.{5}")) %>% 
+  mutate(nchars = nchar(cregion)) -> zwischenschritt
+
+zwischenschritt %>% filter(nchars == 2) -> cntry_dat
+zwischenschritt %>% filter(nchars == 3) -> nuts1_dat
+zwischenschritt %>% filter(nchars == 4) -> nuts2_dat
+zwischenschritt %>% filter(nchars == 5) -> nuts3_dat
+
+nuts1_dat %>% select(-country, -nuts2, -nuts3) %>%   
+  na.omit() %>% 
+  left_join(nuts_data_all %>% select(nuts2, nuts1), by = c("nuts1")) %>% 
+  group_by(nuts2) %>% 
+  summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+            progressive = 100 * (sum(prog_dum, na.rm = T)/total),
+            traditionalist = 100 * (sum(trad_dum, na.rm = T)/total),
+            establishment = 100 * (sum(estab_dum, na.rm = T)/total)) %>%
+  na.omit() -> nuts1_fin
+
+nuts2_dat %>% 
+  group_by(nuts2) %>% 
+  summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+            progressive = 100 * (sum(prog_dum, na.rm = T)/total),
+            traditionalist = 100 * (sum(trad_dum, na.rm = T)/total),
+            establishment = 100 * (sum(estab_dum, na.rm = T)/total)) %>%
+  na.omit() -> nuts2_fin #%>% 
+  # filter(str_detect(nuts2, "FR")) %>% 
+  # arrange(nuts2) 
+
+nuts3_dat %>% 
+  group_by(nuts3) %>% 
+  summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+            progressive = sum(prog_dum, na.rm = T)/total,
+            traditionalist = sum(trad_dum, na.rm = T)/total,
+            establishment = sum(estab_dum, na.rm = T)/total) %>%
+  mutate(country = str_extract(nuts3, "^.{2}")) %>% 
+  mutate(nuts1 = str_extract(nuts3, "^.{3}")) %>% 
+  mutate(nuts2 = str_extract(nuts3, "^.{4}")) %>% 
+  mutate(nuts3 = str_extract(nuts3, "^.{5}")) %>% 
+  group_by(nuts2) %>% 
+  summarise(traditionalist = 100 * mean(traditionalist, na.rm = T),
+            progressive = 100 * mean(progressive, na.rm = T),
+            establishment = 100 * mean(establishment, na.rm = T)) %>% 
+  na.omit() -> nuts3_fin #%>% 
+  # filter(str_detect(nuts2, "BG")) %>% 
+  # arrange(nuts2) 
+
+ess_map <- plyr::rbind.fill(nuts1_fin, nuts2_fin ,nuts3_fin)
+
+ess %>% filter(cntry == "GR") %>% select(cregion) %>% table()
+
+# ess_map %>% 
+#   mutate(country = countrycode::countrycode(country, "iso2c", "country.name")) %>% 
+#   group_by(country) %>% 
+#   tally() #%>% select(cntry) %>% unique()
+```
+
+
+
+
+
+#merging nuts and ess
+
+```{r}
+nuts_data_all %>% #filter(country == "EL") 
+  left_join(ess_map, by = c("nuts2")) %>% 
+  mutate(country = ifelse(country == "GR", str_extract(code_2010, "^.{2}"), country)) %>%
+  mutate(nuts1 = ifelse(str_detect(nuts1, "GR"),
+                        str_extract(code_2010, "^.{3}"), nuts1)) %>%
+  mutate(nuts2 = ifelse(str_detect(nuts2, "GR"),
+                        str_extract(code_2010, "^.{4}"), nuts2)) %>%
+  mutate(nuts3 = ifelse(str_detect(nuts3, "GR"),
+                        str_extract(code_2010, "^.{5}"), nuts3)) -> zwischenschritt
+
+# zwischenschritt %>% filter(nchars == 2) -> cntry_dat
+# zwischenschritt %>% filter(nchars == 3) -> nuts1_dat
+# zwischenschritt %>% filter(nchars == 4) -> nuts2_dat
+# zwischenschritt %>% filter(nchars == 5) -> nuts3_dat
+# 
+# nuts1_dat %>% 
+#   group_by(nuts2) %>% 
+#   summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+#             progressive = sum(prog_dum, na.rm = T)/total,
+#             traditionalist = sum(trad_dum, na.rm = T)/total,
+#             establishment = sum(estab_dum, na.rm = T)/total) %>%
+#   na.omit() 
+
+# nuts2_dat %>% 
+#   group_by(nuts2) %>% 
+#   summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+#             progressive = sum(prog_dum, na.rm = T)/total,
+#             traditionalist = sum(trad_dum, na.rm = T)/total,
+#             establishment = sum(estab_dum, na.rm = T)/total) %>%
+#   na.omit() %>% 
+#   filter(str_detect(nuts2, "FR")) %>% 
+#   arrange(nuts2) 
+# 
+# ess_map2 %>% 
+#   filter(!duplicated(id)) %>% 
+#   filter(country=="FR") %>% 
+#   arrange(id) #%>% select(id) %>% table()
+# 
+# ess_map %>% 
+#   drop_na(prog_dum, trad_dum, estab_dum) %>%
+#   #filter(!duplicated(cregion)) %>% 
+#   filter(country=="FR") %>% 
+#   group_by(cregion) %>% 
+#   summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+#             progressive = 100 * sum(prog_dum, na.rm = T)/total,
+#             traditionalist = 100 *  sum(trad_dum, na.rm = T)/total,
+#             establishment = 100 * sum(estab_dum, na.rm = T)/total) %>%
+#   arrange(cregion) 
+
+# 
+# nuts3_dat %>% 
+#   group_by(nuts2) %>% 
+#   summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+#             progressive = sum(prog_dum, na.rm = T)/total,
+#             traditionalist = sum(trad_dum, na.rm = T)/total,
+#             establishment = sum(estab_dum, na.rm = T)/total) %>%
+#   na.omit() 
+# 
+# 
+#   
+#   mutate(nchars = nchar(cregion)) %>% 
+#   arrange(nchars)  %>% #select(nchars) %>% table()
+#   filter(nchars == 2) 
+  # 
+  # arrange(nuts1) %>% #filter(country == "EL") #%>% select(nuts2) %>% table()
+  # group_by(cregion) %>% 
+  # summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+  #           progressive = sum(prog_dum, na.rm = T)/total,
+  #           traditionalist = sum(trad_dum, na.rm = T)/total,
+  #           establishment = sum(estab_dum, na.rm = T)/total) %>% 
+  # mutate(cregion = ifelse(cregion == 99999, NA, as.character(cregion))) %>% 
+  # mutate(id = cregion) %>% 
+  # na.omit() %>% 
+  # group_by(nuts1) %>% 
+  # summarise(traditionalist = 100 * mean(traditionalist, na.rm = T),
+  #           progressive = 100 * mean(progressive, na.rm = T),
+  #           establishment = 100 * mean(establishment, na.rm = T)) 
+    
+# zwischenschritt %>% 
+#   group_by(nuts2) %>% 
+#   summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+#             progressive = 100 * sum(prog_dum, na.rm = T)/total,
+#             traditionalist = 100 *  sum(trad_dum, na.rm = T)/total,
+#             establishment = 100 * sum(estab_dum, na.rm = T)/total) %>%
+#   na.omit() %>% 
+
+# zwischenschritt %>% 
+#   mutate(id = nuts2) %>% 
+#   # mutate(traditionalist = ifelse(is.nan(traditionalist), 0, traditionalist) %>% 
+#   #          as.double()) %>% 
+#   # mutate(progressive = ifelse(is.nan(progressive), 0, progressive) %>% 
+#   #          as.double()) %>% 
+#   # mutate(establishment = ifelse(is.nan(establishment), 0, establishment) %>% 
+#   #          as.double()) %>% 
+#   mutate(full = case_when(
+#     traditionalist > progressive  ~ "traditionalist",
+#     progressive > traditionalist ~ "progressive"#,
+#    # establishment > progressive & establishment > traditionalist ~ "establishment",
+#   )) %>% 
+#   #na.omit() %>% 
+#   full_join(nuts_data_all %>% select(nuts1, nuts2, nuts3), by = c("nuts2")) %>% 
+#   select(-nuts1) %>%   
+#   mutate(id = nuts2) %>% 
+#   filter(!duplicated(id)) 
+
+zwischenschritt %>% 
+  mutate(id = nuts2) %>% 
+    filter(!duplicated(id)) %>% 
+  left_join(fort_map) -> ess_map2
+  # mutate(traditionalist == ifelse(traditionalist == 0 & 
+  #                                  progressive == 0 & 
+  #                                  establishment == 0, NA, traditionalist)) %>%
+  # mutate(progressive == ifelse(traditionalist == 0 & 
+  #                                  progressive == 0 & 
+  #                                  establishment == 0, NA, progressive)) %>% 
+  # mutate(establishment == ifelse(traditionalist == 0 & 
+  #                                  progressive == 0 & 
+  #                                  establishment == 0, NA, establishment)) 
+
+ess_map2 %<>% 
+  filter(!(traditionalist == 0 & 
+          progressive == 0 & 
+          establishment == 0))
+
+ess_map2 %>% 
+  filter(!duplicated(id)) %>% 
+  filter(country=="FR") %>% 
+  arrange(id) #%>% select(id) %>% table()
+
+# ess_map %>% 
+#   drop_na(prog_dum, trad_dum, estab_dum) %>%
+#   #filter(!duplicated(cregion)) %>% 
+#   filter(country=="FR") %>% 
+#   group_by(cregion) %>% 
+#   summarize(total = sum(prog_dum + trad_dum + estab_dum, na.rm = T),
+#             progressive = 100 * sum(prog_dum, na.rm = T)/total,
+#             traditionalist = 100 *  sum(trad_dum, na.rm = T)/total,
+#             establishment = 100 * sum(estab_dum, na.rm = T)/total) %>%
+#   arrange(cregion) 
+```
+
+
+# a nice small function to overcome some mapping problems with nested polygons
+
+```{r}
+# see more at SO
+# https://stackoverflow.com/questions/21748852
+gghole <- function (fort) {
+        poly <- fort[fort$id %in% fort[fort$hole, ]$id, ]
+        hole <- fort[!fort$id %in% fort[fort$hole, ]$id, ]
+        out <- list(poly, hole)
+        names(out) <- c("poly", "hole")
+        return(out)
+}
+# rm(ess)
+#  basemap +
+#         geom_polygon(data = gghole(ess_map2)[[1]], 
+#                      aes(x = long, y = lat, group = group, fill = type),
+#                      color = NA) +
+#         geom_polygon(data  =  gghole(ess_map2)[[2]], 
+#                      aes(x = long, y = lat, group = group, fill = type),
+#                      color = NA) 
+
+progmap <- basemap +
+        geom_polygon(data = gghole(ess_map2)[[1]], 
+                     aes(x = long, y = lat, group = group, fill = progressive),
+                     color = NA) +
+        geom_polygon(data  =  gghole(ess_map2)[[2]], 
+                     aes(x = long, y = lat, group = group, fill = progressive),
+                     color = NA)  +
+        scale_fill_viridis("Support in %", 
+                           option = "D", discrete = F, end = .8) +
+  ggtitle("Support for Progressive Populist Parties")
+
+ggsave(filename = "maps/progmap.png", progmap, width = 10, height = 10)
+
+tradmap <- basemap +
+        geom_polygon(data = gghole(ess_map2)[[1]], 
+                     aes(x = long, y = lat, group = group, fill = traditionalist),
+                     color = NA) +
+        geom_polygon(data  =  gghole(ess_map2)[[2]], 
+                     aes(x = long, y = lat, group = group, fill = traditionalist),
+                     color = NA) +
+        scale_fill_viridis("Support in %", 
+                           option = "D", discrete = F, end = .8) +
+  ggtitle("Support for Traditionalist Populist Parties")
+
+ggsave(filename = "maps/tradmap.png", tradmap, width = 10, height = 10)
+
+
+estmap <- basemap +
+        geom_polygon(data = gghole(ess_map2)[[1]], 
+                     aes(x = long, y = lat, group = group, fill = establishment),
+                     color = NA) +
+        geom_polygon(data  =  gghole(ess_map2)[[2]], 
+                     aes(x = long, y = lat, group = group, fill = establishment),
+                     color = NA) +
+        scale_fill_viridis("Support in %", 
+                           option = "D", discrete = F, end = .8) +
+  ggtitle("Support for Establishment Parties")
+
+ggsave(filename = "maps/estmap.png", estmap, width = 10, height = 10)
+
+
+ess_pp_map <- cowplot::plot_grid(estmap, tradmap, progmap,
+                      labels = c("A", "B", "C"), ncol = 3)
+
+cowplot::save_plot("maps/ess_pp_map.png", ess_pp_map,
+          ncol = 3, # we're saving a grid plot of 2 columns
+          #nrow = 2, # and 2 rows
+          base_height = 10,
+          base_width = 10,
+          # each individual subplot should have an aspect ratio of 1.3
+          base_aspect_ratio = 1.3
+          )
+
+
+
+```
+
+
+
+
+# old - get nuts data
+
+ 
+```{r}
+# TODO Cant' make the maps because from the nuts data some regions are missing (for example Germany's subregions.. fuck that shit)
+
+nuts_singles <- dir("data/nuts_dat")
+# 
+# read_csv2("data/nuts_dat/at.csv")
+
+nuts_data <- list()
+for (jj in seq_along(nuts_singles)) {
+  nuts_data[[jj]] <- read_csv2(paste0("data/nuts_dat/", nuts_singles[jj]))
+}
+
+nuts_data <- bind_rows(nuts_data)
+
+nuts_data %<>% 
+  janitor::clean_names() %>% 
+  mutate(country = str_extract(nuts_1, "^.{2}")) %>% 
+  mutate(nuts1 = str_extract(nuts_1, "^.{3}")) %>% 
+  mutate(nuts2 = str_extract(nuts2, "^.{4}")) %>% 
+  mutate(nuts3 = str_extract(nuts3, "^.{5}")) %>% 
+  select(country, nuts1, nuts2, nuts3) #%>% 
+  #gather("nuts", "id", -country)
+
+# nuts_data %<>% 
+#   rename(country = cntry)
+#save(nuts_data, file = "data/nuts_data.Rdata")
+
+#load("data/nuts_data.Rdata")
+load("data/nuts_data2.Rdata")
+
+ess_map %<>% 
+   mutate(country = str_extract(id, "^.{2}")) 
+
+# nuts_data %>% 
+#   mutate()
+
+ss <- fort_map %>% 
+  full_join(nuts_data, by = "country") %>% 
+  left_join(ess_map, by = c("id", "country")) 
+  # group_by(id, nuts1, long, order, lat, group) %>% 
+  # summarise(progressive = mean(progressive, na.rm = T)) %>% 
+  # ungroup() 
+  # 
+
+# ss <- fort_map %>% 
+#   full_join(ess_map, by = c("id", "country")) %>% 
+#   left_join(nuts_data, by = c("id", "country")) %>% 
+#   group_by(id, long, order, lat, group) %>% 
+#   summarise(progressive = mean(progressive, na.rm = T)) %>% 
+#   ungroup() 
+#  group_by(id) %>% 
+#  mutate(drop = is.na())
+ # na.omit()# %>% 
+  ##filter(country == "DE")
+  
+# ff <- ss %>% 
+#   #group_by(id, ) %>% 
+#   summarise(progressive = mean(progressive, na.rm = T)) %>% 
+#   ungroup() 
+# 
+# ff %>% 
+#   select(progressive) %>% is.na()  %>% table()
+
+table(ess_map$id)
+
+
+
+ess_map %>% filter(country == "UK") %>% select(nuts1) %>% table()
+
+ess_map %>% 
+  arrange(country) %>% select(nuts2) %>% table()
+
+nuts_data %>% #filter(country == "UK") 
+  full_join(nuts_data2) -> nuts_data_full
+
+nuts_data_full %>% #filter(country == "EL") 
+  full_join(ess_map %>% select(-country, -nuts2, -nuts3), by = c("nuts1")) %>% 
+  arrange(nuts1) %>% #filter(country == "UK") #%>% select(nuts2) %>% table()
+  group_by(nuts1) %>% 
+  summarise(establishment = mean(establishment, na.rm = T)) %>% 
+  mutate(id = nuts1) %>% 
+  mutate(establishment = ifelse(is.nan(establishment), 0, establishment) %>% 
+           as.double()) %>% 
+  #na.omit() %>% 
+  full_join(nuts_data_full %>% select(nuts1, nuts2), by = c("nuts1")) %>% 
+  select(-nuts1) %>%   
+  mutate(id = nuts2) %>% 
+  filter(!duplicated(id)) %>% 
+  full_join(fort_map) -> ess_map2
+```

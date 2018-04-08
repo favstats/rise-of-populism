@@ -1,0 +1,147 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+ 
+## Load Packages
+  
+```{r}
+pacman::p_load(tidyverse, wdman, jsonlite, rvest, xml2, RSelenium, here, crayon, here, magrittr, sjmisc)
+```
+
+# curling
+
+```{r}
+
+url <- "http://ec.europa.eu/eurostat/tercet/localityChangeNutsVersion.do"
+
+cntry <- read_html(url) %>% 
+  rvest::html_nodes("#countrySelect") %>% 
+  html_nodes("option") %>% 
+  html_attr("value")
+
+read_html(url) %>% 
+  rvest::html_nodes("#nutsVersionSelect") %>% 
+  html_nodes("option") %>% 
+  html_attr("value")
+
+n_results <- read_html("data/Eurostat - tercet.html") %>% 
+  rvest::html_node(".bigText:nth-child(1)") %>% 
+  html_text() %>% 
+  as.numeric()
+
+round(n_results / 50)
+```
+
+# different approach
+
+```{r}
+ read_html("data/morenuts.html") %>% 
+  rvest::html_nodes(".title-table") %>% 
+  html_text() 
+
+
+
+read_html("data/morenuts.html") %>% 
+  rvest::html_nodes("td:nth-child(1) .tbl-norm") %>% 
+  html_text() %>% 
+  as_tibble() %>% 
+  filter(nchar(value) < 6) %>% 
+  filter(nchar(value) != 2) %>% 
+  filter(value %nin% c("Code", "Level"))  %>% 
+  mutate(country = str_extract(value, "^.{2}")) %>% 
+  mutate(nuts1 = str_extract(value, "^.{3}")) %>% 
+  mutate(nuts2 = str_extract(value, "^.{4}")) %>% 
+  mutate(nuts3 = str_extract(value, "^.{5}")) %>% 
+  mutate(nuts = value) %>%
+  select(-value) %>% 
+  na.omit() -> nuts_data2
+ 
+ 
+ save(nuts_data2, file = "data/nuts_data2.Rdata")
+```
+
+
+# ausprobier
+
+```{r}
+library(RSelenium)
+port <- sample(4000L:5000L, 1)
+rD <- RSelenium::rsDriver(verbose = FALSE, port = port)
+rD
+
+remDr <- rD$client
+
+  
+
+
+remDr$navigate(url)
+
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'nutsVersionSelect')]")
+webElem$clickElement()
+  
+  
+webElem <- remDr$findElement(using = 'xpath', value =  "//*/option[@value = '4']")
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'countrySelect')]")
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*/option[@value = 'BE']")
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'sub')]")
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'sel_all')]")
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'export')]")
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'first')]")
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@name = 'BtnNext')]")
+name="BtnNext"
+webElem$clickElement()
+
+
+
+  # change audi to whatever your option value is
+option <- remDr$findElement(using = 'xpath', "//*/option[@value = 'audi']")
+option$clickElement()
+```
+
+# scraper
+
+```{r}
+for (jj in cntry) {
+Sys.sleep(5)  
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'nutsVersionSelect')]")
+webElem$clickElement()
+  
+  
+webElem <- remDr$findElement(using = 'xpath', value =  "//*/option[@value = '4']")
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'countrySelect')]")
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  paste0("//*/option[@value = '",jj,"']"))
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'sub')]")
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'sel_all')]")
+webElem$clickElement()
+
+webElem <- remDr$findElement(using = 'xpath', value =  "//*[(@id = 'export')]")
+webElem$clickElement()
+}
+
+
+
+```
+
