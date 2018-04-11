@@ -4,17 +4,21 @@ output: html_notebook
 ---
 
 **TODO**
+introduction
 *methods*
-fixing the factor analysis plot
-description of parties
-citation citations citations (rewriting mlr)
+all the same colors!
+description of parties (auslagern?)
+summary statistics - just make it fit
 *analysis*
-Probability Plots for the main hypotheses
-*coding*
-TODO: Globalism und Govsat fixen
-TODO: Choose which interactions
+Probability Plots for the main hypotheses - describe them
+check for irregularities
+finish this part!
+conclusion -> probably needs table
 *appendix*
-table of all parties and their score
+table of all parties and their score 
+--> just make it fit (nooo change the UNICODES)
+correlation table
+
 
 # Loading in Data and packages
 
@@ -29,90 +33,30 @@ pacman::p_load(tidyverse, writexl, haven, sjPlot, sjmisc, texreg, psych, labelle
 range01 <- function(x){(x - min(x, na.rm = T)) / (max(x, na.rm = T) - min(x, na.rm = T))}
 
 
-mlogit_ess %>% 
-  group_by(cntry, target) %>% 
-  tally() %>% #select(cntry) %>% unique()
+# mlogit_ess %>% 
+#   group_by(cntry, target) %>% 
+#   tally() %>% #select(cntry) %>% unique()
 
 ```
 
 
 
-# Mlogit
-
-```{r}
-library(nnet)
-mlogit_ess$populism2 <- relevel(mlogit_ess$target, ref = "Establishment")
-
-test <- multinom(
-  populism2 ~
-    # economic deprivation
-    econ_insec + unemployed + welfare +
-    # cultural backlash
-    anti_imm + openness + conservation + selfenhance + selftrans + globalism + govsat +
-    # control variables
-    age + educ + sex + lrscale + ethnic + religion + rural + east + north + south +
-    year_2016 + year_2014 + year_2012,
-    #data
-    data = mlogit_ess, weights = pweight)
-
-# screenreg(test)
-# stargazer::stargazer(test, type = "text")
-
-multi1.rrr <- exp(coef(test))
-
-stargazer::stargazer(test, type = "text",coef=list(multi1.rrr), p.auto=FALSE)
-
-summary(test)
-
-#car::Anova(test)
-
-PseudoR2(test)
-
-regm2 <- step(test)
-# 
-# GGally::ggcoef(regm2, exponentiate = TRUE) + facet_grid(~y.level)
-
-tidy(regm2, exponentiate = T, conf.int = TRUE) %>% 
-  # filter(term != "south") %>% 
-  # filter(term != "east") %>% 
-  # filter(term != "north") %>% 
-  # filter(term != "(Intercept)") %>% 
-  ggplot() + aes(x = term, y = estimate, 
-                 ymin = conf.low, 
-                 ymax = conf.high, color = y.level) + 
-  geom_hline(yintercept = 1, 
-             color = "gray25", 
-             linetype = "dotted") + 
-  geom_errorbar(position = position_dodge(0.5), width = 0) + 
-  geom_point(position = position_dodge(width = 0.5)) + scale_y_log10() + 
-  coord_flip()
-
-```
 
 
 # Sequentalism
 
-**TODO**
-- Populist Parties by Country (map)
-- Plots: 
-*descriptives*
-Regional Plot (how many populists per region)
-Boxplot:  age + educ + sex + lrscale+ religion + rural 
-Populist Parties by Country (map)
-*analysis*
-Coefficent Plots (one big motherfucker)
-Probability Plots for the main hypotheses
-
-TODO: Globalism und Govsat fixen
-TODO: Choose which interactions
+## adds
 
 ```{r}
 
+load("data/mlogit_ess_adds.Rdata")
 
+mlogit_ess_adds %<>%
+  na.omit()
 
 
 library(nnet)
-mlogit_ess$populism2 <- relevel(mlogit_ess$target, ref = "Establishment")
+mlogit_ess_adds$populism2 <- relevel(mlogit_ess_adds$target, ref = "Establishment")
 
 controls <- multinom(
   populism2 ~
@@ -124,7 +68,7 @@ controls <- multinom(
     age + educ + sex + lrscale + ethnic + religion + rural + globalism + govsat + east + north + south +
     year_2016 + year_2014 + year_2012,
     #data
-    data = mlogit_ess, weights = pweight)
+    data = mlogit_ess_adds, weights = pweight)
 
 # controls_tidy <- step(controls) %>% 
 #   tidy(exponentiate = T, conf.int = TRUE) %>% 
@@ -148,7 +92,7 @@ fit1 <- multinom(
     # cultural backlash
     #anti_imm + openness + conservation + selfenhance + selftrans + globalism + govsat +
     #data
-    data = mlogit_ess, weights = pweight)
+    data = mlogit_ess_adds, weights = pweight)
 
 # fit1_tidy <- step(fit1) %>% 
 #   tidy(exponentiate = T, conf.int = TRUE) %>% 
@@ -167,7 +111,7 @@ fit2 <- multinom(
     # cultural backlash
     anti_imm + openness + conservation + selfenhance + selftrans,
     #data
-    data = mlogit_ess, weights = pweight)
+    data = mlogit_ess_adds, weights = pweight)
 
 
 fit3 <- multinom(
@@ -180,7 +124,7 @@ fit3 <- multinom(
     # cultural backlash
     anti_imm + openness + conservation + selfenhance + selftrans,
     #data
-    data = mlogit_ess, weights = pweight)
+    data = mlogit_ess_adds, weights = pweight)
 
 fit4 <- multinom(
   populism2 ~
@@ -192,9 +136,11 @@ fit4 <- multinom(
     # cultural backlash
     anti_imm + openness + conservation + selfenhance + selftrans +
     # interactions
-    welfare * anti_imm ,
+    econ_insec * anti_imm + 
+    #econ_insec * conservation + 
+    unemployed * selfenhance,
     #data
-    data = mlogit_ess, weights = pweight)
+    data = mlogit_ess_adds, weights = pweight)
 
 # PseudoR2(controls)
 # PseudoR2(fit1)
@@ -203,18 +149,26 @@ fit4 <- multinom(
 # PseudoR2(fit4)
 #
 
-tidy(fit4) %>% 
-  filter(term %nin% c("(Intercept)", "age", "educ", "sex", 
-                     "lrscale", "ethnic", "religion", "rural", 
-                     "globalism", "govsat", "east", "north", "south", 
-                     "year_2016", "year_2014", "year_2012", "econ_insec", 
-                     "unemployed", "welfare", "anti_imm", "openness", 
-                     "conservation", "selfenhance", "selftrans")) %>% 
-  mutate(stars = get_p_values(p.value)) 
+tidy(fit4) %>%
+  filter(term %nin% c("(Intercept)", "age", "educ", "sex",
+                     "lrscale", "ethnic", "religion", "rural",
+                     "globalism", "govsat", "east", "north", "south",
+                     "year_2016", "year_2014", "year_2012", "econ_insec",
+                     "unemployed", "welfare", "anti_imm", "openness",
+                     "conservation", "selfenhance", "selftrans")) %>%
+  mutate(stars = get_p_values(p.value))
+
+# econ_insec:anti_imm only traditionalist populism
+# econ_insec:conservation only traditionalist populism - weak
+# unemployed:selftrans only progressive populism - weak
 
 ```
 
+
+
 ## one big one plot
+
+### one prep
 
 ```{r}
 get_p_values <- function (pval) {
@@ -226,8 +180,7 @@ get_p_values <- function (pval) {
 }
 
 prep_dat <- function(model, modelname) {
-  tidy_model <- step(model) %>% 
-    tidy(exponentiate = T, conf.int = TRUE) %>% 
+  tidy_model <- tidy(model, exponentiate = T, conf.int = TRUE) %>% #step(model) %>% 
   mutate(model = modelname) %>% 
   mutate(stars = get_p_values(p.value)) 
   
@@ -269,6 +222,13 @@ mcfaddies <- all_mods %>%
   .$mcfadden
 
 unique(all_mods$term)
+```
+
+
+### making the plot
+
+```{r}
+
 
 
 control_variables <- c("age", "educ", "sex", "lrscale", "ethnic", 
@@ -319,9 +279,13 @@ all_mods %>%
     term == "rural" ~ "Rural (0/1)",  
     term == "globalism" ~ "Trust in Global Governance", 
     term == "govsat" ~ "Government Satisfaction",
-    TRUE ~ "Unemployed X Anti-Immigration Sentiment"
+    term == "econ_insec:anti_imm" ~ "Econ. Insec. X Anti-Immigration",
+#    term == "econ_insec:conservation" ~ "Economic Insecurity X Conservation",
+    term == "unemployed:selfenhance" ~ "Unemployed X Self-Enhance"
   )) %>% 
-  mutate(term = fct_relevel(term, levels = c("Unemployed X Anti-Immigration Sentiment",
+  mutate(term = fct_relevel(term, levels = c("Unemployed X Self-Enhance",
+                              #"Economic Insecurity X Conservation",
+                              "Econ. Insec. X Anti-Immigration",
                               "Anti-Immigration Sentiment", "Openness", 
                               "Conservation", "Self-Enhancement", "Self-Transcendence", 
                               "Econ Insecurity", "Unemployed (0/1)", 
@@ -329,15 +293,17 @@ all_mods %>%
                               "Age", "Education", "Female (0/1)", "Left-Right Scale", 
                               "Ethnic Minority (0/1)", "Religiosity", "Rural (0/1)",
                               "Trust in Global Governance", "Government Satisfaction"))) %>% 
+  mutate(`Variable Groups` = variable_groups) %>% 
+  mutate(`Y-Level` = y.level) %>% 
   ggplot() + aes(x = term, y = estimate, 
                  ymin = conf.low, 
                  ymax = conf.high, 
-                 color = y.level) + 
+                 color = `Y-Level`) + 
   geom_hline(yintercept = 1, 
              color = "gray25", 
              linetype = "dotted") + 
   geom_errorbar(position = position_dodge(0.5), width = 0) + 
-  geom_point(aes(shape = variable_groups), 
+  geom_point(aes(shape = `Variable Groups`), 
              position = position_dodge(width = 0.5)) + 
   scale_y_log10() +
   geom_vline(xintercept = seq(1.5, length(unique(all_mods$term)) - 0.5, 1), 
@@ -345,9 +311,10 @@ all_mods %>%
   geom_text(aes(x = term, 
                 y = estimate + 0.01,
                 label = paste(sprintf('%.2f', estimate, 2), stars)), 
-                position = position_dodge(1.2)) +
+                position = position_dodge(1.2), show.legend = F) +
   coord_flip() +
-  scale_y_continuous(breaks = seq(-2,2, by = 0.3)) +
+  guides(point = F) +
+  scale_y_continuous(breaks = seq(-2,2, by = 0.3), limits = c(.5, 1.9)) +
   ggthemes::theme_hc() +
   ggthemes::scale_fill_fivethirtyeight() +
   cowplot::background_grid(major = 'y', minor = "none") + # add thin horizontal lines
@@ -357,7 +324,7 @@ all_mods %>%
   # labs(caption = paste(expression("McFadden's Pseudo R^2:")), 
   #                                          gg_coefs$mcfadden) +
   facet_grid(~ model, scales = "fixed") +
-  annotate("label", x = -1, y = 1, label = paste("McFadden's R2.:",
+  annotate("label", x = -1, y = 1.25, label = paste("McFadden's R2.:",
                                                   mcfaddies,
                                                   "\n N:", rep(nrow(mlogit_ess), 5),
                                                   "\n LRT:", anovies)) +
@@ -366,8 +333,10 @@ all_mods %>%
   # annotate("label", x = 18.5, y = 0.7, label = "Cultural") +
   # annotate("label", x = 19.5, y = 0.7, label = "Interactions") +
   # expand_limits(x = 21) + 
-  geom_text(aes(x = -2, label = "")) +
-  scale_x_discrete(limits = c("Unemployed X Anti-Immigration Sentiment",
+  geom_text(aes(x = -2, label = ""), show.legend = F) +
+  scale_x_discrete(limits = c("Unemployed X Self-Enhance",
+                              #"Economic Insecurity X Conservation",
+                              "Econ. Insec. X Anti-Immigration",
                               "Interactions",
                               "Anti-Immigration Sentiment", "Openness", 
                               "Conservation", "Self-Enhancement", "Self-Transcendence", 
@@ -458,163 +427,645 @@ cite_OR(mod = "control",
               populism = "prog")
 
 
-save(cite_dat, file = "data/cite_dat.Rdata")
+save(cite_dat, file = "text/data/cite_dat.Rdata")
 ```
 
 
-## Plot Predictions - Singular
+## Plot Predictions
+
+### needed functions
 
 ```{r}
-# test <- multinom(
-#   populism2 ~
-#     # economic deprivation
-#     econ_unsat + econ_insec + unemployed +
-#     # cultural backlash
-#     anti_imm + openness + conservation + selfenhance + selftrans + globalism + govsat +
-#     # control variables
-#     age + educ + sex + lrscale + ethnic + religion + rural + east + north + south,
-#     #data
-#     data = mlogit_ess, weights = pweight)
-# 
-# 
-# screenreg(test)
+get_ames <- function(fit_eff) {
+  df <- fit_eff$prob %>% 
+  as.data.frame()
 
-## Automatic Picking of Scales
-#from_to <- as.vector(names(table(ess_mlogit$openness)))
-#fit.eff <- effects::effect("openness", 
-#                           test, 
-#                           xlevels = list(openness = from_to))
-## or
-#fit.eff <- effects::effect("openness", 
-#                           test)
-## or put them in by hand
-fit.eff <- effects::effect("anti_imm", 
-                           fit3, 
-                           xlevels = list(anti_imm = c(1:10)))
-
-fit.eff$prob %>% 
-  as.data.frame() %>% 
+data.frame(diff(as.matrix(df))) %>% 
   #janitor::clean_names() %>% 
   summarise_all(mean) %>% 
   t() %>% 
   as.data.frame() %>% 
-  rownames_to_column(var = "type") -> ame_dat
+  rownames_to_column(var = "type") %>% 
+  mutate(type = case_when(
+    str_detect(type, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(type, "Progressive") ~ "Progressive Populism",
+    str_detect(type, "Establishment") ~ "Establishment"
+  )) %>% 
+  mutate(V1 = paste0("AME = ", sprintf('%.2f', V1*100, 2),"%"))
+}
 
-data.frame(fit.eff$model.matrix, 
-           fit.eff$prob, 
-           fit.eff$lower.prob, 
-           fit.eff$upper.prob) %>% 
-  select(anti_imm, prob.Traditionalist.Populism, prob.Establishment,
+prepper <- function(.data, wanted_var) {
+  wanted_var <- enquo(wanted_var)
+  
+  data.frame(.data$model.matrix, 
+           .data$prob, 
+           .data$lower.prob, 
+           .data$upper.prob) %>% 
+  select(!!wanted_var, prob.Traditionalist.Populism, prob.Establishment,
          prob.Progressive.Populism, L.prob.Establishment, 
          U.prob.Establishment, L.prob.Traditionalist.Populism, 
          U.prob.Traditionalist.Populism, L.prob.Progressive.Populism, 
          U.prob.Progressive.Populism, -X.Intercept.) %>% 
-  gather(key = variable, value = value, -anti_imm, 
+  gather(key = variable, value = value, -!!wanted_var, 
            -L.prob.Establishment, -U.prob.Establishment,
            -L.prob.Traditionalist.Populism, -U.prob.Traditionalist.Populism,
          -L.prob.Progressive.Populism, -U.prob.Progressive.Populism) %>% 
   mutate(type = case_when(
-    str_detect(variable, "Traditionalist") ~ "Tradionalist Populism",
+    str_detect(variable, "Traditionalist") ~ "Traditionalist Populism",
     str_detect(variable, "Progressive") ~ "Progressive Populism",
     str_detect(variable, "Establishment") ~ "Establishment"
   )) %>%
     mutate(lower = case_when(
     type == "Establishment" ~ L.prob.Establishment*100,
     type == "Progressive Populism" ~ L.prob.Progressive.Populism*100,
-    type == "Tradionalist Populism" ~ L.prob.Traditionalist.Populism*100
+    type == "Traditionalist Populism" ~ L.prob.Traditionalist.Populism*100
   )) %>% 
     mutate(upper = case_when(
     type == "Establishment" ~ U.prob.Establishment*100,
     type == "Progressive Populism" ~ U.prob.Progressive.Populism*100,
-    type == "Tradionalist Populism" ~ U.prob.Traditionalist.Populism*100
+    type == "Traditionalist Populism" ~ U.prob.Traditionalist.Populism*100
   )) %>% 
   mutate(value = value * 100) %>% 
-  ggplot(aes(anti_imm, value, colour = type)) +
+   mutate(scale = !!wanted_var) %>% 
+   select(-!!wanted_var) 
+}
+
+
+from_to <- function(.data = mlogit_ess, variable) {
+  variable <- enquo(variable)
+  .data %>% 
+    select(!!variable) %>% 
+    table() %>% 
+    names() %>% 
+    as.vector() %>% 
+    as.numeric()
+} 
+```
+
+
+### controls
+
+```{r}
+
+
+
+  
+as.numeric(as.vector(names(table(mlogit_ess$educ))))
+
+fit_eff_age <- effects::effect("age", 
+                           fit3)
+
+fit_eff_educ <- effects::effect("educ", 
+                           fit3)
+
+fit_eff_sex <- effects::effect("sex", 
+                           fit3)
+
+# fit_eff_lrscale <- effects::effect("lrscale", 
+#                            fit3, 
+#                            xlevels = list(lrscale = mlogit_ess %>% from_to(lrscale)))
+# 
+
+fit_eff_ethnic <- effects::effect("ethnic", 
+                           fit3)
+
+fit_eff_religion <- effects::effect("religion", 
+                           fit3)
+
+# fit_eff_south <- effects::effect("south", 
+#                            fit3)
+# 
+# fit_eff_east <- effects::effect("east", 
+#                            fit3)
+# 
+# fit_eff_north <- effects::effect("north", 
+#                            fit3)
+
+fit_eff_globalism <- effects::effect("globalism", 
+                           fit3)
+
+fit_eff_govsat <- effects::effect("govsat", 
+                           fit3)
+
+rbind(
+get_ames(fit_eff_age) %>% 
+  mutate(term = "Age"),
+
+get_ames(fit_eff_educ) %>% 
+  mutate(term = "Education"),
+
+get_ames(fit_eff_sex) %>% 
+  mutate(term = "Female (0/1)"),
+
+# get_ames(fit_eff_lrscale) %>% 
+#   mutate(term = "Left-Right Scale"),
+
+get_ames(fit_eff_ethnic) %>% 
+  mutate(term = "Ethnic Minority (0/1)"),
+
+get_ames(fit_eff_religion) %>% 
+  mutate(term = "Religiosity"),
+
+# get_ames(fit_eff_south) %>% 
+#   mutate(term = "Southern Europe (0/1)"),
+# 
+# get_ames(fit_eff_east) %>% 
+#   mutate(term = "Eastern Europe (0/1)"),
+# 
+# get_ames(fit_eff_north) %>% 
+#   mutate(term = "Northern Europe (0/1)"),
+
+get_ames(fit_eff_globalism) %>% 
+  mutate(term = "Trust in Global Governance"),
+
+get_ames(fit_eff_govsat) %>% 
+  mutate(term = "Government Satisfaction")
+) -> ame_dat_controls
+
+
+rbind(
+prepper(fit_eff_age, age) %>% 
+  mutate(term = "Age"),
+
+prepper(fit_eff_educ, educ) %>% 
+  mutate(term = "Education"),
+
+prepper(fit_eff_sex, sex) %>% 
+  mutate(term = "Female (0/1)"),
+
+# prepper(fit_eff_lrscale, lrscale) %>% 
+#   mutate(term = "Left-Right Scale"),
+
+prepper(fit_eff_ethnic, ethnic) %>% 
+  mutate(term = "Ethnic Minority (0/1)"),
+
+prepper(fit_eff_religion, religion) %>% 
+  mutate(term = "Religiosity"),
+
+# prepper(fit_eff_south, south) %>% 
+#   mutate(term = "Southern Europe (0/1)"),
+# 
+# prepper(fit_eff_east, east) %>% 
+#   mutate(term = "Eastern Europe (0/1)"),
+# 
+# prepper(fit_eff_north, north) %>% 
+#   mutate(term = "Northern Europe (0/1)"),
+
+prepper(fit_eff_globalism, globalism) %>% 
+  mutate(term = "Trust in Global Governance"),
+
+prepper(fit_eff_govsat, govsat) %>% 
+  mutate(term = "Government Satisfaction")
+) -> probs_dat_controls
+
+
+probs_dat_controls %>% 
+  ggplot(aes(scale, value, colour = type)) +
+    geom_smooth(method = "gam", 
+               formula = y ~ s(x, k = 5), 
+               size = 1.2, se = F) +
+    geom_ribbon(aes(ymin = lower, ymax = upper), 
+               fill = "gray70", alpha = 0.5, colour=NA) +
+    ggrepel::geom_label_repel(data = ame_dat_controls,
+                              aes(x = Inf, y = Inf, label = V1, group = term),
+              nudge_y = -10, show.legend = F, segment.alpha = 0
+              #nudge_x = 15
+              ) +
+  #  geom_jitter(alpha = 0.01) +
+  labs(y = "Marginal Probability") +
+  # cowplot::background_grid(major = 'y', minor = "none") + # add thin horizontal lines
+  guides(color = F) +
+    ggthemes::theme_hc() +
+    ggthemes::scale_color_fivethirtyeight() + 
+    facet_grid(type~term, scales = "free") +
+    scale_y_continuous(breaks = seq(0,100, by = 1),
+                     labels = paste0(seq(0,100, by = 1),"%")) + 
+  # cowplot::panel_border() +# and a border around each panel
+  theme(panel.spacing = unit(2, "lines")) +
+    # scale_x_continuous(breaks = seq(0,10, by = 1),
+    #                  labels = seq(0,10, by = 1)) +
+  xlab("Score") 
+
+
+ggsave(filename = "images/control_probs.png", width = 18, height = 10)
+
+```
+
+#### extrawürschte
+
+##### lrscale
+
+```{r}
+
+fit_eff_lrscale <- effects::effect("lrscale",
+                           fit3,
+                           xlevels = list(lrscale = mlogit_ess %>% from_to(lrscale)))
+
+
+
+get_ames(fit_eff_lrscale) %>%
+  mutate(term = "Left-Right Scale") %>% 
+  mutate(`Y-Level` = type) -> ame_dat_lrscale
+
+
+prepper(fit_eff_lrscale, lrscale) %>%
+  mutate(term = "Left-Right Scale") -> probs_dat_lrscale
+
+
+probs_dat_lrscale %>% 
+  mutate(`Y-Level` = type) %>% 
+  ggplot(aes(scale, value, colour = `Y-Level`)) +
+    geom_smooth(method = "loess", 
+               #formula = y ~ s(x, k = 5), 
+               size = 0.92, se = F) +
+    geom_ribbon(aes(ymin = lower, ymax = upper, group = `Y-Level`), 
+               fill = "gray70", alpha = 0.5, colour=NA) +
+    ggrepel::geom_label_repel(data = ame_dat_lrscale,
+                              aes(x = 9.2, y = 65, label = V1, group = term),
+              nudge_y = -10, show.legend = F, direction = "y", segment.alpha = 0
+              #nudge_x = 15
+              ) +
+  # geom_jitter(alpha = 0.70) +
+  labs(y = "Marginal Probability") +
+  # cowplot::background_grid(major = 'y', minor = "none") + # add thin horizontal lines
+  #guides(color = T) +
+    ggthemes::theme_hc() +
+    ggthemes::scale_color_fivethirtyeight() + 
+    #facet_grid(type~term, scales = "free") +
+    scale_y_continuous(breaks = seq(0,100, by = 10),
+                     labels = paste0(seq(0,100, by = 10),"%")) + 
+  # theme(panel.spacing = unit(2, "lines")) +
+    scale_x_continuous(breaks = seq(0,10, by = 1),
+                     labels = seq(0,10, by = 1)) +
+  xlab("Left-Right Scale") 
+
+
+ggsave(filename = "images/lrscale_probs.png", width = 9, height = 6)
+```
+
+##### weirdo dummies
+
+```{r}
+
+  
+as.numeric(as.vector(names(table(mlogit_ess$educ))))
+
+
+fit_eff_south <- effects::effect("south",
+                           fit3)
+
+fit_eff_east <- effects::effect("east",
+                           fit3)
+
+fit_eff_north <- effects::effect("north",
+                           fit3)
+
+fit_eff_2012 <- effects::effect("year_2012", 
+                           fit3) 
+
+
+fit_eff_2014 <- effects::effect("year_2014", 
+                           fit3)
+
+fit_eff_2016 <- effects::effect("year_2016",  
+                                fit3)
+
+
+rbind(
+get_ames(fit_eff_south) %>%
+  mutate(term = "Southern Europe (0/1)"),
+
+get_ames(fit_eff_east) %>%
+  mutate(term = "Eastern Europe (0/1)"),
+
+get_ames(fit_eff_north) %>%
+  mutate(term = "Northern Europe (0/1)"),
+
+get_ames(fit_eff_2012) %>% 
+  mutate(term = "Year 2012 (0/1)"),
+
+get_ames(fit_eff_2014) %>% 
+  mutate(term = "Year 2014 (0/1)"),
+
+get_ames(fit_eff_2016) %>% 
+  mutate(term = "Year 2016 (0/1)")
+) -> ame_dat_regyears
+
+
+rbind(
+prepper(fit_eff_south, south) %>%
+  mutate(term = "Southern Europe (0/1)"),
+
+prepper(fit_eff_east, east) %>%
+  mutate(term = "Eastern Europe (0/1)"),
+
+prepper(fit_eff_north, north) %>%
+  mutate(term = "Northern Europe (0/1)"),
+
+prepper(fit_eff_2012, year_2012) %>% 
+  mutate(term = "Year 2012 (0/1)"),
+
+prepper(fit_eff_2014, year_2014) %>% 
+  mutate(term = "Year 2014 (0/1)"),
+
+prepper(fit_eff_2016, year_2016) %>% 
+  mutate(term = "Year 2016 (0/1)")
+) -> probs_dat_regyears
+
+
+probs_dat_regyears %>% 
+  ggplot(aes(scale, value, colour = type)) +
+    geom_smooth(method = "loess", 
+               #formula = y ~ s(x, k = 5), 
+               size = 1.2, se = F) +
+    geom_ribbon(aes(ymin = lower, ymax = upper), 
+               fill = "gray70", alpha = 0.5, colour=NA) +
+    ggrepel::geom_label_repel(data = ame_dat_regyears,
+                              aes(x = Inf, y = Inf, label = V1, group = term),
+              nudge_y = -10, show.legend = F, segment.alpha = 0
+              #nudge_x = 15
+              ) +
+  #  geom_jitter(alpha = 0.01) +
+  labs(y = "Marginal Probability") +
+  # cowplot::background_grid(major = 'y', minor = "none") + # add thin horizontal lines
+  guides(color = F) +
+    ggthemes::theme_hc() +
+    ggthemes::scale_color_fivethirtyeight() + 
+    facet_grid(type~term, scales = "free") +
+    scale_y_continuous(breaks = seq(0,100, by = 2),
+                     labels = paste0(seq(0,100, by = 2),"%")) + 
+  #cowplot::panel_border() +# and a border around each panel
+  theme(panel.spacing = unit(2, "lines")) +
+    # scale_x_continuous(breaks = seq(0,10, by = 1),
+    #                  labels = seq(0,10, by = 1)) +
+  xlab("Score") 
+
+
+ggsave(filename = "images/regyears_probs.png", width = 18, height = 10)
+```
+
+
+### cultural
+
+#### all together
+
+```{r}
+
+fit.eff1 <- effects::effect("anti_imm", 
+                           fit3, 
+                           xlevels = list(anti_imm = c(1:10)))
+
+fit.eff2 <- effects::effect("openness", 
+                           fit3, 
+                           xlevels = list(openness = c(1:10)))
+
+fit.eff3 <- effects::effect("conservation", 
+                           fit3, 
+                           xlevels = list(conservation = c(1:10)))
+
+fit.eff4 <- effects::effect("selfenhance", 
+                           fit3, 
+                           xlevels = list(selfenhance = c(1:10)))
+
+
+fit.eff5 <- effects::effect("selftrans", 
+                           fit3, 
+                           xlevels = list(selftrans = c(1:10)))
+rbind(
+get_ames(fit.eff1) %>% 
+  mutate(term = "Anti-Immigration Sentiment"),
+
+get_ames(fit.eff2) %>% 
+  mutate(term = "Openness"),
+
+get_ames(fit.eff3) %>% 
+  mutate(term = "Conservation"),
+
+get_ames(fit.eff4) %>% 
+  mutate(term = "Self-Enhancement"),
+
+get_ames(fit.eff5) %>% 
+  mutate(term = "Self-Transcendence")
+) -> ame_dat
+
+
+rbind(
+prepper(fit.eff1, anti_imm) %>% 
+  mutate(term = "Anti-Immigration Sentiment"),
+
+prepper(fit.eff2, openness) %>% 
+  mutate(term = "Openness"),
+
+prepper(fit.eff3, conservation) %>% 
+  mutate(term = "Conservation"),
+
+prepper(fit.eff4, selfenhance) %>% 
+  mutate(term = "Self-Enhancement"),
+
+prepper(fit.eff5, selftrans) %>% 
+  mutate(term = "Self-Transcendence")
+) -> probs_dat
+
+probs_dat %>% 
+  ggplot(aes(scale, value, colour = type)) +
     geom_smooth(method = "loess", 
                #formula = y ~ s(x, k = 1), 
                size = 1.2, se = F) +
     geom_ribbon(aes(ymin = lower, ymax = upper), 
                fill = "gray70", alpha = 0.5, colour=NA) +
-  geom_text(data = ame_dat, aes(label = V1)) +
- #  geom_jitter(alpha = 0.01) +
+    ggrepel::geom_label_repel(data = ame_dat, 
+                              aes(x = Inf, y = Inf, label = V1, group = term),
+              nudge_y = -10, show.legend = F, segment.alpha = 0
+              #nudge_x = 15
+              ) +
+  #  geom_jitter(alpha = 0.01) +
   labs(y = "Marginal Probability") +
   guides(color = F) +
     ggthemes::theme_hc() +
     ggthemes::scale_color_fivethirtyeight() + 
-    facet_wrap(~type, scales = "free", ncol = 1) +
-    scale_y_continuous(breaks = seq(0,100, by = 3), 
-                     labels = paste0(seq(0,100, by = 3),"%"))
+    facet_grid(type~term, scales = "free") +
+    scale_y_continuous(breaks = seq(0,100, by = 1),
+                     labels = paste0(seq(0,100, by = 1),"%")) +
+    scale_x_continuous(breaks = seq(0,10, by = 1),
+                     labels = seq(0,10, by = 1)) +
+  #cowplot::panel_border() +# and a border around each panel
+  theme(panel.spacing = unit(2, "lines")) +
+  xlab("Score") 
 
-ggsave(filename = "images/anti_imm.png", height = 8)
+
+ggsave(filename = "images/cultural_probs2.png", width = 18, height = 10)
+
 ```
 
-## Plot Predictions - Interactions
+
+### economic
 
 ```{r}
-test <- multinom(
-  populism2 ~
-    # economic deprivation
-    econ_unsat + econ_insec + unemployed +
-    # cultural backlash
-    anti_imm + openness + conservation + selfenhance + selftrans + globalism + govsat +
-    # control variables
-    age + educ + sex + lrscale + ethnic + religion + rural + east + north + south +
-    # interactions
-    anti_imm*unemployed , 
-    #data
-    data = mlogit_ess, weights = pweight)
 
-screenreg(test)
 
-from_to <- as.vector(names(table(mlogit_ess$anti_imm)))
-#table(mlogit_ess$govsat)
-# fit.eff <- effects::effect("anti_imm*south", test, xlevels = list(govsat = from_to))
+fit_eff_econ_insec <- effects::effect("econ_insec", 
+                           fit3)
 
-fit.eff <- effects::Effect(c("anti_imm", "unemployed"), 
+fit_eff_unemployed <- effects::effect("unemployed", 
+                           fit3)
+
+fit_eff_welfare <- effects::effect("welfare", 
+                           fit3)
+
+rbind(
+get_ames(fit_eff_econ_insec) %>% 
+  mutate(term = "Economic Insecurity"),
+
+get_ames(fit_eff_unemployed) %>% 
+  mutate(term = "Unemployed (0/1)"),
+
+get_ames(fit_eff_welfare) %>% 
+  mutate(term = "Welfare (0/1)")
+) -> ame_dat_economic
+
+
+rbind(
+prepper(fit_eff_econ_insec, econ_insec) %>% 
+  mutate(term = "Economic Insecurity"),
+
+prepper(fit_eff_unemployed, unemployed) %>% 
+  mutate(term = "Unemployed (0/1)"),
+
+prepper(fit_eff_welfare, welfare) %>% 
+  mutate(term = "Welfare (0/1)")
+) -> probs_dat_economic
+
+
+probs_dat_economic %>% 
+  ggplot(aes(scale, value, colour = type)) +
+    geom_smooth(method = "gam", 
+               formula = y ~ s(x, k = 5), 
+               size = 1.2, se = F) +
+    geom_ribbon(aes(ymin = lower, ymax = upper), 
+               fill = "gray70", alpha = 0.5, colour=NA) +
+    ggrepel::geom_label_repel(data = ame_dat_economic, 
+                              aes(x = Inf, y = Inf, label = V1, group = term),
+              nudge_y = -10, show.legend = F, segment.alpha = 0
+              #nudge_x = 15
+              ) +
+  #  geom_jitter(alpha = 0.01) +
+  labs(y = "Marginal Probability") +
+  # cowplot::background_grid(major = 'y', minor = "none") + # add thin horizontal lines
+  guides(color = F) +
+    ggthemes::theme_hc() +
+    ggthemes::scale_color_fivethirtyeight() + 
+    facet_grid(type~term, scales = "free") +
+    scale_y_continuous(breaks = seq(0,100, by = 1),
+                     labels = paste0(seq(0,100, by = 1),"%")) + 
+  # cowplot::panel_border() +# and a border around each panel
+  theme(panel.spacing = unit(2, "lines")) +
+    # scale_x_continuous(breaks = seq(0,10, by = 1),
+    #                  labels = seq(0,10, by = 1)) +
+  xlab("Score") 
+
+
+ggsave(filename = "images/economic_probs.png", width = 18, height = 10)
+```
+
+
+## Plot Interactions
+
+### Anti-Imm
+
+```{r}
+fit.eff <- effects::Effect(c("anti_imm", "econ_insec"), 
                            fit4, 
-                           xlevels = list(anti_imm = from_to, 
-                                          unemployed = c(0, 1)))
+                           xlevels = list(anti_imm = c(0:10)), 
+                                          econ_insec = c(1, 4))
+
+get_ames_ints <- function(fit.eff) {
+  df <- data.frame(fit.eff$prob,fit.eff$model.matrix) %>% 
+    #filter(econ_insec %in% c(1,4)) %>%
+    select(econ_insec, anti_imm, prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism) %>% 
+              filter(econ_insec %in% c(1,4))
+
+  rbind(
+data.frame(diff(as.matrix(df %>% filter(econ_insec == 1)))) %>% 
+  # mutate(econ_insec = c(rep(1,11), rep(4,10))) %>% 
+  # mutate(anti_imm = c(rep(0:10), rep(1:10))) %>% 
+  # #janitor::clean_names() %>% 
+  # group_by(econ_insec) %>% 
+  summarise_at(vars(prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism), mean) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "type") %>% 
+  mutate(type = case_when(
+    str_detect(type, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(type, "Progressive") ~ "Progressive Populism",
+    str_detect(type, "Establishment") ~ "Establishment"
+  )) %>% 
+  mutate(V1 = paste0("AME = ", sprintf('%.2f', V1*100, 2),"%")) %>% 
+  mutate(econ_insec = 1),
+
+data.frame(diff(as.matrix(df %>% filter(econ_insec == 4)))) %>% 
+  summarise_at(vars(prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism), mean) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "type") %>% 
+  mutate(type = case_when(
+    str_detect(type, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(type, "Progressive") ~ "Progressive Populism",
+    str_detect(type, "Establishment") ~ "Establishment"
+  )) %>% 
+  mutate(V1 = paste0("AME = ", sprintf('%.2f', V1*100, 2),"%")) %>% 
+  mutate(econ_insec = 4)
+)
+}
+
+
+get_ames_ints(fit.eff) %>% 
+      mutate(`Economic Insecurity` = as.factor(econ_insec)) -> ame_int1
 
 
 data.frame(fit.eff$model.matrix, 
            fit.eff$prob, 
            fit.eff$lower.prob, 
            fit.eff$upper.prob) %>% 
-  select(anti_imm, unemployed, # interaction effects
+  select(anti_imm, econ_insec, # interaction effects
          prob.Traditionalist.Populism, prob.Establishment,
          prob.Progressive.Populism, L.prob.Establishment, 
          U.prob.Establishment, L.prob.Traditionalist.Populism, 
          U.prob.Traditionalist.Populism, L.prob.Progressive.Populism, 
          U.prob.Progressive.Populism, -X.Intercept.) %>% 
   gather(key = variable, value = value, 
-         -anti_imm, -unemployed, # interaction effects 
+         -anti_imm, -econ_insec, # interaction effects 
            -L.prob.Establishment, -U.prob.Establishment,
            -L.prob.Traditionalist.Populism, -U.prob.Traditionalist.Populism,
          -L.prob.Progressive.Populism, -U.prob.Progressive.Populism) %>% 
   mutate(type = case_when(
-    str_detect(variable, "Traditionalist") ~ "Tradionalist Populism",
+    str_detect(variable, "Traditionalist") ~ "Traditionalist Populism",
     str_detect(variable, "Progressive") ~ "Progressive Populism",
     str_detect(variable, "Establishment") ~ "Establishment"
   )) %>% 
     mutate(lower = case_when(
     type == "Establishment" ~ L.prob.Establishment*100,
     type == "Progressive Populism" ~ L.prob.Progressive.Populism*100,
-    type == "Tradionalist Populism" ~ L.prob.Traditionalist.Populism*100
+    type == "Traditionalist Populism" ~ L.prob.Traditionalist.Populism*100
   )) %>% 
     mutate(upper = case_when(
     type == "Establishment" ~ U.prob.Establishment*100,
     type == "Progressive Populism" ~ U.prob.Progressive.Populism*100,
-    type == "Tradionalist Populism" ~ U.prob.Traditionalist.Populism*100
+    type == "Traditionalist Populism" ~ U.prob.Traditionalist.Populism*100
   )) %>% 
   mutate(value = value * 100) %>% 
-  mutate(Unemployed = as.factor(unemployed)) %>% 
+  filter(econ_insec %in% c(1,4)) %>% 
+  # mutate(Unemployed = as.factor(unemployed)) %>% 
   # mutate(unemployed = as.factor(case_when( 
   #   unemployed == max(unemployed) ~ max(unemployed),
   #   unemployed == min(unemployed) ~ min(unemployed),  
   #   TRUE ~ NA_real_
   # ))) %>% 
   #drop_na(unemployed) %>% 
-  ggplot(aes(anti_imm, value, group = Unemployed, colour = Unemployed)) +
+  mutate(`Economic Insecurity` = as.factor(econ_insec)) %>% 
+  ggplot(aes(anti_imm, value, group = `Economic Insecurity`, color = `Economic Insecurity`)) +
     geom_smooth(method = "loess", 
                #formula = y ~ s(x, k = 1), 
                size = 1.2, se = F) +
@@ -623,15 +1074,22 @@ data.frame(fit.eff$model.matrix,
     scale_colour_manual("", values = c("blue", "red")) +
  #  geom_jitter(alpha = 0.01) +
     labs(y = "Marginal Probability") +
+    ggrepel::geom_label_repel(data = ame_int1,
+                              aes(x = Inf, y = Inf, 
+                                  label = V1, group = type),
+              nudge_y = -10, show.legend = F, segment.alpha = 0, direction = "y"
+              #nudge_x = 15
+              ) +
     ggthemes::theme_hc() +
     ggthemes::scale_color_fivethirtyeight() + 
     facet_wrap(~type, scales = "free") +
-    scale_y_continuous(breaks = seq(0,100, by = 5), 
-                     labels = paste0(seq(0,100, by = 5),"%")) +
+  scale_x_continuous(breaks = seq(0,10, by = 1)) +
+    scale_y_continuous(breaks = seq(0,100, by = 1), 
+                     labels = paste0(seq(0,100, by = 1),"%")) +
   xlab("Anti-Immigration Sentiment") +
-  ggtitle("Probabilities of Support for Establishment/Populist Parties") +
-  labs(subtitle = "Based on Multinomial Logistic Regression",
-       caption = "Source: ESS Data Round 5 - 8") +
+  # ggtitle("Probabilities of Support for Establishment/Populist Parties") +
+  # labs(subtitle = "Based on Multinomial Logistic Regression",
+  #      caption = "Source: ESS Data Round 5 - 8") +
   theme(axis.text = element_text(size = 10),
         axis.title = element_text(size = 10),
         legend.text = element_text(size = 10), 
@@ -639,10 +1097,135 @@ data.frame(fit.eff$model.matrix,
         title = element_text(size = 12))
 
 
-# ggsave(file = here::here("images", "interaction_abstract.png"), 
-#        height = 5, width = 8)
+ggsave(file = here::here("images", "interaction_anti_imm.png"),
+       height = 5, width = 10)
 ```
 
+### interaction two
+
+```{r}
+fit.eff <- effects::Effect(c("selfenhance", "unemployed"), 
+                           fit4, 
+                           xlevels = list(selfenhance = c(0:10)), 
+                                          unemployed = c(0, 1))
+
+get_ames_ints <- function(fit.eff) {
+  df <- data.frame(fit.eff$prob,fit.eff$model.matrix) %>% 
+    #filter(econ_insec %in% c(1,4)) %>%
+    select(selfenhance, unemployed, prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism) %>% 
+              filter(unemployed %in% c(0,1))
+
+  rbind(
+data.frame(diff(as.matrix(df %>% filter(unemployed == 0)))) %>% 
+  # mutate(econ_insec = c(rep(1,11), rep(4,10))) %>% 
+  # mutate(anti_imm = c(rep(0:10), rep(1:10))) %>% 
+  # #janitor::clean_names() %>% 
+  # group_by(econ_insec) %>% 
+  summarise_at(vars(prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism), mean) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "type") %>% 
+  mutate(type = case_when(
+    str_detect(type, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(type, "Progressive") ~ "Progressive Populism",
+    str_detect(type, "Establishment") ~ "Establishment"
+  )) %>% 
+  mutate(V1 = paste0("AME = ", sprintf('%.2f', V1*100, 2),"%")) %>% 
+  mutate(unemployed = 0),
+
+data.frame(diff(as.matrix(df %>% filter(unemployed == 1)))) %>% 
+  summarise_at(vars(prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism), mean) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "type") %>% 
+  mutate(type = case_when(
+    str_detect(type, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(type, "Progressive") ~ "Progressive Populism",
+    str_detect(type, "Establishment") ~ "Establishment"
+  )) %>% 
+  mutate(V1 = paste0("AME = ", sprintf('%.2f', V1*100, 2),"%")) %>% 
+  mutate(unemployed = 1)
+)
+}
+
+
+get_ames_ints(fit.eff) %>% 
+      mutate(`Unemployed` = as.factor(unemployed)) -> ame_int2
+
+
+
+data.frame(fit.eff$model.matrix, 
+           fit.eff$prob, 
+           fit.eff$lower.prob, 
+           fit.eff$upper.prob) %>% 
+  select(selfenhance, unemployed, # interaction effects
+         prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism, L.prob.Establishment, 
+         U.prob.Establishment, L.prob.Traditionalist.Populism, 
+         U.prob.Traditionalist.Populism, L.prob.Progressive.Populism, 
+         U.prob.Progressive.Populism, -X.Intercept.) %>% 
+  gather(key = variable, value = value, 
+         -selfenhance, -unemployed, # interaction effects 
+           -L.prob.Establishment, -U.prob.Establishment,
+           -L.prob.Traditionalist.Populism, -U.prob.Traditionalist.Populism,
+         -L.prob.Progressive.Populism, -U.prob.Progressive.Populism) %>% 
+  mutate(type = case_when(
+    str_detect(variable, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(variable, "Progressive") ~ "Progressive Populism",
+    str_detect(variable, "Establishment") ~ "Establishment"
+  )) %>% 
+    mutate(lower = case_when(
+    type == "Establishment" ~ L.prob.Establishment*100,
+    type == "Progressive Populism" ~ L.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ L.prob.Traditionalist.Populism*100
+  )) %>% 
+    mutate(upper = case_when(
+    type == "Establishment" ~ U.prob.Establishment*100,
+    type == "Progressive Populism" ~ U.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ U.prob.Traditionalist.Populism*100
+  )) %>% 
+  mutate(value = value * 100) %>% 
+  filter(unemployed %in% c(0,1))  %>% 
+      mutate(`Unemployed` = as.factor(unemployed)) %>% 
+  ggplot(aes(selfenhance, value, group = `Unemployed` , color = `Unemployed`)) +
+    geom_smooth(method = "loess", 
+               #formula = y ~ s(x, k = 1), 
+               size = 1.2, se = F) +
+    geom_ribbon(aes(ymin = lower, ymax = upper), 
+               fill = "gray70", alpha = 0.5, colour=NA) +
+    scale_colour_manual("", values = c("blue", "red")) +
+ #  geom_jitter(alpha = 0.01) +
+    labs(y = "Marginal Probability") +
+    ggrepel::geom_label_repel(data = ame_int2,
+                              aes(x = Inf, y = Inf, 
+                                  label = V1, group = type),
+              nudge_y = -10, show.legend = F, segment.alpha = 0, direction = "y"
+              #nudge_x = 15
+              ) +
+    ggthemes::theme_hc() +
+    ggthemes::scale_color_fivethirtyeight() + 
+    facet_wrap(~type, scales = "free") +
+  scale_x_continuous(breaks = seq(0,10, by = 1)) +
+    scale_y_continuous(breaks = seq(0,100, by = 1), 
+                     labels = paste0(seq(0,100, by = 1),"%")) +
+  xlab("Self-Enhancement Score") +
+  # ggtitle("Probabilities of Support for Establishment/Populist Parties") +
+  # labs(subtitle = "Based on Multinomial Logistic Regression",
+  #      caption = "Source: ESS Data Round 5 - 8") +
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size = 10),
+        legend.text = element_text(size = 10), 
+        legend.title = element_text(size = 10), 
+        title = element_text(size = 12))
+
+
+ggsave(file = here::here("images", "interaction_unemployed.png"),
+       height = 5, width = 10)
+
+```
 
 ## Appropriateness
 
@@ -1121,4 +1704,757 @@ plot(fft_populism)
 
 
 
+```
+
+# Mlogit -TABLE
+
+```{r}
+library(nnet)
+mlogit_ess$populism2 <- relevel(mlogit_ess$target, ref = "Establishment")
+
+test <- multinom(
+  populism2 ~
+    # economic deprivation
+    econ_insec + unemployed + welfare +
+    # cultural backlash
+    anti_imm + opendim + selfdim + globalism + govsat +
+    # control variables
+    age + educ + sex + lrscale + ethnic + religion + rural + east + north + south +
+    year_2016 + year_2014 + year_2012,
+    #data
+    data = mlogit_ess, weights = pweight)
+
+# screenreg(test)
+# stargazer::stargazer(test, type = "text")
+
+multi1.rrr <- exp(coef(test))
+
+stargazer::stargazer(test, type = "text",coef=list(multi1.rrr), p.auto=FALSE)
+
+summary(test)
+
+#car::Anova(test)
+
+# PseudoR2(test)
+# 
+# regm2 <- step(test)
+# # 
+# # GGally::ggcoef(regm2, exponentiate = TRUE) + facet_grid(~y.level)
+# 
+# tidy(regm2, exponentiate = T, conf.int = TRUE) %>% 
+#   # filter(term != "south") %>% 
+#   # filter(term != "east") %>% 
+#   # filter(term != "north") %>% 
+#   # filter(term != "(Intercept)") %>% 
+#   ggplot() + aes(x = term, y = estimate, 
+#                  ymin = conf.low, 
+#                  ymax = conf.high, color = y.level) + 
+#   geom_hline(yintercept = 1, 
+#              color = "gray25", 
+#              linetype = "dotted") + 
+#   geom_errorbar(position = position_dodge(0.5), width = 0) + 
+#   geom_point(position = position_dodge(width = 0.5)) + scale_y_log10() + 
+#   coord_flip()
+
+```
+
+## opendim-selfdim
+
+```{r}
+
+load("data/mlogit_ess_adds.Rdata")
+
+
+library(nnet)
+mlogit_ess_adds$populism2 <- relevel(mlogit_ess_adds$target, ref = "Establishment")
+
+controls <- multinom(
+  populism2 ~
+    # economic deprivation
+    #econ_unsat + econ_insec + unemployed + welfare +
+    # cultural backlash
+    #anti_imm + opendim + selfdim +
+    # control variables
+    age + educ + sex + lrscale + ethnic + religion + rural + globalism + govsat + east + north + south +
+    year_2016 + year_2014 + year_2012,
+    #data
+    data = mlogit_ess_adds, weights = pweight)
+
+# controls_tidy <- step(controls) %>% 
+#   tidy(exponentiate = T, conf.int = TRUE) %>% 
+#   mutate(model = "control") %>% 
+#   mutate(stars = get_p_values(p.value)) %>% 
+#   mutate(mcfadden = round(PseudoR2(controls), 2)) 
+
+  # cowplot::add_sub(gg_coefs, 
+  #                  label = paste(expression(paste("McFadden's Pseudo R^2:")), 
+  #                                           gg_coefs$mcfadden), 
+  #                  x = 0, hjust = 0) %>%
+  # cowplot::ggdraw()
+
+fit1 <- multinom(
+  populism2 ~
+    # control variables
+    age + educ + sex + lrscale + ethnic + religion + rural + globalism + govsat + east +
+    north + south + year_2016 + year_2014 + year_2012 +
+    # economic deprivation
+    econ_insec + unemployed + welfare,
+    # cultural backlash
+    #anti_imm + opendim + selfdim + globalism + govsat +
+    #data
+    data = mlogit_ess_adds, weights = pweight)
+
+# fit1_tidy <- step(fit1) %>% 
+#   tidy(exponentiate = T, conf.int = TRUE) %>% 
+#   mutate(model = "control") %>% 
+#   mutate(stars = get_p_values(p.value)) %>% 
+#   mutate(mcfadden = round(PseudoR2(fit1), 2)) 
+
+
+fit2 <- multinom(
+  populism2 ~
+    # control variables
+    age + educ + sex + lrscale + ethnic + religion + rural + globalism + govsat + east +
+    north + south +  year_2016 + year_2014 + year_2012+
+    # economic deprivation
+    #econ_unsat + econ_insec + unemployed + welfare +
+    # cultural backlash
+    anti_imm + opendim + selfdim,
+    #data
+    data = mlogit_ess_adds, weights = pweight)
+
+
+fit3 <- multinom(
+  populism2 ~
+    # control variables
+    age + educ + sex + lrscale + ethnic + religion + rural + globalism + govsat + east +
+    north + south +   year_2016 + year_2014 + year_2012+
+    # economic deprivation
+    econ_insec + unemployed + welfare +
+    # cultural backlash
+    anti_imm + opendim + selfdim,
+    #data
+    data = mlogit_ess_adds, weights = pweight)
+
+fit4 <- multinom(
+  populism2 ~
+    # control variables
+    age + educ + sex + lrscale + ethnic + religion + rural + globalism + govsat + east +
+    north + south +   year_2016 + year_2014 + year_2012+
+    # economic deprivation
+    econ_insec + unemployed + welfare +
+    # cultural backlash
+    anti_imm + opendim + selfdim +
+    # interactions
+    econ_insec * anti_imm + 
+    #econ_insec * conservation + 
+    unemployed * opendim,
+    #data
+    data = mlogit_ess_adds, weights = pweight)
+
+# PseudoR2(controls)
+# PseudoR2(fit1)
+# PseudoR2(fit2)
+# PseudoR2(fit3)
+# PseudoR2(fit4)
+#
+
+# tidy(fit4) %>%
+#   filter(term %nin% c("(Intercept)", "age", "educ", "sex",
+#                      "lrscale", "ethnic", "religion", "rural",
+#                      "globalism", "govsat", "east", "north", "south",
+#                      "year_2016", "year_2014", "year_2012", "econ_insec",
+#                      "unemployed", "welfare", "anti_imm", "openness",
+#                      "conservation", "selfenhance", "selftrans")) %>%
+#   mutate(stars = get_p_values(p.value))
+
+# econ_insec:anti_imm only traditionalist populism
+# econ_insec:conservation only traditionalist populism - weak
+# unemployed:selftrans only progressive populism - weak
+
+```
+
+
+### making the adds plot
+
+```{r}
+
+
+
+control_variables <- c("age", "educ", "sex", "lrscale", "ethnic", 
+  "religion", "rural", "south", "east", "north", 
+             "globalism", "govsat")
+  
+economic <- c("econ_insec", "unemployed", "welfare")
+
+cultural <- c("anti_imm", "opendim", 
+             "selfdim")
+
+all_mods %>% 
+  filter(term != "south") %>% 
+  filter(term != "east") %>% 
+  filter(term != "north") %>% 
+  filter(term != "year_2016") %>% 
+  filter(term != "year_2014") %>% 
+  filter(term != "year_2012") %>% 
+  filter(term != "(Intercept)") %>% 
+  mutate(variable_groups = case_when(
+    term %in% control_variables ~ "Controls",
+    term %in% economic ~ "Economic",
+    term %in% cultural ~ "Cultural",
+    TRUE ~ "Interactions"
+  )) %>% 
+  mutate(model = case_when(
+    model == "control" ~ "Model 1 (Controls)",
+    model == "model1" ~ "Model 2 (Economic)",
+    model == "model2" ~ "Model 3 (Culture)",
+    model == "model3" ~ "Model 4 (Economic + Culture)",
+    model == "model4" ~ "Model 5 (Interactions)"
+  )) %>%
+  mutate(term = case_when(
+    term == "anti_imm" ~ "Anti-Immigration Sentiment", 
+    term == "opendim" ~ "Openness", 
+    term == "selfdim" ~ "Selfishness", 
+    # term == "selfenhance" ~ "Self-Enhancement", 
+    # term == "selftrans" ~ "Self-Transcendence", 
+    term == "econ_insec" ~ "Economic Insecurity", 
+    term == "unemployed" ~ "Unemployed (0/1)", 
+    term == "welfare" ~ "Welfare (0/1)",
+    term == "age" ~ "Age", 
+    term == "educ" ~ "Education", 
+    term == "sex" ~ "Female (0/1)", 
+    term == "lrscale" ~ "Left-Right Scale", 
+    term == "ethnic" ~ "Ethnic Minority (0/1)", 
+    term == "religion" ~ "Religiosity", 
+    term == "rural" ~ "Rural (0/1)",  
+    term == "globalism" ~ "Trust in Global Governance", 
+    term == "govsat" ~ "Government Satisfaction",
+    term == "econ_insec:anti_imm" ~ "Econ. Insec. X Anti-Immigration",
+#    term == "econ_insec:conservation" ~ "Economic Insecurity X Conservation",
+    term == "unemployed:opendim" ~ "Unemployed X Openness"
+  )) %>% 
+  mutate(term = fct_relevel(term, levels = c("Unemployed X Openness",
+                              #"Economic Insecurity X Conservation",
+                              "Econ. Insec. X Anti-Immigration",
+                              "Anti-Immigration Sentiment", "Openness", 
+                              "Selfishness", 
+                              "Econ Insecurity", "Unemployed (0/1)", 
+                              "Welfare (0/1)",
+                              "Age", "Education", "Female (0/1)", "Left-Right Scale", 
+                              "Ethnic Minority (0/1)", "Religiosity", "Rural (0/1)",
+                              "Trust in Global Governance", "Government Satisfaction"))) %>% 
+  mutate(`Variable Groups` = variable_groups) %>% 
+  mutate(`Y-Level` = y.level) %>% 
+  ggplot() + aes(x = term, y = estimate, 
+                 ymin = conf.low, 
+                 ymax = conf.high, 
+                 color = `Y-Level`) + 
+  geom_hline(yintercept = 1, 
+             color = "gray25", 
+             linetype = "dotted") + 
+  geom_errorbar(position = position_dodge(0.5), width = 0) + 
+  geom_point(aes(shape = `Variable Groups`), 
+             position = position_dodge(width = 0.5)) + 
+  scale_y_log10() +
+  geom_vline(xintercept = seq(1.5, length(unique(all_mods$term)) - 0.5, 1), 
+             lwd = 1, colour = "grey", alpha = 0.7) +
+  geom_text(aes(x = term, 
+                y = estimate + 0.01,
+                label = paste(sprintf('%.2f', estimate, 2), stars)), 
+                position = position_dodge(1.2), show.legend = F) +
+  coord_flip() +
+  guides(point = F) +
+  scale_y_continuous(breaks = seq(-2, 2, by = 0.3), limits = c(.5, 1.9)) +
+  ggthemes::theme_hc() +
+  ggthemes::scale_fill_fivethirtyeight() +
+  cowplot::background_grid(major = 'y', minor = "none") + # add thin horizontal lines
+  cowplot::panel_border() +# and a border around each panel
+  xlab("") +
+  ylab("Odds Ratios") + 
+  # labs(caption = paste(expression("McFadden's Pseudo R^2:")), 
+  #                                          gg_coefs$mcfadden) +
+  facet_grid(~ model, scales = "fixed") +
+  annotate("label", x = -1, y = 1.25, label = paste("McFadden's R2.:",
+                                                  mcfaddies,
+                                                  "\n N:", rep(nrow(mlogit_ess), 5),
+                                                  "\n LRT:", anovies)) +
+  # annotate("label", x = 7.5, y = 0.7, label = "Controls") +
+  # annotate("label", x = 11.5, y = 0.7, label = "Economic") +
+  # annotate("label", x = 18.5, y = 0.7, label = "Cultural") +
+  # annotate("label", x = 19.5, y = 0.7, label = "Interactions") +
+  # expand_limits(x = 21) + 
+  geom_text(aes(x = -2, label = ""), show.legend = F) +
+  scale_x_discrete(limits = c("Unemployed X Openness",
+                              #"Economic Insecurity X Conservation",
+                              "Econ. Insec. X Anti-Immigration",
+                              "Interactions",
+                              "Anti-Immigration Sentiment", "Openness", 
+                              "Selfishness",
+                              "Culture",
+                              "Economic Insecurity", "Unemployed (0/1)", 
+                              "Welfare (0/1)",
+                              "Economics",
+                              "Age", "Education", "Female (0/1)", "Left-Right Scale", 
+                              "Ethnic Minority (0/1)", "Religiosity", "Rural (0/1)",
+                              "Trust in Global Governance", "Government Satisfaction",
+                              "Controls"), 
+                   labels = c("Controls"=expression(displaystyle(bold(Controls))), 
+                            "Economics"=expression(displaystyle(bold(Economics))),
+                            "Culture"=expression(displaystyle(bold(Culture))), 
+                            "Interactions"=expression(displaystyle(bold(Interactions))), 
+                            parse=TRUE))
+
+ggsave(filename = "images/onebigmotherfucker2.png", width = 15, height = 10)
+ 
+# multi1.rrr <- exp(coef(test))
+# 
+# stargazer::stargazer(test, type="text",coef=list(multi1.rrr), p.auto=FALSE)
+
+# TODO Make a map (or two)
+# TODO Make stuff citeable
+# TODO Decide which interactions
+# TODO Make probability plots
+
+unique(all_mods$term)
+```
+
+
+
+
+#### anti-immigration
+
+```{r}
+# test <- multinom(
+#   populism2 ~
+#     # economic deprivation
+#     econ_unsat + econ_insec + unemployed +
+#     # cultural backlash
+#     anti_imm + opendim + selfdim + globalism + govsat +
+#     # control variables
+#     age + educ + sex + lrscale + ethnic + religion + rural + east + north + south,
+#     #data
+#     data = mlogit_ess, weights = pweight)
+# 
+# 
+# screenreg(test)
+
+## Automatic Picking of Scales
+#from_to <- as.vector(names(table(ess_mlogit$openness)))
+#fit.eff <- effects::effect("openness", 
+#                           test, 
+#                           xlevels = list(openness = from_to))
+## or
+#fit.eff <- effects::effect("openness", 
+#                           test)
+## or put them in by hand
+fit.eff <- effects::effect("anti_imm", 
+                           fit3, 
+                           xlevels = list(anti_imm = c(1:10)))
+
+df <- fit.eff$prob %>% 
+  as.data.frame()
+
+data.frame(diff(as.matrix(df))) %>% 
+  #janitor::clean_names() %>% 
+  summarise_all(mean) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "type") %>% 
+  mutate(type = case_when(
+    str_detect(type, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(type, "Progressive") ~ "Progressive Populism",
+    str_detect(type, "Establishment") ~ "Establishment"
+  )) %>% 
+  mutate(V1 = paste0("AME = ", sprintf('%.2f', V1*100, 2),"%")) -> ame_dat
+
+anti_imm_prob <- data.frame(fit.eff$model.matrix, 
+           fit.eff$prob, 
+           fit.eff$lower.prob, 
+           fit.eff$upper.prob) %>% 
+  select(anti_imm, prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism, L.prob.Establishment, 
+         U.prob.Establishment, L.prob.Traditionalist.Populism, 
+         U.prob.Traditionalist.Populism, L.prob.Progressive.Populism, 
+         U.prob.Progressive.Populism, -X.Intercept.) %>% 
+  gather(key = variable, value = value, -anti_imm, 
+           -L.prob.Establishment, -U.prob.Establishment,
+           -L.prob.Traditionalist.Populism, -U.prob.Traditionalist.Populism,
+         -L.prob.Progressive.Populism, -U.prob.Progressive.Populism) %>% 
+  mutate(type = case_when(
+    str_detect(variable, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(variable, "Progressive") ~ "Progressive Populism",
+    str_detect(variable, "Establishment") ~ "Establishment"
+  )) %>%
+    mutate(lower = case_when(
+    type == "Establishment" ~ L.prob.Establishment*100,
+    type == "Progressive Populism" ~ L.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ L.prob.Traditionalist.Populism*100
+  )) %>% 
+    mutate(upper = case_when(
+    type == "Establishment" ~ U.prob.Establishment*100,
+    type == "Progressive Populism" ~ U.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ U.prob.Traditionalist.Populism*100
+  )) %>% 
+  mutate(value = value * 100) %>% 
+  ggplot(aes(anti_imm, value, colour = type)) +
+    geom_smooth(method = "loess", 
+               #formula = y ~ s(x, k = 1), 
+               size = 1.2, se = F) +
+    geom_ribbon(aes(ymin = lower, ymax = upper), 
+               fill = "gray70", alpha = 0.5, colour=NA) +
+    geom_text(data = ame_dat, aes(x = 2, y = -Inf, label = V1),
+              hjust   = -0.1,
+              vjust   = -1 
+              #nudge_y = 15, 
+              #nudge_x = 15
+              ) +
+    geom_jitter(alpha = 0.01) +
+  labs(y = "Marginal Probability") +
+  guides(color = F) +
+    ggthemes::theme_hc() +
+    ggthemes::scale_color_fivethirtyeight() + 
+    facet_wrap(~type, scales = "free", nrow = 1) +
+    scale_y_continuous(breaks = seq(0,100, by = 1), 
+                     labels = paste0(seq(0,100, by = 1),"%")) +
+    scale_x_continuous(breaks = seq(0,10, by = 1), 
+                     labels = seq(0,10, by = 1)) +
+  xlab("Anti-Immigration Sentiment") 
+
+ggsave(anti_imm_prob, filename = "images/anti_imm_prob.png", width = 12, height = 4)
+```
+
+#### Openness
+
+```{r}
+fit.eff <- effects::effect("openness", 
+                           fit3, 
+                           xlevels = list(openness = c(1:10)))
+
+df <- fit.eff$prob %>% 
+  as.data.frame()
+
+data.frame(diff(as.matrix(df))) %>% 
+  #janitor::clean_names() %>% 
+  summarise_all(mean) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "type") %>% 
+  mutate(type = case_when(
+    str_detect(type, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(type, "Progressive") ~ "Progressive Populism",
+    str_detect(type, "Establishment") ~ "Establishment"
+  )) %>% 
+  mutate(V1 = paste0("AME = ", sprintf('%.2f', V1*100, 2),"%")) -> ame_dat
+
+openness_prob <- data.frame(fit.eff$model.matrix, 
+           fit.eff$prob, 
+           fit.eff$lower.prob, 
+           fit.eff$upper.prob) %>% 
+  select(openness, prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism, L.prob.Establishment, 
+         U.prob.Establishment, L.prob.Traditionalist.Populism, 
+         U.prob.Traditionalist.Populism, L.prob.Progressive.Populism, 
+         U.prob.Progressive.Populism, -X.Intercept.) %>% 
+  gather(key = variable, value = value, -openness, 
+           -L.prob.Establishment, -U.prob.Establishment,
+           -L.prob.Traditionalist.Populism, -U.prob.Traditionalist.Populism,
+         -L.prob.Progressive.Populism, -U.prob.Progressive.Populism) %>% 
+  mutate(type = case_when(
+    str_detect(variable, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(variable, "Progressive") ~ "Progressive Populism",
+    str_detect(variable, "Establishment") ~ "Establishment"
+  )) %>%
+    mutate(lower = case_when(
+    type == "Establishment" ~ L.prob.Establishment*100,
+    type == "Progressive Populism" ~ L.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ L.prob.Traditionalist.Populism*100
+  )) %>% 
+    mutate(upper = case_when(
+    type == "Establishment" ~ U.prob.Establishment*100,
+    type == "Progressive Populism" ~ U.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ U.prob.Traditionalist.Populism*100
+  )) %>% 
+  mutate(value = value * 100) %>% 
+  ggplot(aes(openness, value, colour = type)) +
+    geom_smooth(method = "loess", 
+               #formula = y ~ s(x, k = 1), 
+               size = 1.2, se = F) +
+    geom_ribbon(aes(ymin = lower, ymax = upper), 
+               fill = "gray70", alpha = 0.5, colour=NA) +
+    geom_text(data = ame_dat, aes(x = 2, y = -Inf, label = V1),
+              hjust   = -0.1,
+              vjust   = -1 
+              #nudge_y = 15, 
+              #nudge_x = 15
+              ) +
+    geom_jitter(alpha = 0.01) +
+  labs(y = "") +
+  guides(color = F) +
+    ggthemes::theme_hc() +
+    ggthemes::scale_color_fivethirtyeight() + 
+    facet_wrap(~type, scales = "free", nrow = 1) +
+    scale_y_continuous(breaks = seq(0,100, by = 1), 
+                     labels = paste0(seq(0,100, by = 1),"%")) +
+    scale_x_continuous(breaks = seq(0,10, by = 1), 
+                     labels = seq(0,10, by = 1)) +
+  xlab("Openness Scale") 
+
+ggsave(openness_prob, filename = "images/openness.png", width = 12, height = 4)
+```
+
+#### Conservatism
+
+```{r}
+fit.eff <- effects::effect("conservation", 
+                           fit3, 
+                           xlevels = list(conservation = c(1:10)))
+
+df <- fit.eff$prob %>% 
+  as.data.frame()
+
+data.frame(diff(as.matrix(df))) %>% 
+  #janitor::clean_names() %>% 
+  summarise_all(mean) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "type") %>% 
+  mutate(type = case_when(
+    str_detect(type, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(type, "Progressive") ~ "Progressive Populism",
+    str_detect(type, "Establishment") ~ "Establishment"
+  )) %>% 
+  mutate(V1 = paste0("AME = ", sprintf('%.2f', V1*100, 2),"%")) -> ame_dat
+
+conservation_prob <- data.frame(fit.eff$model.matrix, 
+           fit.eff$prob, 
+           fit.eff$lower.prob, 
+           fit.eff$upper.prob) %>% 
+  select(conservation, prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism, L.prob.Establishment, 
+         U.prob.Establishment, L.prob.Traditionalist.Populism, 
+         U.prob.Traditionalist.Populism, L.prob.Progressive.Populism, 
+         U.prob.Progressive.Populism, -X.Intercept.) %>% 
+  gather(key = variable, value = value, -conservation, 
+           -L.prob.Establishment, -U.prob.Establishment,
+           -L.prob.Traditionalist.Populism, -U.prob.Traditionalist.Populism,
+         -L.prob.Progressive.Populism, -U.prob.Progressive.Populism) %>% 
+  mutate(type = case_when(
+    str_detect(variable, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(variable, "Progressive") ~ "Progressive Populism",
+    str_detect(variable, "Establishment") ~ "Establishment"
+  )) %>%
+    mutate(lower = case_when(
+    type == "Establishment" ~ L.prob.Establishment*100,
+    type == "Progressive Populism" ~ L.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ L.prob.Traditionalist.Populism*100
+  )) %>% 
+    mutate(upper = case_when(
+    type == "Establishment" ~ U.prob.Establishment*100,
+    type == "Progressive Populism" ~ U.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ U.prob.Traditionalist.Populism*100
+  )) %>% 
+  mutate(value = value * 100) %>% 
+  ggplot(aes(conservation, value, colour = type)) +
+    geom_smooth(method = "loess", 
+               #formula = y ~ s(x, k = 1), 
+               size = 1.2, se = F) +
+    geom_ribbon(aes(ymin = lower, ymax = upper), 
+               fill = "gray70", alpha = 0.5, colour=NA) +
+    geom_text(data = ame_dat, aes(x = 2, y = -Inf, label = V1),
+              hjust   = -0.1,
+              vjust   = -1 
+              #nudge_y = 15, 
+              #nudge_x = 15
+              ) +
+    geom_jitter(alpha = 0.01) +
+  labs(y = "") +
+  guides(color = F) +
+    ggthemes::theme_hc() +
+    ggthemes::scale_color_fivethirtyeight() + 
+    facet_wrap(~type, scales = "free", nrow = 1) +
+    scale_y_continuous(breaks = seq(0,100, by = 1), 
+                     labels = paste0(seq(0,100, by = 1),"%")) +
+    scale_x_continuous(breaks = seq(0,10, by = 1), 
+                     labels = seq(0,10, by = 1)) +
+  xlab("Conservation Scale") 
+
+ggsave(conservation_prob, filename = "images/conservation.png", width = 12, height = 4)
+```
+
+
+#### selfenhancment
+
+```{r}
+fit.eff <- effects::effect("selfenhance", 
+                           fit3, 
+                           xlevels = list(selfenhance = c(1:10)))
+
+df <- fit.eff$prob %>% 
+  as.data.frame()
+
+data.frame(diff(as.matrix(df))) %>% 
+  #janitor::clean_names() %>% 
+  summarise_all(mean) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "type") %>% 
+  mutate(type = case_when(
+    str_detect(type, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(type, "Progressive") ~ "Progressive Populism",
+    str_detect(type, "Establishment") ~ "Establishment"
+  )) %>% 
+  mutate(V1 = paste0("AME = ", sprintf('%.2f', V1*100, 2),"%")) -> ame_dat
+
+selfenhance_prob <- data.frame(fit.eff$model.matrix, 
+           fit.eff$prob, 
+           fit.eff$lower.prob, 
+           fit.eff$upper.prob) %>% 
+  select(selfenhance, prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism, L.prob.Establishment, 
+         U.prob.Establishment, L.prob.Traditionalist.Populism, 
+         U.prob.Traditionalist.Populism, L.prob.Progressive.Populism, 
+         U.prob.Progressive.Populism, -X.Intercept.) %>% 
+  gather(key = variable, value = value, -selfenhance, 
+           -L.prob.Establishment, -U.prob.Establishment,
+           -L.prob.Traditionalist.Populism, -U.prob.Traditionalist.Populism,
+         -L.prob.Progressive.Populism, -U.prob.Progressive.Populism) %>% 
+  mutate(type = case_when(
+    str_detect(variable, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(variable, "Progressive") ~ "Progressive Populism",
+    str_detect(variable, "Establishment") ~ "Establishment"
+  )) %>%
+    mutate(lower = case_when(
+    type == "Establishment" ~ L.prob.Establishment*100,
+    type == "Progressive Populism" ~ L.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ L.prob.Traditionalist.Populism*100
+  )) %>% 
+    mutate(upper = case_when(
+    type == "Establishment" ~ U.prob.Establishment*100,
+    type == "Progressive Populism" ~ U.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ U.prob.Traditionalist.Populism*100
+  )) %>% 
+  mutate(value = value * 100) %>% 
+  ggplot(aes(selfenhance, value, colour = type)) +
+    geom_smooth(method = "loess", 
+               #formula = y ~ s(x, k = 1), 
+               size = 1.2, se = F) +
+    geom_ribbon(aes(ymin = lower, ymax = upper), 
+               fill = "gray70", alpha = 0.5, colour=NA) +
+    geom_text(data = ame_dat, aes(x = 2, y = -Inf, label = V1),
+              hjust   = -0.1,
+              vjust   = -1 
+              #nudge_y = 15, 
+              #nudge_x = 15
+              ) +
+    geom_jitter(alpha = 0.01) +
+  labs(y = "") +
+  guides(color = F) +
+    ggthemes::theme_hc() +
+    ggthemes::scale_color_fivethirtyeight() + 
+    facet_wrap(~type, scales = "free", nrow = 1) +
+    scale_y_continuous(breaks = seq(0,100, by = 1), 
+                     labels = paste0(seq(0,100, by = 1),"%")) +
+    scale_x_continuous(breaks = seq(0,10, by = 1), 
+                     labels = seq(0,10, by = 1)) +
+  xlab("Self-Transcendence Scale") 
+
+ggsave(selfenhance_prob, filename = "images/selfenhance_prob.png", width = 12, height = 4)
+```
+
+
+#### selftrans
+
+```{r}
+fit.eff <- effects::effect("selftrans", 
+                           fit3, 
+                           xlevels = list(selftrans = c(1:10)))
+
+df <- fit.eff$prob %>% 
+  as.data.frame()
+
+data.frame(diff(as.matrix(df))) %>% 
+  #janitor::clean_names() %>% 
+  summarise_all(mean) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "type") %>% 
+  mutate(type = case_when(
+    str_detect(type, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(type, "Progressive") ~ "Progressive Populism",
+    str_detect(type, "Establishment") ~ "Establishment"
+  )) %>% 
+  mutate(V1 = paste0("AME = ", sprintf('%.2f', V1*100, 2),"%")) -> ame_dat
+
+selftrans_prob <- data.frame(fit.eff$model.matrix, 
+           fit.eff$prob, 
+           fit.eff$lower.prob, 
+           fit.eff$upper.prob) %>% 
+  select(selftrans, prob.Traditionalist.Populism, prob.Establishment,
+         prob.Progressive.Populism, L.prob.Establishment, 
+         U.prob.Establishment, L.prob.Traditionalist.Populism, 
+         U.prob.Traditionalist.Populism, L.prob.Progressive.Populism, 
+         U.prob.Progressive.Populism, -X.Intercept.) %>% 
+  gather(key = variable, value = value, -selftrans, 
+           -L.prob.Establishment, -U.prob.Establishment,
+           -L.prob.Traditionalist.Populism, -U.prob.Traditionalist.Populism,
+         -L.prob.Progressive.Populism, -U.prob.Progressive.Populism) %>% 
+  mutate(type = case_when(
+    str_detect(variable, "Traditionalist") ~ "Traditionalist Populism",
+    str_detect(variable, "Progressive") ~ "Progressive Populism",
+    str_detect(variable, "Establishment") ~ "Establishment"
+  )) %>%
+    mutate(lower = case_when(
+    type == "Establishment" ~ L.prob.Establishment*100,
+    type == "Progressive Populism" ~ L.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ L.prob.Traditionalist.Populism*100
+  )) %>% 
+    mutate(upper = case_when(
+    type == "Establishment" ~ U.prob.Establishment*100,
+    type == "Progressive Populism" ~ U.prob.Progressive.Populism*100,
+    type == "Traditionalist Populism" ~ U.prob.Traditionalist.Populism*100
+  )) %>% 
+  mutate(value = value * 100) %>% 
+  ggplot(aes(selftrans, value, colour = type)) +
+    geom_smooth(method = "loess", 
+               #formula = y ~ s(x, k = 1), 
+               size = 1.2, se = F) +
+    geom_ribbon(aes(ymin = lower, ymax = upper), 
+               fill = "gray70", alpha = 0.5, colour=NA) +
+    geom_text(data = ame_dat, aes(x = 2, y = -Inf, label = V1),
+              hjust   = -0.1,
+              vjust   = -1 
+              #nudge_y = 15, 
+              #nudge_x = 15
+              ) +
+    geom_jitter(alpha = 0.01) +
+  labs(y = "") +
+  guides(color = F) +
+    ggthemes::theme_hc() +
+    ggthemes::scale_color_fivethirtyeight() + 
+    facet_wrap(~type, scales = "free", nrow = 1) +
+    scale_y_continuous(breaks = seq(0,100, by = 1), 
+                     labels = paste0(seq(0,100, by = 1),"%")) +
+    scale_x_continuous(breaks = seq(0,10, by = 1), 
+                     labels = seq(0,10, by = 1)) +
+  xlab("Self-Transcendence Scale") 
+
+ggsave(selftrans_prob, filename = "images/selftrans_prob.png", width = 12, height = 4)
+```
+
+##### Cowplotting it together
+
+```{r}
+cultural_probs <- cowplot::plot_grid(anti_imm_prob, openness_prob, 
+                               conservation_prob, selfenhance_prob, 
+                               selftrans_prob,
+                      labels = c("A", "B", "C", "D", "E"), ncol = 1)
+
+cowplot::save_plot("images/cultural_probs.png", cultural_probs,
+          #ncol = 2, # we're saving a grid plot of 2 columns
+          ncol = 2, # and 2 rows
+          base_height = 10,
+          base_width = 6,
+          # each individual subplot should have an aspect ratio of 1.3
+          base_aspect_ratio = 1.3
+          )
 ```

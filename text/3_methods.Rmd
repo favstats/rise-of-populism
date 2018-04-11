@@ -28,11 +28,11 @@ pacman::p_load(tidyverse, gridExtra)
 ```
 
 
-The following section will introduce the data and its sources. We use the Chapel Hill Expert Survey (CHES) on European party position in order to construct our dependent variable of *Support for Populist Parties* (i.e. Support for Progressive or Traditionalist Populist parties) along with individual level data from the European Social Survey (ESS) (Section 3.1). The following subsection operationalizes our hypotheses (cultural and economic explanations for populism) and subsequently a description of the used control variables is given (Section 3.2). Following this, the statistical methodology is explained (Section 3.3) and a short examination of descriptive statistics takes place (Section 3.4). Lastly, the results of estimated multinomial logistic regression models are reported and examined for their implications regarding the research hypotheses (Section 3.5). 
+The following section introduces the data and its sources. We use the Chapel Hill Expert Survey (CHES) on European party positions in order to construct our dependent variable of *Support for Establishment/Populist Parties* (i.e. Support for Progressive or Traditionalist Populist parties) along with individual level data from the European Social Survey (ESS) (Section \ref{data_operat}). The section further operationalizes our hypotheses (cultural and economic explanations for populism) and give a description of the used control variables. Following this, the statistical methodology is explained (Section \ref{stat_methods}). 
 
-## Data & Operationalization
+\subsection{Data \& Operationalization} \label{data_operat}
 
-The CHES dataset contains information on the positions of XXX political parties in 40 European countries on european and national policy issues in the timerange between 1999 and 2014. This makes the CHES data suitable for identifying the ideological party positions that can be classified as progressive and traditionalist populism within the European context. 
+The CHES dataset contains information on the positions of 365 political parties in 40 European countries on european and national policy issues in the timerange between 1999 and 2014. This makes the CHES data suitable for identifying the ideological party positions that can be classified as progressive and traditionalist populism within the European context. Since parties have changed over time, for the purposes of our analysis we only use the latest available data from 2014.
 
 <!-- As a first step, we filtered the data so that we only have data up until 2014. Populism in Europe has changed with time, especially since the Euro financial crisis, it is therefore seen as appropriate to limit our analysis to the timerange after the crisis. -->
 
@@ -64,7 +64,7 @@ Euroskepticism (*position*[^1]) will be used as a proxy variable for anti-global
 
 Next, we try to identify the value cleavage between progressivism and traditionalism. 
 
-This value cleavage depicted divides *progressives*, who favor progressive social values, promote liberal lifestyles and acceptance of homosexuality, civil liberties and multiculturalism from *traditionalists* who take the opposite stance on of all these positions. The following Variables have been selected in order to distinguish between progressive and traditionalist populism.
+This cleavage divides *progressives*, who favor progressive social values, promote liberal lifestyles and acceptance of homosexuality, civil liberties and multiculturalism from *traditionalists* who take the opposite stance on of all these positions. The following variables have been selected in order to distinguish between progressive and traditionalist populism.
 
 **GAL-TAN**
 
@@ -151,7 +151,8 @@ data.frame(fa_pop$loadings[,2], fa_pop$loadings[,1]) %>%
  # ggtitle("Factor Analysis") +
   labs(caption = paste0("Source: CHES Data 2014; N: ", 
                         nrow(fa_dat))) +
-  theme(axis.text = element_text(size = 14),
+  theme(strip.text = element_text(size = 20),
+        axis.text = element_text(size = 14),
         title = element_text(size = 20))
 #  annotate("text", x = 1, y = 0.25, label = mytable[1,2])
 
@@ -171,7 +172,7 @@ fa_table <- fa_pop$Vaccounted %>%
 
 Based on the Kaiser-Criterion, two distinct dimensions are extracted explaining a total variance of $`r round(fa_table[3,3,],2)`\%$. The extracted scales are then summed into two scales *Establishment vs. Anti-Establishment* and *Progressive vs. Traditionalism*, each standardized from 0 to 100 points to facilitate easy interpretation.
 
-As a next step, we want to extract our traditionalist and progressive populist parties. This will be done with the help of *k-means clustering*. K-Means clustering is a very popular form of unsupervised machine learning that helps with classification problems. The algorithm producess a $k$ number of clusters (classification groups), where k is specified by the researcher. K-Means clustering estimates a centroid (i.e. a center) for each group that has the highest *intra-class similarity* within a given cluster (i.e. smallest distance from the centroid) and the lowest *inter-class similarity* with other specified cluster (i.e. maximized distance from other cluster centroids). The resulting clusters have minimal *within cluster variation* and a maximum of *between cluster variation*. 
+As a next step, we want to extract our traditionalist and progressive populist parties. This will be done with the help of *k-means clustering*. K-Means clustering is a very popular form of unsupervised machine learning that helps with classification problems. The algorithm producess a $k$ number of clusters (classification groups), where k is specified by the researcher. K-Means clustering estimates a centroid (i.e. a center) for each group that has the highest *intra-class similarity* within a given cluster (i.e. smallest distance from the centroid) and the lowest *inter-class similarity* with other specified cluster (i.e. maximized distance from other cluster centroids). The resulting clusters have minimal *within cluster variation* and a maximum of *between cluster variation*  [cf. @friedman2001elements 509 ff.]. 
 
 The classical algorithm for k-means clustering is the Hartigan-Wong algorithm [-@hartigan1979algorithm], where the the total within-cluster variation is defined as the sum of squared (Euclidean) distances between data points and the corresponding centroid:
 
@@ -198,7 +199,7 @@ Now the algorithm can come into use. As a first step, the algorithm randomly sel
 
 The algorithm converges when the clusters do not change in the next iteration (the last two iteration produce the same clusters with the same data points within them).
 
-Finally, the two scales *Establishment vs. Anti-Establishment* and *Progressive vs. Traditionalism* are handed over to the K-means clustering algorithm. Based on the Gap Statistic method [cf. @tibshirani2001estimating], four clusters are suggested as the optimal number of clusters.[^2] Figure \label{fig:gap} shows the results of the gap statistic that clearly indicate four clusters.
+Finally, the two scales *Establishment vs. Anti-Establishment* and *Progressive vs. Traditionalism* are handed over to the K-means clustering algorithm. Based on the *Gap Statistic* method [cf. @tibshirani2001estimating], four clusters are suggested as the optimal number of clusters.[^2] Figure \ref{fig:gap} shows the results of the gap statistic that clearly indicate four clusters.
 
 \begin{figure}[!h]
     \centering
@@ -209,7 +210,7 @@ Finally, the two scales *Establishment vs. Anti-Establishment* and *Progressive 
 
 [^2]:Elbow and average silhouette method also suggest four clusters as optimal. 
 
-The four clusters that are estimated with the help of the k-means algorithm can be named as traditionalist and progressive populist parties as well as their two establishment counterparts (establishment progressives and traditionalists). Together with the clustering method, the two dimensions can be used to visualize the ideological position of each Euopean party and its classification, which is illustrated in Figure \label{fig:alignment}.
+The four clusters that are estimated with the help of the k-means algorithm can be named as traditionalist and progressive populist parties as well as their two establishment counterparts (establishment progressives and traditionalists). Together with the clustering method, the two dimensions can be used to visualize the ideological position of each European party and its classification, which is illustrated in Figure \ref{fig:alignment}.
 
 \begin{figure}[!h]
     \centering
@@ -218,30 +219,27 @@ The four clusters that are estimated with the help of the k-means algorithm can 
     \label{fig:alignment}
 \end{figure}
 
-In order to validate the clusters, let's take a look at them in greater detail and see whether the classified parties fit our theoretical expectations.
+In order to validate the clusters, let's pick some examples and see whether the classified parties fit our theoretical expectations.
 
-**TODO:**
 
-**Top Left** shows progressive populists such as: 
+The *top-left quadrant* shows progressive populists such as: 
 
-**Syriza**
+*Syriza*
 
 After winning the parliamentary elections in January 2015, SYRIZA (*Coalition of the Radical Left*) attempted to carry out the difficult balancing act between extreme left-wing positions, opposition to EU imposed austerity and yet supposedly pro-European commitments. In social policy, Syriza is particularly committed to the socially disadvantaged in society with policies such as guaranteeing that unemployed, homeless and low-income people should be allowed to use the health facilities free of charge or that family reunification should be made easier for individuals with a migration background.
 
-**Podemos**
+*Podemos*
 
 In the general elections held on December 20, 2015, the left-wing political party Podemos that emerged from a protest movement obtained 20.68% of the votes and 69 deputies in the whole of the State. The Spanish "Indignados", the "indignants" of the Podemos movement, practice critique of globalization and capitalism often symbolized in the overarching EU bureacracy. Among other measures, they defend abortion, want to stop house evictions, suppress church privileges, promote renewable energies and are in favor of curbing nuclear energy. With regard to political parties, they propose to stop gauging, reduce subsidies and expand restrictions on connections between politicians and companies.
 
-**Red–Green Alliance (Denmark)**
+*Red–Green Alliance (Denmark)*
 
 The Red–Green Alliance (Enhedslisten) was formed as a collaboration between the Left Socialists (VS), the Danish Communist Party (DKP) and the Socialist Labor Party (SAP) in 1989. During the last parliamentary elections in 2015, the Red–Green Alliance gained 7,8% of the popular vote. Enhedslisten does not stand in European elections, but supports Folkebevægelsen mod EU (*Popular Movement against the EU*), a heavily anti-EU political party that only competes for the European elections. The party attaches great importance to combating social inequality and poverty, as well as advocating strengthening and expanding the welfare state. Politically, the party is in favor of more space for all forms of diversity, including gender, sexuality, disability and ethnic background.
 
 
-**DESCRIBE THEM**
+The *top-right quadrant*  shows traditionalist populists such as:
 
-**Top Right** shows traditionalist populists such as:
-
-**AfD**
+*AfD*
 
 The alternative for Germany (AfD) is a political party founded in 2013 in Germany. As of 2014, it gradually moved into 14 state parliaments and in the 2017 general election, the AfD received 12.6% of the vote and thus became the third strongest force and the strongest opposition party in the German Bundestag. Regarding the EU, they have been in favor of renationalization of policies that are currently situated in the EU. The AfD represents conservative-antifeminist positions in gender politics and rejects gender equality policies and relies thereby on Christian fundamentalist and nationalist ideas. According to the AfD, Islam does not belong to Germany. In particular, the party calls for a ban on minarets and the face veiling. 
 
@@ -249,13 +247,11 @@ The alternative for Germany (AfD) is a political party founded in 2013 in German
 
 **UKIP**
 
-**DESCRIBE THEM**
 
-**Bottom left and bottom right** shows progressive and traditionalist establishment parties:
+The  *bottom-left and bottom-right quadrants* show progressive and traditionalist establishment parties:
 
 German SPD and CDU, Labour Party and Conservatives UK, SOME FRENCHIES
 
-**DESCRIBE THEM**
 
 Given that the distinction between kinds of establishment parties is not of greater interest to us, we will merge progressive and traditionalsit establishment parties into a single establishment party group.
 
@@ -265,72 +261,54 @@ Given that the distinction between kinds of establishment parties is not of grea
 
 <!-- ``` -->
 
-Our measure of populism correlates well with different similar classification methods.
-
-(TODO:) CORRELATION WITH OTHER MEASURES
-
-(TODO:) ONLY INCLUDE PARTIES THAT ARE USED LATER ON
-
 A full list of used parties as well as their respective affiliations can be found in the appendix.
 
-(TODO: TABLE that shows the individuals scores)
 
-### Dependent Variable: Support for Populist Parties
+### Dependent Variable: Support for Establishment/Populist Parties
 
 **TODO:**
 
-(TODO:) INCLUDE ALL ESS ROUNDS
-
-The European Social Survey data is such and such.
-
- - from when to when
- - which countries
- - how many parties
- - actual operationaliztion
-
-After the successful classification, we combine the clusters from the CHES data with the *European Social Survey* (ESS) Round 5 – 8. We decided to use only these dates, as we expect the years after the European financial crisis (2008-09) to be more homoegenous in terms of populism. Two variables will be used to measure our dependent variable *Support for Populist Parties*: 
+After the successful classification, we combine the clusters from the CHES data with the *European Social Survey* (ESS) Round 5 – 8. We decided to use only this timerange, because in this way we capture the years after the European financial crisis (2008-09). Two variables will be used to measure our dependent variable *Support for Establishment/Populist Parties*: 
 
    *1. What party did you vote for in the last national election?* 
    
    *2. Which party is closest to your views?*
 
-A respondent that either voted for or indicated that they feel closest to a specific party, will be classified as either supporting a progressive or traditionalist populist or an establishment party, based on the clusters generated by the K-means alghorithm. If it is the case that a person voted for a party but felt close to a different party, we decided to classify said person as a supporter of the party that it felt most close to (thus ranking their vote as less indicative of their support). This is based on the assumption that many voters have an incentive to vote strategically and they might end up voting for an establishment party even though they actually support a populist party (TODO: **CITATION**).
+A respondent that either voted for or indicated that they feel closest to a specific party, will be classified as either supporting a progressive or traditionalist populist or an establishment party, based on the clusters generated by the k-means alghorithm. If it is the case that a person voted for a party but felt close to a different party, we decided to classify said person as a supporter of the party that it felt most close to (thus ranking their vote as less indicative of their support). This is based on the assumption that many voters have an incentive to vote strategically and they might end up voting for an establishment party even though they actually support a populist party.
 
-After the merging is completed we are left with XXX respondents from 24 European countries.
+After merging of the datasets is completed, we are initially left with 130155 respondents from 22 European countries. However, given that there are many missing values for respondents who gave no indication on whether they support a political party (32.99%), we are ultimately left with 87238 cases for the purposes of our descriptive analysis and 68403 for the multinomial logistic regression analysis (where all missing values were deleted listwise).^[Note that is certainly a high amount of missing values. Imputation could be considered in this case, however, this would be beyond the scope of this seminar paper.]
 
 <!-- Finally, we turned to the pooled European Social Survey (2002-2014) to examine the crossnational micro-level evidence for both the core arguments. The advantage of this survey is that the pooled dataset across six waves contains 293,856 respondents, providing a large-enough sample of the European public in 32 countries to identify the electoral base of smaller parties with some degree of reliability. -->
 
-TODO: **Descriptives?**
-
 ### Independent Variables: Cultural and Economic Explanations
 
-TODO: **Description of INDEPENDENT VARIABLES?**
+Next, the hypotheses will be operationalized with corresponding ESS variables. *Economic deprivation* will be captured with two variables: *Economic Insecurity* (4-point scale) and the dummy variables *Unemployment*, and *Welfare*. The *cultural value hypothesis* will be measured with an index for *Anti-Immigration Sentiment* and four *Schwartz Human Value* dimensions, all ranging from 0 to 10: *Openness*, *Self-Transendence*, *Self-Enhancement* and *Conservation*, where the former two are associated with liberal values and the latter two are associated with conservative values [cf. @schwartz1994there; @schwartz2005human]. The models further include common socio-demographic control variables, for example, *Age*, *Education* and *Sex* but also includes a *Left-Right Scale*, *Religiosity*, *Government Satisfaction*, *Ethnic Minority Status*, *Trust in Global Governance* and the dummy variable *Rural vs. Urban*. Lastly, regional dummies (East, West, North and Southern Europe) and time dummies for each year will be included in the model as controls (2010, 2012, 2014 and 2016).
 
-Next, the hypotheses will be operationalized with corresponding ESS variables. *Economic deprivation* will be captured with two variables: Economic Insecurity and Unemployment (0/1). The *cultural value hypothesis* will be measured with an index for anti-immigration sentiment and four Schwartz Human Value dimensions (Openness to Experience, Conservation, Self-Enhancement and Self-Transendence). The models further include common socio-demographic control variables, for example, age, education and sex but also includes a Left-Right Scale, Religiosity, Government Satisfaction, Minority Status, Trust in the EU & UN and Rural vs. Urban. Lastly, regional dummies (East, West, North and South Europe) and time dummies for each year will be included in the model as controls.
+A more detailed description of the used variables can be requested from the authors.
 
-A more detailed description of the used variables as well as general statistics of all the used variables can be found in the Appendix.
+\subsection{Statistical Methodology} \label{stat_methods}
 
-**TODO: How many point scales?**
+Multinomial logistic regression expands upon binary logistic regression, so that it is possible to predict three or more outcomes of a variable. Each category of the variable of interest is compared to the *reference category*, which is specified by the researcher, with the consequence that estimated parameters (logits and/or odds ratios) are interpreted in reference to that category [cf. @hosmer2013applied 269].
 
-**CHECK THIS**
-All models were checked by tolerance tests to be free of problems of multicollinearity.. 
+For this example, we assume that the multinomial model is run over a categorical response category $Y$, coded as 0, 1, or 2, where 0 is used as reference categaory. Similar to the logistic regression model, where the the logit is understood as $Y = 1$ versus $Y = 0$, a multinomial logistic regression compares the outcomes $Y = 2$ and $Y = 1$ to $Y = 0$. Therefore, two distinct logit functions are estimated:
+
+$$g_1(x) = ln   \begin{bmatrix} \frac{Pr(Y = 1|x)}{Pr(Y = 0|x)} \end{bmatrix}$$
+
+$$g_2(x) = ln   \begin{bmatrix} \frac{Pr(Y = 2|x)}{Pr(Y = 0|x)} \end{bmatrix}$$  
 
 
-## Statistical Methodology
+This model is almost analogous to a logistic regression model, except that the multinomial logit equations contrast each of response category $Y$ with reference category $Y = 0$. When $Y$ has a binary outcomethe multinomial logit model reduces to the usual logistic regression model.
 
-Here comes a description of the multinomial model (might need to change the name of the title)
+The probabilities for each Y-Category is calculated as follows:
 
-Multinomial logistic regression is an extension of binary logistic regression, which makes it possible to predict three or more outcomes of a variable. In this case, each category of the variable of interest will be compared to the *reference category* that is specified by the researcher with the consequence that estimated parameters (logits and/or odds ratios) are interpreted in reference to that category.
+$$Pr(Y = 0|x) = \frac{1}{1 + e^{g_1(x)}+ e^{g_2(x)}}$$
 
-In the multinomial logit model we assume that the log-odds of each response follow a linear model
 
-$$\eta_{ij} = \log\frac{\pi_{ij}}{\pi_{iJ}} = \alpha_j + \boldsymbol{x}_i'\boldsymbol{\beta}_j$$
 
-where $\alpha_j$ is a constant and $\beta_j$ is a vector of regression coefficients, for $j = 1, 2, \ldots, J-1$. Note that we have written the constant explicitly, so we will assume henceforth that the model matrix $\boldsymbol{X}$ does not include a column of ones.
+$$Pr(Y = 1|x) = \frac{e^{g_1(x)}}{1 + e^{g_1(x)}+ e^{g_2(x)}}$$
 
-This model is analogous to a logistic regression model, except that the probability distribution of the response is multinomial instead of binomial and we have $J-1$ equations instead of one. The $J-1$ multinomial logit equations contrast each of categories $j = 1, 2, \ldots, J-1$ with category $J$, whereas the single logistic regression equation is a contrast between successes and failures. If $J=2$ the multinomial logit model reduces to the usual logistic regression model.
+$$Pr(Y = 2|x) = \frac{e^{g_2(x)}}{1 + e^{g_1(x)}+ e^{g_2(x)}}$$
 
-Note that we need only $J-1$ equations to describe a variable with $J$ response categories and that it really makes no difference which category we pick as the reference cell, because we can always convert from one formulation to another. 
 
-Theoretically a multilevel model would have been needed to estimate the model properly, but given that there are some countries with almost none or no populist supporters in our data, this would lead to problems. In order to still account for the hierarchical order of our data, we decided to use regional variables of Europe, based on the four classifications by the UN: Eastern, Western, Southern and Northern  Europe.
+Theoretically a multilevel model would have been needed to estimate the model properly, but given that there are some countries with almost none or no populist supporters in our data, this would lead to problems. In order to still account for the hierarchical order of our data, we decided to use regional variables of Europe, based on the four classifications: Eastern, Western, Southern and Northern  Europe.
 

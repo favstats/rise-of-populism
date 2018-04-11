@@ -51,8 +51,11 @@ load("data/boxplot_dat.Rdata")
 # cite_OR("model4", "conservation", "prog")
 ```
 
-## Descriptive Statistics
 
+
+In this section, a short examination of descriptive statistics takes place (Section \ref{descs}) followed by a report on the results of estimated multinomial logistic regression models which are further examined for their implications regarding the research hypotheses (Section \ref{multinom}). 
+
+\subsection{Descriptive Statistics} \label{descs}
 
 This section will introduce some basic descriptive statistics of the used variables. More specifically, we examine the support for populism over time, its geographical distribution and how it differs among different socio-demographic groups.
 
@@ -91,8 +94,6 @@ Southern Europe, like Northern and Western Europe, shows more than 80% support f
 
 Additionally, Figure \ref{map} shows three maps and the distribution of support for establishment, traditionalist and progressive populist parties in Europe. One can clearly observe the difference of establishment party support between Eastern and Western Europe which goes right through Germany. The prevalence of traditionalist populist in Eastern Europe becomes rather clear to see, specifically in Hungary where the Fidesz dominates the political landscape. In regards to progressive populists, one can observe that East Germany and the Czech Republic, as well as Southern Europe seem to be the hotspots of support.
 
-**potentielle Begr??ndungen k??nnen in dem zusammenfassenden Absatz des Kapitels???oder man k??nnte auch weitere Plots machen, aber muss ja ned sein** 
-
 
 \begin{figure}[!h]
 	\caption{Support for Establishment/Populist Parties over Time}
@@ -113,24 +114,40 @@ The bottom-left graph of Figure \ref{plot2by2} shows the distribution of educati
 
 Lastly, the bottom-right graphic of Figure \ref{plot2by2} shows the degree of religiosity by party support. Focusing on the the graph, supporters of progressive populists stand out clearly with a low average level of religiosity `r cite_box("cite_religion", "prog")`. Supporters of traditional `r cite_box("cite_religion", "trad")`and established parties `r cite_box("cite_religion", "est")` both share a similar degree of religiosity, with the former exhibiting higher levels of religiosity. As the results of the p-values show, all differences between groups are highly statistically significant.
 
-
-
-**statistische Kennwerte in den Text einbauen => t-Werte..**
-
-## Multinomial Logistic Regression
+\subsection{Multinomial Logistic Regression} \label{multinom}
 
 This section will present the results of multinomial logistic regression used to estimate the support for progressive and traditionalist populism followed by a short summary and discussion of the findings in regards to our hypotheses.
 
 ### Results
 
-Five models will be estimated in total: *Model 1* only includes the results of the control variables. *Model 2* tests the economic hypothesis and *Model 3* tests the cultural hypothesis. Lastly, *Model 4* estimates variables of both hypotheses together and *Model 5* shows additional interaction effects between them. Instead of a table, it was decided to use a coefficient plot in order to visualize the results, shown in Figure \ref{coefficients}. The big advantage of reporting the results in this way is that in addition to estimates and p-values, the relation and differences between coefficients can be intuitively read, as negative relationships are found to the left and positive relationships are found to the right of an Odds Ratio of 1. 
+Five models will be estimated in total: *Model 1* only includes the results of the control variables. *Model 2* tests the economic hypothesis and *Model 3* tests the cultural hypothesis. Lastly, *Model 4* estimates variables of both hypotheses together and *Model 5* shows additional interaction effects between them.^[All models were checked by tolerance tests to be free of problems of multicollinearity.] Instead of a table, it was decided to use a coefficient plot in order to visualize the results, shown in Figure \ref{coefficients}. The big advantage of reporting the results in this way is that in addition to estimates and p-values, the relation and differences between coefficients can be intuitively read, as negative relationships are found to the left and positive relationships are found to the right of an Odds Ratio of 1. 
 
 The results found in the descriptive part are further corroborated in *Model 1*. In terms of *age*, the chance of supporting both progressive and traditionalist populism is `r cite_OR("control", "age", "prog")` times lower for each year that a person ages compared to the chance of supporting an establishment party. In regard to *education*, similar results can observed: supporters of traditionalist populism have a significantly lower education and the chance to support traditional populists compared to support of established parties per educational attainment score is `r cite_OR("control", "educ", "trad")` lower (`r cite_complete("control", "educ", "trad")`). With respect to the *left-right spectrum*, the previously identified trend also emerges clearly: the chance to support progressive populists compared to support for established parties is `r cite_OR("control", "lrscale", "prog")` times lower (`r cite_complete("control", "lrscale", "prog")`), whereas the chance for support of progressive populists is `r cite_OR("control", "lrscale", "trad")` higher (`r cite_complete("control", "lrscale", "trad")`). Not surprising are the effects of *government satisfaction* and *trust in global governance*. Governmant satisfaction seems to decrease the chance of supporting both progressive  (`r cite_complete("model2", "govsat", "prog")`) and traditionalist populist parties (`r cite_complete("model2", "govsat", "trad")`). The same trend emerges for trust in global governance: for each point on the scale, the chance to support a traditionalist populist party decreases by `r cite_OR("model2", "globalism", "trad")` (`r cite_complete("model2", "globalism", "trad")`) and the chance to support a progressive populist party decreases by `r cite_OR("model2", "globalism", "prog")` (`r cite_complete("model2", "globalism", "prog")`) compared to support for establishment parties.
+
+
+\begin{figure}[!h]
+	\caption{Marginal Effects for Control Variables - Model 3}
+	\label{control_probs}
+	\includegraphics[width=\textwidth]{images/control_probs.png}
+	\flushright
+	{\scriptsize Source: ESS Data Round 5 - 8; N = 87238. \par}
+\end{figure}
+
+
 
 Next, the economic hypothesis will be examined in *Model 2*. Here it can be seen that the chance for support of progressive populists compared to support of established parties increases by `r cite_OR("model1", "econ_insec", "prog")` per point on the *economic insecurity* scale (`r cite_complete("model1", "econ_insec", "prog")`). Similarly, the chance of supporting traditionalist populism also increases by `r cite_OR("model1", "econ_insec", "trad")` with higher perceived economic insecurity, `r cite_complete("model1", "econ_insec", "trad")`. 
 
 Similar effects can be observed with *unemployment*, where being unemployed increases the chance by `r cite_OR("model1", "unemployed", "prog")` to support progressive populists (`r cite_complete("model1", "unemployed", "prog")`) and by `r cite_OR("model1", "unemployed", "trad")` to support traditionalist populists compared to supporting establishment parties (`r cite_complete("model1", "unemployed", "trad")`). 
 In regard to *welfare*, a different picture emerges. While there is a `r cite_OR("model1", "welfare", "prog")` times greater chance to support progressive populists when on welfare compared to support established parties, *it should be noted that the effect is only slightly significant* **MIGHT NOT BE CORRECT** (`r cite_complete("model1", "welfare", "prog")`). The same does not seem to be the case for traditionalist populists, where being on welfare increases the chance of supporting traditionalist populists by `r cite_OR("model1", "welfare", "prog")`, `r cite_complete("model1", "welfare", "trad")`. **MIGHT NOT BE CORRECT**
+
+\begin{figure}[!h]
+	\caption{Marginal Effects for Economic Hypotheses - Model 3}
+	\label{economic_probs}
+	\includegraphics[width=\textwidth]{images/economic_probs.png}
+	\flushright
+	{\scriptsize Source: ESS Data Round 5 - 8; N = 87238. \par}
+\end{figure}
+
 
 In terms of the economic dimension, it can be seen that as economic deprivation increases, the chance of support for populists is higher compared to support from established parties. However, the effect of dependence on social benefits/welfare varies. Furthermore, almost all effects are significant in the model, and McFadden's $R^2$ increases from 0.20 to 0.21 in Model 1 compared to the control model and a likelihood ratio test shows a statistically significant better fit than the control model, ($\chi^2 = 490.08; p-value < 0.001$).
 
@@ -154,12 +171,40 @@ The effects of the *self-enhancement scale* and the *self-transcendence scale* a
 
 For each scale point on the self-transcendence scale, the chance of support for traditionalist populists is `r cite_OR("model2", "selftrans", "trad")` lower compared to establishment party support, `r cite_complete("model2", "selftrans", "trad")`. Regarding the support for progressive populists, the chance of support for progressive populists is `r cite_OR("model2", "selftrans", "prog")` higher compared to establishment party support, `r cite_complete("model2", "selftrans", "prog")`.
 
+\begin{figure}[!h]
+	\caption{Marginal Effects for Cultural Hypotheses - Model 3}
+	\label{cultural_probs2}
+	\includegraphics[width=\textwidth]{images/cultural_probs2.png}
+	\flushright
+	{\scriptsize Source: ESS Data Round 5 - 8; N = 87238. \par}
+\end{figure}
+
+
 
 The McFadden's $R^2$ increases from 0.21 to 0.24 and the fit of the model is significantly better compared to Model 1, ($\chi^2 = 490.08; p-value < 0.001$). **NEEDS ACTUAL VALUES**
 As expected by our theoretical considerations, the effects on the cultural dimension went in opposite directions: culturally inclusive values seem to increase the support for progressive populists and decrease the support for traditionalist populists whereas exclusiveness seems to increase the support and inclusiveness decreases the support  for the latter. It can thus be noted that the cultural dimension on its own is a meaningful diffeneration between which form of populism is supported. However, it should also be emphasized that the effect sizes found here are rather weak.
 
+\begin{figure}[!h]
+	\caption{Marginal Effects for Interaction Effect 1 - Model 4}
+	\label{interaction_anti_imm}
+	\includegraphics[width=\textwidth]{images/interaction_anti_imm.png}
+	\flushright
+	{\scriptsize Source: ESS Data Round 5 - 8; N = 87238. \par}
+\end{figure}
+
 
 *Model 3* now includes the economic as well as the cultural dimensions. This further confirms the previously found effects. In terms of the economic dimension reduced effects can be observed. However, despite a slight weakening of the effect sizes, significances remain untouched and the estimates continue to show the expected direction. Moreover, the McFadden's $R^2$ increases from 0.24 to 0.25 and the fit of the model is significantly better compared to Model 3, ($\chi^2 = 490.08; p-value < 0.001$). **NEEDS ACTUAL VALUES**
+
+*Model 4* shows the interaction effects.
+
+\begin{figure}[!h]
+	\caption{Marginal Effects for Interaction Effect 2 - Model 4}
+	\label{interaction_unemployed}
+	\includegraphics[width=\textwidth]{images/interaction_unemployed.png}
+	\flushright
+	{\scriptsize Source: ESS Data Round 5 - 8; N = 87238. \par}
+\end{figure}
+
 
 ### Discussion of the Results
 

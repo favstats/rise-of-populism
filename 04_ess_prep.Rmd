@@ -163,141 +163,359 @@ table(mlogit_ess$regional, mlogit_ess$cntry)
 
 ```
 
+# adding things up
+
+```{r}
+minus_7 <- function(var) {
+  7 - var
+}
+
+mlogit_ess %>%
+  mutate(anti_imm = range01(imm_culture + imm_badecon + imm_worselive)*10) %>% 
+  mutate_at(vars(ipcrtiv, impfree, impdiff, ipadvnt, ipgdtim, impfun,
+         impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad,
+         imprich , iprspot , ipshabt , ipsuces,
+         ipeqopt , ipudrst , impenv , iphlppl , iplylfr), minus_7) %>% 
+  mutate(openness = 10-(range01(ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + impfun)*10)) %>% 
+  mutate(conservation = range01(impsafe + ipstrgv + ipfrule + ipbhprp + ipmodst + imptrad)*10) %>%   
+  mutate(selfenhance = 10-(range01(imprich + iprspot + ipshabt + ipsuces)*10)) %>%  
+  mutate(selftrans = range01(ipeqopt + ipudrst + impenv + iphlppl + iplylfr)*10) %>%  
+  mutate(opendim = (range01((openness - conservation))*10)-5) %>% 
+  mutate(selfdim = (range01((selftrans - selfenhance))*10)-5) %>% 
+  mutate(globalism = range01(trust_un + trust_eu)*10) %>%  
+  mutate(govsat = range01(stfgov + trust_gov + demsat)*10) -> mlogit_ess_adds
+
+
+mlogit_ess_adds %<>%
+#   mutate(anti_imm = range01(
+#                     range01(imm_culture) + 
+#                     range01(imm_badecon) + 
+#                     range01(imm_worselive)
+#                     )*10)
+  dplyr::select(target, imm_culture, imm_badecon, imm_worselive, anti_imm, econ_unsat, globalism, econ_insec, aut_safe, aut_behave, aut_rules, aut_trad, aut_govstrong, demsat, age, trust_un, trust_eu, trust_gov, govsat, religion, rural, educ, unemployed, sex, ethnic, welfare, lrscale, openness, conservation, selfenhance, selftrans, opendim, selfdim, pweight, regional, east, west, north, south, cntry, year_2016, year_2014, year_2012, year_2010, year) %>%
+  mutate_all(labelled::remove_labels)
+
+
+# mlogit_ess_adds %<>% 
+#   na.omit() 
+
+
+hist(mlogit_ess_adds$opendim)
+max(mlogit_ess_adds$opendim, na.rm=T)
+min(mlogit_ess_adds$opendim, na.rm=T)
+
+save(mlogit_ess_adds, file = "data/mlogit_ess_adds.Rdata")
+```
 
 
 
 # Factorscores
 
 ```{r}
-anti_imm_dat <- mlogit_ess %>%
-  select(imm_culture, imm_badecon, imm_worselive) %>%
-  mutate_all(as.numeric) 
+# anti_imm_dat <- mlogit_ess %>%
+#   select(imm_culture, imm_badecon, imm_worselive) %>%
+#   mutate_all(as.numeric) 
+# 
+# mlogit_ess <- anti_imm_dat %>%
+#   psych::fa() %>%
+#   predict.psych(data = anti_imm_dat) %>%
+#   as.data.frame() %>%
+#   transmute(anti_imm = range01(MR1)*10) %>%
+#   cbind(mlogit_ess)
+# 
+# minus_7 <- function(var) {
+#   7 - var
+# }
+# 
+# fa_dat <- mlogit_ess %>%
+#   select(ipcrtiv, impfree, impdiff, ipadvnt, ipgdtim, impfun,
+#          impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad,
+#          imprich , iprspot , ipshabt , ipsuces,
+#          ipeqopt , ipudrst , impenv , iphlppl , iplylfr
+#          ) %>% 
+#     mutate_all(as.numeric) %>% 
+#     mutate_all(minus_7) 
+# 
+# 
+# # cronbachs alpha
+# ## openness to change
+# 
+# openness_dat <- fa_dat %>%
+#   select(ipcrtiv , impfree , impdiff , ipadvnt , ipgdtim , impfun) %>%
+#   mutate_all(as.numeric) 
+# 
+# fa_dat <- openness_dat %>%
+#   psych::fa() %>%
+#   predict.psych(data = openness_dat) %>%
+#   as.data.frame() %>%
+#   transmute(openness = (1-range01(MR1))*10) %>%
+#   cbind(fa_dat)
+# 
+# 
+# conservation_dat <- fa_dat %>%
+#   select(impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad) %>%
+#   mutate_all(as.numeric) 
+# 
+# fa_dat <- conservation_dat %>%
+#   psych::fa() %>%
+#   predict.psych(data = conservation_dat) %>%
+#   as.data.frame() %>%
+#   transmute(conservation = range01(MR1)*10) %>%
+#   cbind(fa_dat)
+# 
+# 
+# selfenhance_dat <- fa_dat %>%
+#   select(imprich , iprspot , ipshabt , ipsuces) %>%
+#   mutate_all(as.numeric) 
+# 
+# fa_dat <- selfenhance_dat %>%
+#   psych::fa() %>%
+#   predict.psych(data = selfenhance_dat) %>%
+#   as.data.frame() %>%
+#   transmute(selfenhance = (1-range01(MR1))*10) %>%
+#   cbind(fa_dat)
+# 
+# 
+# selftrans_dat <- fa_dat %>%
+#   select(ipeqopt , ipudrst , impenv , iphlppl , iplylfr) %>%
+#   mutate_all(as.numeric) 
+# 
+# fa_dat <- selftrans_dat %>%
+#   psych::fa() %>%
+#   predict.psych(data = selftrans_dat) %>%
+#   as.data.frame() %>%
+#   transmute(selftrans = range01(MR1)*10) %>%
+#   cbind(fa_dat)
+# 
+# 
+# 
+# fa_dat <- fa_dat %>% 
+#   # mutate_all(range01) %>% 
+#   # mutate(openness = (ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + impfun)/6) %>% 
+#   # mutate(conservation = (impsafe + ipstrgv + ipfrule + ipbhprp + ipmodst + imptrad)/6) %>% 
+#   # mutate(selfenhance = (imprich + iprspot + ipshabt + ipsuces)/4) %>% 
+#   # mutate(selftrans = (ipeqopt + ipudrst + impenv + iphlppl + iplylfr)/5) %>% 
+#   # mutate_all(range01) %>% 
+#   mutate(opendim = (range01((openness - conservation))*10)-5) %>% 
+#   mutate(selfdim = (range01((selftrans - selfenhance))*10)-5)
+# 
+# hist(fa_dat$opendim)
+# max(fa_dat$opendim, na.rm=T)
+# min(fa_dat$opendim, na.rm=T)
+# 
+# mlogit_ess <- fa_dat %>% 
+#   select(openness, conservation, selfenhance, selftrans, opendim, selfdim) %>% 
+#   cbind(mlogit_ess) #%>% 
+#   #na.omit()
+# 
+# global_dat <- mlogit_ess %>%
+#   select(trust_un, trust_eu) %>%
+#   mutate_all(as.numeric) 
+# 
+# mlogit_ess <- global_dat %>%
+#   psych::fa() %>%
+#   predict.psych(data = global_dat) %>%
+#   unlist() %>% as.character() %>% as.numeric() %>%
+#   data.frame(globalism = .) %>%
+#   transmute(globalism = range01(globalism)*5) %>%
+#   cbind(mlogit_ess) 
+# 
+# govsat_dat <- mlogit_ess %>%
+#   select(stfgov, trust_gov, demsat) %>%
+#   mutate_all(as.numeric) 
+# 
+# mlogit_ess <- govsat_dat %>%
+#   psych::fa() %>%
+#   predict.psych(data = govsat_dat) %>%
+#   unlist() %>% as.character() %>% as.numeric() %>%
+#   data.frame(govsat = .) %>%
+#   transmute(govsat = range01(govsat)*5) %>%
+#   cbind(mlogit_ess) 
+# 
+# mlogit_ess %<>%
+# #   mutate(anti_imm = range01(
+# #                     range01(imm_culture) + 
+# #                     range01(imm_badecon) + 
+# #                     range01(imm_worselive)
+# #                     )*10)
+#   dplyr::select(target, imm_culture, imm_badecon, imm_worselive, anti_imm, econ_unsat, globalism, econ_insec, aut_safe, aut_behave, aut_rules, aut_trad, aut_govstrong, demsat, age, trust_un, trust_eu, trust_gov, govsat, religion, rural, educ, unemployed, sex, ethnic, welfare, lrscale, openness, conservation, selfenhance, selftrans, opendim, selfdim, pweight, regional, east, west, north, south, cntry, year_2016, year_2014, year_2012, year_2010, year) %>% 
+#   na.omit() %>%
+#   mutate_all(labelled::remove_labels)
+# 
+# save(mlogit_ess, file = "data/mlogit_ess.Rdata")
+```
 
-mlogit_ess <- anti_imm_dat %>%
-  psych::fa() %>%
-  predict.psych(data = anti_imm_dat) %>%
-  as.data.frame() %>%
-  transmute(anti_imm = range01(MR1)*10) %>%
-  cbind(mlogit_ess)
 
-minus_7 <- function(var) {
-  7 - var
+# tables
+
+```{r}
+options(scipen=999)
+
+mlogit_ess_adds %>% 
+  select(-aut_safe, -aut_behave, -aut_rules, -aut_trad, -aut_govstrong, -demsat, -trust_un, -trust_eu, -trust_gov, -imm_culture, -imm_badecon, -imm_worselive, -opendim, -selfdim, -pweight, -regional, -cntry, -year, -econ_unsat) %>% 
+  descr() %>% 
+  as.data.frame() -> table_dat
+
+table_dat %>% 
+  mutate(range = paste0(min, " - ", max)) %>% 
+  mutate(variable = case_when(
+    variable == "target*" ~ "Support for Estab./Populism",
+    variable == "anti_imm" ~ "Anti-Immigration Sentiment", 
+    variable == "openness" ~ "Openness", 
+    variable == "conservation" ~ "Conservation", 
+    variable == "selfenhance" ~ "Self-Enhancement", 
+    variable == "selftrans" ~ "Self-Transcendence", 
+    variable == "econ_insec" ~ "Economic Insecurity", 
+    variable == "unemployed" ~ "Unemployed (0/1)", 
+    variable == "welfare" ~ "Welfare (0/1)",
+    variable == "age" ~ "Age", 
+    variable == "educ" ~ "Education", 
+    variable == "sex" ~ "Female (0/1)", 
+    variable == "lrscale" ~ "Left-Right Scale", 
+    variable == "ethnic" ~ "Ethnic Minority (0/1)", 
+    variable == "religion" ~ "Religiosity", 
+    variable == "rural" ~ "Rural (0/1)",  
+    variable == "globalism" ~ "Trust in Global Governance", 
+    variable == "govsat" ~ "Government Satisfaction",
+    variable == "east" ~ "Eastern Europe (0/1)", 
+    variable == "west" ~ "Western Europe (0/1)",  
+    variable == "north" ~ "Northern Europe (0/1)", 
+    variable == "south" ~ "Southern Europe (0/1)",
+    variable == "year_2016" ~ "Year 2016 (0/1)", 
+    variable == "year_2014" ~ "Year 2014 (0/1)",  
+    variable == "year_2012" ~ "Year 2012 (0/1)", 
+    variable == "year_2010" ~ "Year 2010 (0/1)",
+    TRUE ~ variable)) %>% 
+  select(variable, n, mean, sd, md, range, NA.prc) %>% 
+  mutate_at(vars(n, mean, sd, md, NA.prc), ~round(.,2)) %>% 
+  mutate(variable = fct_relevel(variable, levels = c("Support for Estab./Populism",
+                                                       "Age", "Education", "Female (0/1)", "Left-Right Scale", 
+                              "Ethnic Minority (0/1)", "Religiosity", "Rural (0/1)",
+                              "Trust in Global Governance", "Government Satisfaction",
+                                                     "Anti-Immigration Sentiment", "Openness", 
+                              "Conservation", "Self-Enhancement", "Self-Transcendence", 
+                              "Economic Insecurity", "Unemployed (0/1)", 
+                              "Welfare (0/1)",
+                              "Eastern Europe (0/1)", 
+                              "Western Europe (0/1)", 
+                              "Northern Europe (0/1)",
+                              "Southern Europe (0/1)",
+                              "Year 2010 (0/1)",
+                              "Year 2012 (0/1)", 
+                              "Year 2014 (0/1)", 
+                              "Year 2016 (0/1)" 
+                              ))) %>% 
+  arrange(as.numeric(variable)) -> summary_table
+
+save(summary_table, file = "data/summary_table.Rdata")
+  
+
+
+names(summary_table) <- c("\\textbf{Variable}", 
+                      "\\textbf{N}", 
+                      "\\textbf{Mean}", "\\textbf{SD}", 
+                      "\\textbf{Median}", "\\textbf{Range}", 
+                      "\\textbf{Missing in %}")  
+
+library(xtable)
+summary_latex <- xtable(summary_table)
+
+print(summary_latex, type = "latex", booktabs = TRUE, 
+      include.rownames = F, sanitize.text.function = function(x){x})
+
+length(unique(na.omit(mlogit_ess_adds)$cntry))
+```
+
+# heatmap
+
+```{r}
+library(reshape2)
+mlogit_ess_adds %>% 
+  select(-aut_safe, -aut_behave, -aut_rules, -aut_trad, -aut_govstrong, 
+         -demsat, -trust_un, -trust_eu, -trust_gov, -imm_culture, -conservation, -selftrans, -selfenhance, -openness,
+         -imm_badecon, -imm_worselive, #-opendim, -selfdim, 
+         -pweight, 
+         -regional, -cntry, -year, -econ_unsat, -target) -> heat_dat
+
+names(heat_dat) <- c("Anti-Immigration Sentiment",
+                     "Trust in Global Governance",
+                     "Economic Insecurity",
+                     "Age" ,
+                     "Government Satisfaction",
+                     "Religiosity",
+                     "Rural (0/1)",   
+                     "Education",
+                     "Unemployed (0/1)",
+                     "Female (0/1)",
+                     "Ethnic Minority (0/1)",
+                     "Welfare (0/1)",
+                     "Left-Right Scale" ,
+                     "Openness", 
+                     "Conservation",
+                     # "Self-Enhancement",
+                     # "Self-Transcendence",
+                     "Eastern Europe (0/1)",
+                     "Western Europe (0/1)",
+                     "Northern Europe (0/1)",
+                     "Southern Europe (0/1)",    
+                     "Year 2016 (0/1)",
+                     "Year 2014 (0/1)",
+                     "Year 2012 (0/1)",
+                     "Year 2010 (0/1)")
+  
+
+cormat <- round(cor(heat_dat, use = "pairwise.complete.obs"),3)
+
+# Get upper triangle of the correlation matrix
+get_upper_tri <- function(cormat){
+    cormat[lower.tri(cormat)]<- NA
+    return(cormat)
+  }
+
+reorder_cormat <- function(cormat){
+# Use correlation between variables as distance
+dd <- as.dist((1-cormat)/2)
+hc <- hclust(dd)
+cormat <-cormat[hc$order, hc$order]
 }
 
-fa_dat <- mlogit_ess %>%
-  select(ipcrtiv, impfree, impdiff, ipadvnt, ipgdtim, impfun,
-         impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad,
-         imprich , iprspot , ipshabt , ipsuces,
-         ipeqopt , ipudrst , impenv , iphlppl , iplylfr
-         ) %>% 
-    mutate_all(as.numeric) %>% 
-    mutate_all(minus_7) 
 
+# Reorder the correlation matrix
+#cormat <- reorder_cormat(cormat)
+upper_tri <- get_upper_tri(cormat)
+# Melt the correlation matrix
+melted_cormat <- melt(upper_tri, na.rm = TRUE) %>% 
+  mutate(value = sprintf('%.2f', value, 2)) %>% 
+  mutate(value = as.numeric(value))
+# Create a ggheatmap
+ggheatmap <- ggplot(melted_cormat, aes(Var2, Var1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+   midpoint = 0, limit = c(-1,1), space = "Lab", 
+    name="Pearson Correlation\n") +
+ ggthemes::theme_hc()+ # minimal theme
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+    size = 12, hjust = 1))+
+ coord_fixed()  + 
+geom_text(aes(Var2, Var1, label = value), color = "black", size = 4) +
+theme(
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  panel.grid.major = element_blank(),
+  panel.border = element_blank(),
+  panel.background = element_blank(),
+  axis.ticks = element_blank(),
+  legend.justification = c(1, 0),
+  legend.position = c(0.62, 0.8),
+  legend.title = element_text(size = 15),
+  axis.ticks.length = unit(2, "cm"),
+  legend.direction = "horizontal")+
+  guides(fill = guide_colorbar(barwidth = 30, barheight = 1.5,
+                title.position = "top", title.hjust = 0.5),
+         color = guide_legend(override.aes = list(fill = NA)))
+# Print the heatmap
+print(ggheatmap) 
 
-# cronbachs alpha
-## openness to change
-
-openness_dat <- fa_dat %>%
-  select(ipcrtiv , impfree , impdiff , ipadvnt , ipgdtim , impfun) %>%
-  mutate_all(as.numeric) 
-
-fa_dat <- openness_dat %>%
-  psych::fa() %>%
-  predict.psych(data = openness_dat) %>%
-  as.data.frame() %>%
-  transmute(openness = (1-range01(MR1))*10) %>%
-  cbind(fa_dat)
-
-
-conservation_dat <- fa_dat %>%
-  select(impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad) %>%
-  mutate_all(as.numeric) 
-
-fa_dat <- conservation_dat %>%
-  psych::fa() %>%
-  predict.psych(data = conservation_dat) %>%
-  as.data.frame() %>%
-  transmute(conservation = range01(MR1)*10) %>%
-  cbind(fa_dat)
-
-
-selfenhance_dat <- fa_dat %>%
-  select(imprich , iprspot , ipshabt , ipsuces) %>%
-  mutate_all(as.numeric) 
-
-fa_dat <- selfenhance_dat %>%
-  psych::fa() %>%
-  predict.psych(data = selfenhance_dat) %>%
-  as.data.frame() %>%
-  transmute(selfenhance = (1-range01(MR1))*10) %>%
-  cbind(fa_dat)
-
-
-selftrans_dat <- fa_dat %>%
-  select(ipeqopt , ipudrst , impenv , iphlppl , iplylfr) %>%
-  mutate_all(as.numeric) 
-
-fa_dat <- selftrans_dat %>%
-  psych::fa() %>%
-  predict.psych(data = selftrans_dat) %>%
-  as.data.frame() %>%
-  transmute(selftrans = range01(MR1)*10) %>%
-  cbind(fa_dat)
-
-
-
-fa_dat <- fa_dat %>% 
-  # mutate_all(range01) %>% 
-  # mutate(openness = (ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + impfun)/6) %>% 
-  # mutate(conservation = (impsafe + ipstrgv + ipfrule + ipbhprp + ipmodst + imptrad)/6) %>% 
-  # mutate(selfenhance = (imprich + iprspot + ipshabt + ipsuces)/4) %>% 
-  # mutate(selftrans = (ipeqopt + ipudrst + impenv + iphlppl + iplylfr)/5) %>% 
-  # mutate_all(range01) %>% 
-  mutate(opendim = (range01((openness - conservation))*10)-5) %>% 
-  mutate(selfdim = (range01((selftrans - selfenhance))*10)-5)
-
-hist(fa_dat$opendim)
-max(fa_dat$opendim, na.rm=T)
-min(fa_dat$opendim, na.rm=T)
-
-mlogit_ess <- fa_dat %>% 
-  select(openness, conservation, selfenhance, selftrans, opendim, selfdim) %>% 
-  cbind(mlogit_ess) #%>% 
-  #na.omit()
-
-global_dat <- mlogit_ess %>%
-  select(trust_un, trust_eu) %>%
-  mutate_all(as.numeric) 
-
-mlogit_ess <- global_dat %>%
-  psych::fa() %>%
-  predict.psych(data = global_dat) %>%
-  unlist() %>% as.character() %>% as.numeric() %>%
-  data.frame(globalism = .) %>%
-  transmute(globalism = range01(globalism)*5) %>%
-  cbind(mlogit_ess) 
-
-govsat_dat <- mlogit_ess %>%
-  select(stfgov, trust_gov, demsat) %>%
-  mutate_all(as.numeric) 
-
-mlogit_ess <- govsat_dat %>%
-  psych::fa() %>%
-  predict.psych(data = govsat_dat) %>%
-  unlist() %>% as.character() %>% as.numeric() %>%
-  data.frame(govsat = .) %>%
-  transmute(govsat = range01(govsat)*5) %>%
-  cbind(mlogit_ess) 
-
-mlogit_ess %<>%
-#   mutate(anti_imm = range01(
-#                     range01(imm_culture) + 
-#                     range01(imm_badecon) + 
-#                     range01(imm_worselive)
-#                     )*10)
-  dplyr::select(target, imm_culture, imm_badecon, imm_worselive, anti_imm, econ_unsat, globalism, econ_insec, aut_safe, aut_behave, aut_rules, aut_trad, aut_govstrong, demsat, age, trust_un, trust_eu, trust_gov, govsat, religion, rural, educ, unemployed, sex, ethnic, welfare, lrscale, openness, conservation, selfenhance, selftrans, opendim, selfdim, pweight, regional, east, west, north, south, cntry, year_2016, year_2014, year_2012, year_2010, year) %>% 
-  na.omit() %>% 
-  mutate_all(labelled::remove_labels)
-
-save(mlogit_ess, file = "data/mlogit_ess.Rdata")
+ggsave(filename = "images/heatmap.png", height = 15, width = 15)
 ```
+

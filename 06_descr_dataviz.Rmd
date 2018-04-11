@@ -265,135 +265,36 @@ save(regional_ess, file = "text/data/regional_ess.Rdata")
 # Factorscores
 
 ```{r}
-anti_imm_dat <- mlogit_ess %>%
-  select(imm_culture, imm_badecon, imm_worselive) %>%
-  mutate_all(as.numeric) 
-
-mlogit_ess <- anti_imm_dat %>%
-  psych::fa() %>%
-  predict.psych(data = anti_imm_dat) %>%
-  as.data.frame() %>%
-  transmute(anti_imm = range01(MR1)*10) %>%
-  cbind(mlogit_ess)
-
 minus_7 <- function(var) {
   7 - var
 }
 
-fa_dat <- mlogit_ess %>%
-  select(ipcrtiv, impfree, impdiff, ipadvnt, ipgdtim, impfun,
+mlogit_ess %>%
+  mutate(anti_imm = range01(imm_culture + imm_badecon + imm_worselive)*10) %>% 
+  mutate_at(vars(ipcrtiv, impfree, impdiff, ipadvnt, ipgdtim, impfun,
          impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad,
          imprich , iprspot , ipshabt , ipsuces,
-         ipeqopt , ipudrst , impenv , iphlppl , iplylfr
-         ) %>% 
-    mutate_all(as.numeric) %>% 
-    mutate_all(minus_7) 
-
-
-# cronbachs alpha
-## openness to change
-
-openness_dat <- fa_dat %>%
-  select(ipcrtiv , impfree , impdiff , ipadvnt , ipgdtim , impfun) %>%
-  mutate_all(as.numeric) 
-
-fa_dat <- openness_dat %>%
-  psych::fa() %>%
-  predict.psych(data = openness_dat) %>%
-  as.data.frame() %>%
-  transmute(openness = (1-range01(MR1))*10) %>%
-  cbind(fa_dat)
-
-
-conservation_dat <- fa_dat %>%
-  select(impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad) %>%
-  mutate_all(as.numeric) 
-
-fa_dat <- conservation_dat %>%
-  psych::fa() %>%
-  predict.psych(data = conservation_dat) %>%
-  as.data.frame() %>%
-  transmute(conservation = range01(MR1)*10) %>%
-  cbind(fa_dat)
-
-
-selfenhance_dat <- fa_dat %>%
-  select(imprich , iprspot , ipshabt , ipsuces) %>%
-  mutate_all(as.numeric) 
-
-fa_dat <- selfenhance_dat %>%
-  psych::fa() %>%
-  predict.psych(data = selfenhance_dat) %>%
-  as.data.frame() %>%
-  transmute(selfenhance = (1-range01(MR1))*10) %>%
-  cbind(fa_dat)
-
-
-selftrans_dat <- fa_dat %>%
-  select(ipeqopt , ipudrst , impenv , iphlppl , iplylfr) %>%
-  mutate_all(as.numeric) 
-
-fa_dat <- selftrans_dat %>%
-  psych::fa() %>%
-  predict.psych(data = selftrans_dat) %>%
-  as.data.frame() %>%
-  transmute(selftrans = range01(MR1)*10) %>%
-  cbind(fa_dat)
-
-
-
-fa_dat <- fa_dat %>% 
-  # mutate_all(range01) %>% 
-  # mutate(openness = (ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + impfun)/6) %>% 
-  # mutate(conservation = (impsafe + ipstrgv + ipfrule + ipbhprp + ipmodst + imptrad)/6) %>% 
-  # mutate(selfenhance = (imprich + iprspot + ipshabt + ipsuces)/4) %>% 
-  # mutate(selftrans = (ipeqopt + ipudrst + impenv + iphlppl + iplylfr)/5) %>% 
-  # mutate_all(range01) %>% 
+         ipeqopt , ipudrst , impenv , iphlppl , iplylfr), minus_7) %>% 
+  mutate(openness = 10-(range01(ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + impfun)*10)) %>% 
+  mutate(conservation = range01(impsafe + ipstrgv + ipfrule + ipbhprp + ipmodst + imptrad)*10) %>%   
+  mutate(selfenhance = 10-(range01(imprich + iprspot + ipshabt + ipsuces)*10)) %>%  
+  mutate(selftrans = range01(ipeqopt + ipudrst + impenv + iphlppl + iplylfr)*10) %>%  
   mutate(opendim = (range01((openness - conservation))*10)-5) %>% 
-  mutate(selfdim = (range01((selftrans - selfenhance))*10)-5)
+  mutate(selfdim = (range01((selftrans - selfenhance))*10)-5) %>% 
+  mutate(globalism = range01(trust_un + trust_eu)*10) %>%  
+  mutate(govsat = range01(stfgov + trust_gov + demsat)*10) -> mlogit_ess_adds
 
-hist(fa_dat$opendim)
-max(fa_dat$opendim, na.rm=T)
-min(fa_dat$opendim, na.rm=T)
 
-mlogit_ess <- fa_dat %>% 
-  select(openness, conservation, selfenhance, selftrans, opendim, selfdim) %>% 
-  cbind(mlogit_ess) #%>% 
-  #na.omit()
-
-global_dat <- mlogit_ess %>%
-  select(trust_un, trust_eu) %>%
-  mutate_all(as.numeric) 
-
-mlogit_ess <- global_dat %>%
-  psych::fa() %>%
-  predict.psych(data = global_dat) %>%
-  unlist() %>% as.character() %>% as.numeric() %>%
-  data.frame(globalism = .) %>%
-  transmute(globalism = range01(globalism)*5) %>%
-  cbind(mlogit_ess) 
-
-govsat_dat <- mlogit_ess %>%
-  select(stfgov, trust_gov, demsat) %>%
-  mutate_all(as.numeric) 
-
-mlogit_ess <- govsat_dat %>%
-  psych::fa() %>%
-  predict.psych(data = govsat_dat) %>%
-  unlist() %>% as.character() %>% as.numeric() %>%
-  data.frame(govsat = .) %>%
-  transmute(govsat = range01(govsat)*5) %>%
-  cbind(mlogit_ess) 
-
-mlogit_ess %<>%
+mlogit_ess_adds %>%
 #   mutate(anti_imm = range01(
 #                     range01(imm_culture) + 
 #                     range01(imm_badecon) + 
 #                     range01(imm_worselive)
 #                     )*10)
   dplyr::select(target, imm_culture, imm_badecon, imm_worselive, anti_imm, econ_unsat, globalism, econ_insec, aut_safe, aut_behave, aut_rules, aut_trad, aut_govstrong, demsat, age, trust_un, trust_eu, trust_gov, govsat, religion, rural, educ, unemployed, sex, ethnic, welfare, lrscale, openness, conservation, selfenhance, selftrans, opendim, selfdim, pweight, regional, east, west, north, south, cntry, year_2016, year_2014, year_2012, year_2010, year) %>% 
-  na.omit() %>% 
-  mutate_all(labelled::remove_labels)
+  na.omit() %>%
+  mutate_all(labelled::remove_labels) -> mlogit_ess
+
 
 
 ```
