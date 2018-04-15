@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.25)  24 MAR 2018 07:37
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.25)  15 APR 2018 20:07
 entering extended mode
-**./3_methods.tex
-(3_methods.tex
+**./2_theory.tex
+(2_theory.tex
 LaTeX2e <2017-04-15>
 Babel <3.10> and hyphenation patterns for 75 language(s) loaded.
 ("C:\Users\Fabio\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\article.cls"
@@ -843,8 +843,8 @@ Package: titling 2009/09/04 v2.1d maketitle typesetting
 \thanksmargin=\skip49
 \droptitle=\skip50
 )
-No file 3_methods.aux.
-\openout1 = `3_methods.aux'.
+No file 2_theory.aux.
+\openout1 = `2_theory.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 83.
 LaTeX Font Info:    ... okay on input line 83.
@@ -937,7 +937,7 @@ LaTeX Info: Redefining \ref on input line 83.
 LaTeX Info: Redefining \pageref on input line 83.
 LaTeX Info: Redefining \nameref on input line 83.
 \@outlinefile=\write3
-\openout3 = `3_methods.out'.
+\openout3 = `2_theory.out'.
 
 (C:\Users\Fabio\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -967,98 +967,46 @@ Package grfext Info: Graphics extension search list:
 (grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
-)
-LaTeX Font Info:    Try loading font information for TS1+lmr on input line 132.
+) [1
 
-("C:\Users\Fabio\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\ts1lmr.fd"
-File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 147.
+{C:/Users/Fabio/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3] [4]
+[5] [6] [7]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 721.
+[8]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 721.
+(2_theory.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 721.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 721.
 
-("C:\Users\Fabio\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\ot1lmr.fd"
-File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 147.
+Package rerunfilecheck Warning: File `2_theory.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
 
-("C:\Users\Fabio\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\omllmm.fd"
-File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 147
-.
-("C:\Users\Fabio\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\omslmsy.fd"
-File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 147
-.
-("C:\Users\Fabio\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\omxlmex.fd"
-File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 147.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 147.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 147.
-LaTeX Font Info:    Try loading font information for U+msa on input line 147.
-("C:\Users\Fabio\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-) (C:\Users\Fabio\AppData\Roaming\MiKTeX\2.9\tex\latex\microtype\mt-msa.cfg
-File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
-)
-LaTeX Font Info:    Try loading font information for U+msb on input line 147.
-("C:\Users\Fabio\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) (C:\Users\Fabio\AppData\Roaming\MiKTeX\2.9\tex\latex\microtype\mt-msb.cfg
-File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-)
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 149.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 149.
-[1
+Package rerunfilecheck Info: Checksums for `2_theory.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  EE7BD8EF8DBEEC7555A74502638B1E8B;2192.
 
-{C:/Users/Fabio/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
-<images/fac_pop.png, id=25, 939.51pt x 578.16pt>
-File: images/fac_pop.png Graphic file (type png)
-<use images/fac_pop.png>
-Package pdftex.def Info: images/fac_pop.png  used on input line 321.
-(pdftex.def)             Requested size: 375.79733pt x 231.2599pt.
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[2] [3 <./images/fac_pop.png>]
-<images/optim_cluster.png, id=57, 722.7pt x 433.62pt>
-File: images/optim_cluster.png Graphic file (type png)
-<use images/optim_cluster.png>
-Package pdftex.def Info: images/optim_cluster.png  used on input line 400.
-(pdftex.def)             Requested size: 375.80615pt x 225.48369pt.
-<images/party_alignment_abstract.png, id=58, 722.7pt x 722.7pt>
-File: images/party_alignment_abstract.png Graphic file (type png)
-<use images/party_alignment_abstract.png>
-Package pdftex.def Info: images/party_alignment_abstract.png  used on input lin
-e 415.
-(pdftex.def)             Requested size: 375.80615pt x 375.80615pt.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[4 <./images/optim_cluster.png>] [5 <./images/party_alignment_abstract.png (PNG
- copy)>] [6] [7]
-
-! LaTeX Error: Environment landscape undefined.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.636 \begin{landscape}
-                        
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 721.
+ ) 
 Here is how much of TeX's memory you used:
- 12419 strings out of 493323
- 182335 string characters out of 3139065
- 277668 words of memory out of 3000000
- 15647 multiletter control sequences out of 15000+200000
- 65942 words of font info for 111 fonts, out of 3000000 for 9000
+ 12165 strings out of 493323
+ 176915 string characters out of 3139065
+ 277667 words of memory out of 3000000
+ 15477 multiletter control sequences out of 15000+200000
+ 25450 words of font info for 72 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 32i,8n,38p,236b,391s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 32i,5n,38p,418b,379s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Users/Fabio/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.en
+c}<C:/Users/Fabio/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmbx1
+0.pfb><C:/Users/Fabio/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/l
+mbx12.pfb><C:/Users/Fabio/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/
+lm/lmr10.pfb><C:/Users/Fabio/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/publ
+ic/lm/lmri10.pfb>
+Output written on 2_theory.pdf (8 pages, 152151 bytes).
+PDF statistics:
+ 70 PDF objects out of 1000 (max. 8388607)
+ 18 named destinations out of 1000 (max. 500000)
+ 6145 words of extra memory for PDF output out of 10000 (max. 10000000)
 
-!  ==> Fatal error occurred, no output PDF file produced!

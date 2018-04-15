@@ -5,19 +5,10 @@ output: html_notebook
 
 **TODO**
 introduction
-*methods*
-all the same colors!
-description of parties (auslagern?)
-summary statistics - just make it fit
-*analysis*
-Probability Plots for the main hypotheses - describe them
-check for irregularities
-finish this part!
-conclusion -> probably needs table
 *appendix*
 table of all parties and their score 
 --> just make it fit (nooo change the UNICODES)
-correlation table
+<!-- correlation table (geht net :/) -->
 
 
 # Loading in Data and packages
@@ -147,16 +138,24 @@ fit4 <- multinom(
 # PseudoR2(fit2)
 # PseudoR2(fit3)
 # PseudoR2(fit4)
-#
-
-tidy(fit4) %>%
-  filter(term %nin% c("(Intercept)", "age", "educ", "sex",
-                     "lrscale", "ethnic", "religion", "rural",
-                     "globalism", "govsat", "east", "north", "south",
-                     "year_2016", "year_2014", "year_2012", "econ_insec",
-                     "unemployed", "welfare", "anti_imm", "openness",
-                     "conservation", "selfenhance", "selftrans")) %>%
-  mutate(stars = get_p_values(p.value))
+# #
+# get_p_values <- function (pval) {
+#   dplyr::case_when(
+#     is.na(pval) ~ "", 
+#     pval < 0.001 ~ "***", 
+#     pval < 0.01 ~ "**", 
+#     pval < 0.05 ~ "*", TRUE ~ "")
+# }
+# 
+# 
+# tidy(fit4) %>%
+#   filter(term %nin% c("(Intercept)", "age", "educ", "sex",
+#                      "lrscale", "ethnic", "religion", "rural",
+#                      "globalism", "govsat", "east", "north", "south",
+#                      "year_2016", "year_2014", "year_2012", "econ_insec",
+#                      "unemployed", "welfare", "anti_imm", "openness",
+#                      "conservation", "selfenhance", "selftrans")) %>%
+#   mutate(stars = get_p_values(p.value))
 
 # econ_insec:anti_imm only traditionalist populism
 # econ_insec:conservation only traditionalist populism - weak
@@ -618,6 +617,7 @@ prepper(fit_eff_govsat, govsat) %>%
   mutate(term = "Government Satisfaction")
 ) -> probs_dat_controls
 
+cols <- c("#77AB43", "#FF2700", "#008FD5")
 
 probs_dat_controls %>% 
   ggplot(aes(scale, value, colour = type)) +
@@ -636,18 +636,19 @@ probs_dat_controls %>%
   # cowplot::background_grid(major = 'y', minor = "none") + # add thin horizontal lines
   guides(color = F) +
     ggthemes::theme_hc() +
-    ggthemes::scale_color_fivethirtyeight() + 
+  scale_color_manual(values = cols) +
     facet_grid(type~term, scales = "free") +
     scale_y_continuous(breaks = seq(0,100, by = 1),
                      labels = paste0(seq(0,100, by = 1),"%")) + 
   # cowplot::panel_border() +# and a border around each panel
-  theme(panel.spacing = unit(2, "lines")) +
+  theme(panel.spacing = unit(2, "lines"),
+        strip.text = element_text(size = 11)) +
     # scale_x_continuous(breaks = seq(0,10, by = 1),
     #                  labels = seq(0,10, by = 1)) +
   xlab("Score") 
 
 
-ggsave(filename = "images/control_probs.png", width = 18, height = 10)
+ggsave(filename = "text/images/control_probs.png", width = 18, height = 10)
 
 ```
 
@@ -690,7 +691,7 @@ probs_dat_lrscale %>%
   # cowplot::background_grid(major = 'y', minor = "none") + # add thin horizontal lines
   #guides(color = T) +
     ggthemes::theme_hc() +
-    ggthemes::scale_color_fivethirtyeight() + 
+  scale_color_manual(values = cols) +
     #facet_grid(type~term, scales = "free") +
     scale_y_continuous(breaks = seq(0,100, by = 10),
                      labels = paste0(seq(0,100, by = 10),"%")) + 
@@ -700,7 +701,7 @@ probs_dat_lrscale %>%
   xlab("Left-Right Scale") 
 
 
-ggsave(filename = "images/lrscale_probs.png", width = 9, height = 6)
+ggsave(filename = "text/images/lrscale_probs.png", width = 9, height = 6)
 ```
 
 ##### weirdo dummies
@@ -790,18 +791,19 @@ probs_dat_regyears %>%
   # cowplot::background_grid(major = 'y', minor = "none") + # add thin horizontal lines
   guides(color = F) +
     ggthemes::theme_hc() +
-    ggthemes::scale_color_fivethirtyeight() + 
+  scale_color_manual(values = cols) +
     facet_grid(type~term, scales = "free") +
     scale_y_continuous(breaks = seq(0,100, by = 2),
                      labels = paste0(seq(0,100, by = 2),"%")) + 
   #cowplot::panel_border() +# and a border around each panel
-  theme(panel.spacing = unit(2, "lines")) +
+  theme(panel.spacing = unit(2, "lines"),
+        strip.text = element_text(size = 11)) +
     # scale_x_continuous(breaks = seq(0,10, by = 1),
     #                  labels = seq(0,10, by = 1)) +
   xlab("Score") 
 
 
-ggsave(filename = "images/regyears_probs.png", width = 18, height = 10)
+ggsave(filename = "text/images/regyears_probs.png", width = 18, height = 10)
 ```
 
 
@@ -882,18 +884,19 @@ probs_dat %>%
   labs(y = "Marginal Probability") +
   guides(color = F) +
     ggthemes::theme_hc() +
-    ggthemes::scale_color_fivethirtyeight() + 
+  scale_color_manual(values = cols) +
     facet_grid(type~term, scales = "free") +
     scale_y_continuous(breaks = seq(0,100, by = 1),
                      labels = paste0(seq(0,100, by = 1),"%")) +
     scale_x_continuous(breaks = seq(0,10, by = 1),
                      labels = seq(0,10, by = 1)) +
   #cowplot::panel_border() +# and a border around each panel
-  theme(panel.spacing = unit(2, "lines")) +
+  theme(panel.spacing = unit(2, "lines"),
+        strip.text = element_text(size = 11)) +
   xlab("Score") 
 
 
-ggsave(filename = "images/cultural_probs2.png", width = 18, height = 10)
+ggsave(filename = "text/images/cultural_probs2.png", width = 18, height = 10)
 
 ```
 
@@ -953,18 +956,19 @@ probs_dat_economic %>%
   # cowplot::background_grid(major = 'y', minor = "none") + # add thin horizontal lines
   guides(color = F) +
     ggthemes::theme_hc() +
-    ggthemes::scale_color_fivethirtyeight() + 
+  scale_color_manual(values = cols) +
     facet_grid(type~term, scales = "free") +
     scale_y_continuous(breaks = seq(0,100, by = 1),
                      labels = paste0(seq(0,100, by = 1),"%")) + 
   # cowplot::panel_border() +# and a border around each panel
-  theme(panel.spacing = unit(2, "lines")) +
+  theme(panel.spacing = unit(2, "lines"),
+        strip.text = element_text(size = 11)) +
     # scale_x_continuous(breaks = seq(0,10, by = 1),
     #                  labels = seq(0,10, by = 1)) +
   xlab("Score") 
 
 
-ggsave(filename = "images/economic_probs.png", width = 18, height = 10)
+ggsave(filename = "text/images/economic_probs.png", width = 18, height = 10)
 ```
 
 
@@ -1230,10 +1234,10 @@ ggsave(file = here::here("images", "interaction_unemployed.png"),
 ## Appropriateness
 
 ```{r}
-head(pp <- fitted(test))
+head(pp <- fitted(fit3))
 #head(pp <- predict(test, newdata = mlogit_ess, type = "class"))
 
-conf.beta <- confint(object = test , level = 0.95)
+conf.beta <- confint(object = fit3 , level = 0.95)
 conf.beta # Results are in a 3D array
 
 table(pp, mlogit_ess$populism2)
@@ -1249,9 +1253,9 @@ probs <- pp %>%
  table(mlogit_ess$cntry)
 
 probs %<>% 
-  mutate(estab = ifelse(populism2 == "Establishment", T, F)) %>% 
-  mutate(lib = ifelse(populism2 == "Progressive Populism", T, F)) %>% 
-  mutate(illib = ifelse(populism2 == "Traditionalist Populism", T, F)) 
+  mutate(estab = ifelse(target == "Establishment", T, F)) %>% 
+  mutate(lib = ifelse(target == "Progressive Populism", T, F)) %>% 
+  mutate(illib = ifelse(target == "Traditionalist Populism", T, F)) 
 
 table(probs$`Traditionalist Populism`>probs$`Progressive Populism` & probs$`Traditionalist Populism`>probs$Establishment, probs$illib)
 table(probs$`Progressive Populism`>probs$`Traditionalist Populism` & probs$`Progressive Populism`>probs$Establishment, probs$lib)
@@ -1259,7 +1263,7 @@ table(probs$Establishment>probs$`Progressive Populism` & probs$Establishment>pro
 table(probs$populism2)
 
 checkers <- probs %>% 
-  filter(populism2 != "Establishment")
+  filter(target != "Establishment")
 
 table(checkers$`Traditionalist Populism`>checkers$`Progressive Populism`, checkers$illib)
 table(checkers$`Progressive Populism`>checkers$`Traditionalist Populism`, checkers$lib)

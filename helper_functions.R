@@ -40,9 +40,9 @@ plot_coords <- function(ches, liberalism, populism) {
     xlab("<<Progressivism - Traditionalism>>") + 
     ylab("<<Establishment - Anti-Establishment>>") +
     guides(color = guide_legend("Cluster")) +
-    ggtitle("Classification of European Parties") +
-    labs(subtitle = "Based on K-Nearest Neighbour Clustering",
-         caption = "Source: CHES Data 1999 - 2014") +
+    # ggtitle("Classification of European Parties") +
+    # labs(subtitle = "Based on K-Nearest Neighbour Clustering",
+    #      caption = "Source: CHES Data 1999 - 2014") +
     theme(axis.text = element_text(size = 15),
           axis.title = element_text(size = 15),
           legend.text = element_text(size = 15), 

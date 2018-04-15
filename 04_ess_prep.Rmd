@@ -388,6 +388,7 @@ table_dat %>%
     TRUE ~ variable)) %>% 
   select(variable, n, mean, sd, md, range, NA.prc) %>% 
   mutate_at(vars(n, mean, sd, md, NA.prc), ~round(.,2)) %>% 
+  mutate(n = as.character(round(n))) %>% 
   mutate(variable = fct_relevel(variable, levels = c("Support for Estab./Populism",
                                                        "Age", "Education", "Female (0/1)", "Left-Right Scale", 
                               "Ethnic Minority (0/1)", "Religiosity", "Rural (0/1)",

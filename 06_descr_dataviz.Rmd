@@ -133,6 +133,9 @@ ess_year <- mlogit_ess %>%
   select(-total) %>% 
   gather(type, value, -year) 
 
+
+cols <- c("#77AB43", "#FF2700", "#008FD5")
+
 ess_year %>% 
   ggplot(aes(year, value, color = type)) +
   geom_line() +
@@ -145,7 +148,7 @@ ess_year %>%
             # hjust = 1,
             color = "black", size = 5) +
   ggthemes::theme_hc() +
-  ggthemes::scale_color_fivethirtyeight() +
+  scale_color_manual(values = cols) +
   guides(color = F) +
   xlab("") +
   ylab("Support for Parties in %") +
@@ -160,6 +163,10 @@ ess_year %>%
 
 ggsave(filename = "text/images/yearplot.png", width = 10, height = 10)
 save(ess_year, file = "text/data/ess_year.Rdata")
+
+library("scales")
+show_col(fivethirtyeight_pal()(3))
+
 ```
 
 # Regions
@@ -239,7 +246,7 @@ regional_ess %>%
             color = "black",
             position = position_dodge(0.9), size = 4) +
   ggthemes::theme_hc() +
-  ggthemes::scale_color_fivethirtyeight() + 
+  scale_fill_manual(values = cols) +
   facet_wrap(~type, scale = "fixed") +
   scale_y_continuous(breaks = seq(0,100, by = 25), 
                    labels = paste0(seq(0,100, by = 25),"%")) +
@@ -324,11 +331,12 @@ mlogit_ess %>%
 leftright <- mlogit_ess %>%
   drop_na(target) %>% 
   ggplot(aes(target, lrscale, group = target, fill = target)) +
-  geom_violin()  + 
+  geom_violin(alpha = 0.7)  + 
+  scale_fill_manual(values = cols) +
   geom_boxplot(width=0.2, fill = "white")  + 
   geom_hline(yintercept = mean(mlogit_ess$lrscale, na.rm = T), linetype = 2) + #line at base mean
   ggthemes::theme_hc() +
-  ggthemes::scale_fill_fivethirtyeight() + 
+  # ggthemes::scale_fill_fivethirtyeight() + 
   ggpubr::stat_compare_means(label = "p.format", 
                         comparisons = my_comparisons, 
                              symnum.args = symnum.args) + # Add pairwise comparisons p-value
@@ -360,11 +368,12 @@ mlogit_ess %>%
 age <- mlogit_ess %>%
   drop_na(target) %>% 
   ggplot(aes(target, age, group = target, fill = target)) +
-  geom_violin()  + 
+  geom_violin(alpha = 0.7)  + 
+  scale_fill_manual(values = cols) +
   geom_boxplot(width=0.2, fill = "white")  + 
   geom_hline(yintercept = mean(mlogit_ess$age, na.rm = T), linetype = 2) + #line at base mean
   ggthemes::theme_hc() +
-  ggthemes::scale_fill_fivethirtyeight() + 
+  # ggthemes::scale_fill_fivethirtyeight() + 
   ggpubr::stat_compare_means(label = "p.format", 
                         comparisons = my_comparisons, 
                              symnum.args = symnum.args) + # Add pairwise comparisons p-value
@@ -397,11 +406,12 @@ mlogit_ess %>%
 educ <- mlogit_ess  %>%
   drop_na(target) %>% 
   ggplot(aes(target, educ, group = target, fill = target)) +
-  geom_violin()  + 
+  geom_violin(alpha = 0.7)  + 
+  scale_fill_manual(values = cols) +
   geom_boxplot(width=0.2, fill = "white")  + 
   geom_hline(yintercept = mean(mlogit_ess$educ, na.rm = T), linetype = 2) + #line at base mean
   ggthemes::theme_hc() +
-  ggthemes::scale_fill_fivethirtyeight() + 
+  # ggthemes::scale_fill_fivethirtyeight() + 
   ggpubr::stat_compare_means(label = "p.format", 
                         comparisons = my_comparisons, 
                              symnum.args = symnum.args) + # Add pairwise comparisons p-value
@@ -436,11 +446,12 @@ pacman::p_load(grDevices)
 relig <- mlogit_ess  %>%
   drop_na(target) %>% 
   ggplot(aes(target, religion, group = target, fill = target)) +
-  geom_violin()  + 
+  geom_violin(alpha = 0.7)  + 
+  scale_fill_manual(values = cols) +
   geom_boxplot(width=0.2, fill = "white")  + 
   geom_hline(yintercept = mean(mlogit_ess$religion, na.rm = T), linetype = 2) + #line at base mean
   ggthemes::theme_hc() +
-  ggthemes::scale_fill_fivethirtyeight() + 
+  # ggthemes::scale_fill_fivethirtyeight() + 
   ggpubr::stat_compare_means(label = "p.format", 
                         comparisons = my_comparisons, 
                              symnum.args = symnum.args) + # Add pairwise comparisons p-value

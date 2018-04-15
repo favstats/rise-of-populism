@@ -226,7 +226,7 @@ The *top-left quadrant* shows progressive populists such as:
 
 *Syriza*
 
-After winning the parliamentary elections in January 2015, SYRIZA (*Coalition of the Radical Left*) attempted to carry out the difficult balancing act between extreme left-wing positions, opposition to EU imposed austerity and yet supposedly pro-European commitments. In social policy, Syriza is particularly committed to the socially disadvantaged in society with policies such as guaranteeing that unemployed, homeless and low-income people should be allowed to use the health facilities free of charge or that family reunification should be made easier for individuals with a migration background.
+After winning the parliamentary elections in January 2015, SYRIZA (*Coalition of the Radical Left*) attempted to carry out the difficult balancing act between extreme left-wing positions, opposition to EU imposed austerity and yet supposedly pro-European commitments. In social policy, Syriza is particularly committed to the socially disadvantaged in society with progressive value policies such as guaranteeing that unemployed, homeless and low-income people should be allowed to use the health facilities free of charge or that family reunification should be made easier for individuals with a migration background [cf. @bbc2014syriza].
 
 *Podemos*
 
@@ -234,26 +234,22 @@ In the general elections held on December 20, 2015, the left-wing political part
 
 *Red–Green Alliance (Denmark)*
 
-The Red–Green Alliance (Enhedslisten) was formed as a collaboration between the Left Socialists (VS), the Danish Communist Party (DKP) and the Socialist Labor Party (SAP) in 1989. During the last parliamentary elections in 2015, the Red–Green Alliance gained 7,8% of the popular vote. Enhedslisten does not stand in European elections, but supports Folkebevægelsen mod EU (*Popular Movement against the EU*), a heavily anti-EU political party that only competes for the European elections. The party attaches great importance to combating social inequality and poverty, as well as advocating strengthening and expanding the welfare state. Politically, the party is in favor of more space for all forms of diversity, including gender, sexuality, disability and ethnic background.
-
+The Red–Green Alliance (Enhedslisten) was formed as a collaboration between the Left Socialists (VS), the Danish Communist Party (DKP) and the Socialist Labor Party (SAP) in 1989. During the last parliamentary elections in 2015, the Red–Green Alliance gained 7,8% of the popular vote. Enhedslisten does not stand in European elections, but supports Folkebevægelsen mod EU (*Popular Movement against the EU*), a heavily anti-EU political party that only competes for the European elections. The party attaches great importance to combating social inequality and poverty, as well as advocating strengthening and expanding the welfare state [cf. @local2015green]. Politically, the party is in favor of more space for all forms of diversity, including gender, sexuality, disability and ethnic background.
 
 The *top-right quadrant*  shows traditionalist populists such as:
 
 *AfD*
 
-The alternative for Germany (AfD) is a political party founded in 2013 in Germany. As of 2014, it gradually moved into 14 state parliaments and in the 2017 general election, the AfD received 12.6% of the vote and thus became the third strongest force and the strongest opposition party in the German Bundestag. Regarding the EU, they have been in favor of renationalization of policies that are currently situated in the EU. The AfD represents conservative-antifeminist positions in gender politics and rejects gender equality policies and relies thereby on Christian fundamentalist and nationalist ideas. According to the AfD, Islam does not belong to Germany. In particular, the party calls for a ban on minarets and the face veiling. 
+The alternative for Germany (AfD) is a political party founded in 2013 in Germany. As of 2014, it gradually moved into 14 state parliaments and in the 2017 general election, the AfD received 12.6% of the vote and thus became the third strongest force and the strongest opposition party in the German Bundestag. Regarding the EU, they have been in favor of renationalization of policies that are currently situated in the EU [cf. @bbc2017afd]. The AfD represents conservative-antifeminist positions in gender politics and rejects gender equality policies and relies thereby on Christian fundamentalist and nationalist ideas. Therefore, the AfD is a party with traditional values. According to the AfD, Islam does not belong to Germany. In particular, the party calls for a ban on minarets and the face veil. 
 
-**Front National**
+*Front National*
 
-**UKIP**
-
+The Front National (FN) was founded in 1972 in France and moved into the national assembly with 8 seats in 2017 [cf. @nf]. In the European Parliament, the FN owns 18 out of the 74 French seats. With regard to foreign policy, the FN is strongly against EU membership and they vividly oppose immigration and asylum seekers and want to limit the rate of people allowed into the country. Furhtermore, their economic policy blames globalization for national ills which makes them favor protectionist policies.
 
 The  *bottom-left and bottom-right quadrants* show progressive and traditionalist establishment parties:
 
-German SPD and CDU, Labour Party and Conservatives UK, SOME FRENCHIES
+These quadrants include known establishment parties such as the German SPD and CDU, Labour Party and Conservatives in the UK and the Socialists and REM in France, among others. Given that the distinction between kinds of establishment parties is not of greater interest to us, we will merge progressive and traditionalist establishment parties into a single establishment party group.
 
-
-Given that the distinction between kinds of establishment parties is not of greater interest to us, we will merge progressive and traditionalsit establishment parties into a single establishment party group.
 
 <!-- ```{r, echo=F, out.height="55%", fig.align="center"} -->
 <!-- knitr::include_graphics("images/party_alignment_abstract.png",  -->
@@ -261,12 +257,10 @@ Given that the distinction between kinds of establishment parties is not of grea
 
 <!-- ``` -->
 
-A full list of used parties as well as their respective affiliations can be found in the appendix.
+A full list of used parties as well as their respective scores and affiliations can be found in the appendix Table \ref{alignment}.
 
 
 ### Dependent Variable: Support for Establishment/Populist Parties
-
-**TODO:**
 
 After the successful classification, we combine the clusters from the CHES data with the *European Social Survey* (ESS) Round 5 – 8. We decided to use only this timerange, because in this way we capture the years after the European financial crisis (2008-09). Two variables will be used to measure our dependent variable *Support for Establishment/Populist Parties*: 
 
