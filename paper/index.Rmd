@@ -1,0 +1,71 @@
+---
+geometry: "left=2.54cm,right=2.54cm,top=2.54cm,bottom=2.54cm"
+output: 
+  bookdown::pdf_book:
+    toc: false
+    includes:
+     in_header: header.tex
+     before_body: title_page.tex
+     # after_body: appendix.tex
+documentclass: article
+classoption: a4paper
+bibliography: references_by_MC.bib
+#cls: systats.cls
+csl: apa.csl
+link-citations: yes
+fontsize: 11pt
+---
+
+
+\newpage
+
+```{r yes, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+
+<!-- \onehalfspacing -->
+\setstretch{1.5}
+
+\section{Introduction} 
+
+```{r child = '1_intro.Rmd'}
+```
+
+\newpage
+\section{Theory}  \label{theory}
+
+```{r child = '2_theory.Rmd'}
+```
+
+\newpage
+\section{Methods and Data Preparation} \label{methods}
+
+```{r child = '3_methods.Rmd'}
+```
+
+\newpage
+\section{Analysis} \label{analysis}
+
+```{r child = '4_analysis.Rmd'}
+```
+
+\newpage
+\section{Conclusions} \label{conclusion}
+
+```{r child = '5_conclusions.Rmd'}
+```
+
+
+\setstretch{1}
+
+\clearpage
+\newpage
+
+
+# References
+
+\setlength{\parindent}{-0.2in}
+\setlength{\leftskip}{0.2in}
+\setlength{\parskip}{8pt}
+\noindent

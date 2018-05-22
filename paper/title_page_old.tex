@@ -1,0 +1,121 @@
+
+%<!-- Titleseite -->
+\thispagestyle{empty}
+
+%%% redefine \maketitle
+\renewcommand{\maketitle}{
+	\begin{titlepage}
+		\begin{center}
+			\setlength{\parskip}{0pt}
+			
+			%	    \begin{flushright}
+			%	    \colorbox{darkgray}{\color{white}{\Large \textsf{\@headerimg}}}
+			%             \end{flushright}
+			\begin{multicols}{2}
+				\flushleft
+                {Prof. Dr. André Bächtiger\par}
+				%{Seminar: Transformation of representative democracy\par}
+				{Institute for Social Sciences\par}
+				{Department of Political Theory and\\ Empirical Research of Democracy\par}
+				\begin{flushright}
+					\includegraphics[width=7cm]{images/logo_stuttgart.jpg}
+				\end{flushright}
+			\end{multicols}
+			\vspace*{2mm}
+			\center
+			{\LARGE {Seminar Paper} \par}
+			
+			\vspace*{10mm}
+			
+			
+			{\fontsize{26}{38} {\bfseries Variants of Populism} \par}
+			\vspace*{1mm}
+			{ \Large A Cross-National Examination of the Support for Populism in 22 European countries}
+			\vspace*{10mm}
+			
+
+	\centering
+	\begin{tabular}{@{}ccc@{}}
+		Author: Fabio Votta, B.A.                    & Author: Marlon Schumacher, B.A.              & Author: Quynh Nga Nguyen, B.A.                                      \\
+		Email: fabio.votta@gmail.com                 & Email: M.C.Schumacher@live.de                & Email: qynga.n@gmail.com \\
+		Student ID: 2876533                          & Student ID: 2954594                          & Student ID: 2949965                                          
+	\end{tabular}
+
+			
+			
+			\vspace*{5mm}
+			
+			
+			
+			
+			
+			\vspace*{5mm}
+			{Date of Submission: 24.04.2018 \par} %\date{xxx}
+			
+		\end{center}
+		\vspace*{2mm}
+		\begin{abstract}
+			\justifying
+			\noindent This paper seeks to investigate support for populist parties in Europe. While populism is an intensely debated topic, most scholarship is plagued with conceptual conflations between different variants of populism.
+			
+			To avoid such conceptual confusions, this paper adopts a minimalist definition to identify core features that all subtypes of populism have in common, namely anti-establishment attitudes as well as their opposition to globalization.
+			
+			While previous authors used economic and cultural factors to determine support for populism, we propose a theoretical model that distinguishes between \textit{traditionalist and progressive populism}. This model involves two steps: 
+			
+			\begin{enumerate}
+				\renewcommand{\labelenumii}{\alph{enumii}.}
+				\item \textbf{Economically deprived individuals} are more likely to reject establishment parties and consequently support populist parties instead. 
+				\item \textbf{Cultural values} determine whether these individuals support progressive or traditionalist populism: 
+				\begin{enumerate}
+					\item \textit{Traditionalist populists} draw their support from people who believe  that societal change has gone too far.
+					\item \textit{Progressive populists} draw their support from people who believe that their reactionary society is in need of progressive change.
+				\end{enumerate}
+			\end{enumerate}
+			
+			
+			In order to operationalize our conceptual considerations, we use the \textit{Chapel Hill Expert Survey} dataset and combine it with \textit{European Social Survey} data to identify respondents that vote for and/or identify with populist parties.
+			
+			We estimate a multinomial logistic regression to test our hypotheses. Our models lend support for our theoretical expectations. Economically deprived individuals are more likely to support either variant of populism. Yet individuals who hold traditional values are more likely to support traditionalist populism, whereas the effect goes in the opposite direction for the support of progressive populism.
+			
+			Further research might be able to build upon our conceptualization and give more attention to the different variants of populism, so as to not conflate the distinct explanatory frameworks that come along with them. 
+		\end{abstract}
+	    \vspace*{2mm}
+        \center		
+        {\large {Seminar: Transformation of representative democracy} \par}
+		
+		
+		
+	\end{titlepage}
+}
+
+%%% automated table of contents
+\newcommand{\contents}{
+	\newpage
+	\thispagestyle{empty}
+	\vspace{20mm}
+	\tableofcontents
+}
+
+
+
+%%% Title page
+\maketitle
+\newpage
+\contents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+
+%\clearpage
+%
+%%<!-- Inhaltsverzeichnisse -->
+%\thispagestyle{empty}
+%\setstretch{1.15}
+%\tableofcontents
+%\listoffigures
+%
+%\clearpage
+%\setstretch{1.44}
+%<!-- \onehalfspacing -->

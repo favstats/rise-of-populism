@@ -50,6 +50,8 @@ Anti-Elite Sentiment is measured with the 11-point scale (0-1) variable *antieli
     0. Not important at all
     10. Extremely important
     
+\newpage
+    
 **Euroskepticism**
 
 Euroskepticism (*position*[^1]) will be used as a proxy variable for anti-globalization. Populists are consistently opposed to the European integration process, albeit for different reasons.
@@ -227,6 +229,8 @@ The *top-left quadrant* shows progressive populists such as:
 *Syriza*
 
 After winning the parliamentary elections in January 2015, SYRIZA (*Coalition of the Radical Left*) attempted to carry out the difficult balancing act between extreme left-wing positions, opposition to EU imposed austerity and yet supposedly pro-European commitments. In social policy, Syriza is particularly committed to the socially disadvantaged in society with progressive value policies such as guaranteeing that unemployed, homeless and low-income people should be allowed to use the health facilities free of charge or that family reunification should be made easier for individuals with a migration background [cf. @bbc2014syriza].
+
+\newpage
 
 *Podemos*
 

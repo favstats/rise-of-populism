@@ -1443,6 +1443,233 @@ plot_model(glmfit, type = "pred", terms = c("econ_unsat"))
 
 # Crap
 
+## bayesian
+
+
+```{r}
+# controls <- multinom(
+#   populism2 ~
+#     # economic deprivation
+#     #econ_unsat + econ_insec + unemployed + welfare +
+#     # cultural backlash
+#     #anti_imm + openness + conservation + selfenhance + selftrans +
+#     # control variables
+#     age + educ + sex + lrscale + ethnic + religion + rural + globalism + govsat + east + north + south +
+#     year_2016 + year_2014 + year_2012,
+#     #data
+#     data = mlogit_ess_adds, weights = pweight)
+
+library(brms)
+
+br1 <- brm(populism2 ~ econ_unsat + econ_insec + unemployed + welfare + 
+              anti_imm + age + educ + sex + lrscale + ethnic + religion + 
+              rural + globalism + govsat + east + north + south +
+              year_2016 + year_2014 + year_2012,
+           data=mlogit_ess_adds, family="categorical",
+           prior=c(set_prior ("normal (0, 8)")))
+
+save(br1, file = "data/br1.Rdata")
+
+Sys.getenv('PATH')
+system('g++ -v')
+system('where make')
+
+
+load("data/br1.Rdata")
+
+plot(br1) 
+
+
+plot(marginal_effects(br1))
+# 
+# br1$ %>% 
+#   as.data.frame()
+
+# newdata <- mlogit_ess_adds %>% slice(1)
+# predict(br1)
+
+broom::tidy(br1)
+
+
+devtools::install_github("mjskay/tidybayes")
+
+library(tidybayes)
+
+parameters(br1)
+
+br1 %>%
+  tidybayes::spread_samples(b_muTraditionalistPopulism_Intercept, b_muTraditionalistPopulism_anti_imm) %>%
+  mean_qi(condition_mean = b_muTraditionalistPopulism_Intercept + b_muTraditionalistPopulism_anti_imm) %>%
+  ggplot(aes(1, x = condition_mean, xmin = conf.low, xmax = conf.high)) +
+  geom_halfeyeh() 
+
+#mlogit_ess_adds %>%
+ # modelr::data_grid("b_muTraditionalistPopulism_Intercept") %>%
+  add_predicted_samples(mlogit_ess_adds, br1) -> pred_samples
+
+
+```
+## bayesian2
+
+```{r}
+mlogit_ess_adds %>% #select(target) %>% table 
+  #filter(cntry == "Germany") %>% 
+  sample_n(3000) -> mlogit_sub
+
+library(brms)
+
+br2 <- brm(populism2 ~ econ_unsat + econ_insec + unemployed + welfare + 
+              anti_imm + age + educ + sex + lrscale + ethnic + religion + 
+             anti_imm*unemployed +
+              rural + globalism + govsat + #east + north + south +
+              year_2016 + year_2014 + year_2012,
+           data = mlogit_sub, family="categorical",
+           prior = c(set_prior ("normal (0, 8)")))
+
+save(br2, file = "data/br2.Rdata")
+
+library(tidybayes)
+
+parameters(br2)
+
+br2 %>%
+  tidybayes::spread_samples(b_muTraditionalistPopulism_anti_imm,
+                            b_muTraditionalistPopulism_govsat) %>%
+  gather(key, value, -.chain, -.iteration) %>% 
+  # mean_qi(condition_mean = b_muTraditionalistPopulism_Intercept +
+  #           b_muTraditionalistPopulism_anti_imm) %>%
+  ggplot(aes(y = value, x = key)) +
+  geom_halfeyeh() 
+
+add_predicted_samples(mlogit_sub, br2) -> pred_samples
+add_fitted_samples(mlogit_sub, br2, n = 100) -> fit_samples
+
+library(ggridges)
+
+pred_samples %>%
+  ggplot(aes(x = pred, y = anti_imm)) +
+  geom_density_ridges()
+
+fit_samples %>%
+  ggplot(aes(x = anti_imm, y = estimate, color = category)) +
+  geom_smooth(aes(y = estimate, group = paste(category, .iteration)), alpha = 0.25, 
+              se = F, size = 0.000000000000025) +
+  facet_wrap(~category, scales = "free") +
+    ggthemes::theme_hc() +
+  ggthemes::scale_colour_gdocs()
+
+ggsave(filename = "images/bayesia_fun.png", width = 10)
+
+fit_samples %>%
+  ungroup() %>% 
+  select(govsat, anti_imm, lrscale, estimate, category, .iteration) %>% 
+  gather("variable", "value", -estimate, -.iteration, -category) %>% 
+  mutate(variable = 
+           case_when(
+             variable == "govsat" ~ "Government Satisfaction",
+             variable == "anti_imm" ~ "Anti-Immigration Sentiment",
+             variable == "lrscale" ~ "Left-Right Scale"
+           )) %>% 
+  mutate(category = 
+           case_when(
+             category == "1" ~ "Establishment",
+             category == "2" ~ "Progressive Populism",
+             category == "3" ~ "Traditionalist Populism"
+           )) %>% 
+  mutate(estimate = round(estimate * 100, 2)) %>% 
+ ggplot(aes(x = value, y = estimate, color = category)) +
+  geom_smooth(aes(y = estimate, group = paste(category, .iteration)), alpha = 0.25, 
+              se = F, size = 0.000000000000025) +
+  facet_grid(category~variable, scales = "free") +
+    scale_y_continuous(breaks = seq(0,100, by = 5),
+                     labels = paste0(seq(0,100, by = 5),"%")) + 
+    ggthemes::theme_hc() +
+    labs(y = "Probability", x = "Score") +
+  ggthemes::scale_colour_gdocs("Type") + 
+    guides(color = F) +
+  # cowplot::panel_border() +# and a border around each panel
+  theme(panel.spacing = unit(2, "lines"),
+        strip.text = element_text(size = 11)) 
+    # scale_x_continuous(breaks = seq(0,10, by
+
+ggsave(filename = "images/bayesia_fun2.png", width = 18, height = 10)
+
+
+sjPlot::plot_model(br2, 
+                   terms = c("b_muTraditionalistPopulism_anti_imm",
+                             "b_muTraditionalistPopulism_govsat"))
+parameters(br2)
+```
+
+
+### example 
+
+```{r}
+set.seed(5)
+n = 10
+n_condition = 5
+ABC =
+  data_frame(
+    condition = rep(c("A","B","C","D","E"), n),
+    response = rnorm(n * 5, c(0,1,2,1,-1), 0.5)
+  )
+
+m = brm(response ~ (1|condition), data = ABC, control = list(adapt_delta = .99),
+  prior = c(
+    prior(normal(0, 1), class = Intercept),
+    prior(student_t(3, 0, 1), class = sd),
+    prior(student_t(3, 0, 1), class = sigma)
+  ))
+
+m %>%
+  spread_samples(r_condition[condition,term]) %>%
+  head(10)
+
+m %>%
+  spread_samples(b_Intercept, r_condition[condition,]) %>%
+  mutate(condition_mean = b_Intercept + r_condition) %>%
+  ggplot(aes(y = condition, x = condition_mean)) +
+  geom_halfeyeh() 
+```
+
+## Interactions
+
+```{r}
+parameters(br2)
+
+add_fitted_samples(mlogit_sub, br2, n = 100) -> fit_samples
+
+
+fit_samples %>%
+  ungroup() %>% 
+  select(unemployed, anti_imm, estimate, category, .iteration) %>% 
+  #gather("variable", "value", -estimate, -.iteration, -category, -unemployed) %>% 
+  # mutate(variable = 
+  #          case_when(
+  #            variable == "unemployed" ~ "Unemployment (0/1)",
+  #            variable == "anti_imm" ~ "Anti-Immigration Sentiment"
+  # mutate(category = 
+  #          case_when(
+  #            category == "1" ~ "Establishment",
+  #            category == "2" ~ "Progressive Populism",
+  #            category == "3" ~ "Traditionalist Populism"
+  #          )) %>% 
+mutate(estimate = round(estimate * 100, 2)) %>% 
+ ggplot(aes(x = anti_imm, y = estimate, color = unemployed)) +
+  geom_smooth(aes(y = estimate, group = paste(unemployed, .iteration)), alpha = 0.25, 
+              se = F, size = 0.000000000000025) +
+  facet_grid(~category, scales = "free") +
+    # scale_y_continuous(breaks = seq(0,100, by = 5),
+    #                  labels = paste0(seq(0,100, by = 5),"%")) + 
+    ggthemes::theme_hc() +
+    labs(y = "Probability", x = "Score") +
+  #ggthemes::scale_colour_gdocs("Type") + 
+    guides(color = F) +
+  # cowplot::panel_border() +# and a border around each panel
+  theme(panel.spacing = unit(2, "lines"),
+        strip.text = element_text(size = 11)) 
+```
+
 
 ## Human Values
 

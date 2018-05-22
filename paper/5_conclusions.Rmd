@@ -1,0 +1,65 @@
+---
+output: pdf_document
+---
+
+This section will briefly summarize the results and then conclude the study with a few words on limitations and future research.
+
+With regard to our multinomial logistic models, it can be said that our hypotheses were able to be mainly *confirmed*. Let's start with the economic hypothesis:
+
+> H1: The less economically fortunate (economic dissatisfaction, unemployment, economic insecurity, living on welfare), the higher the probability of supporting populist parties.
+
+The models estimated here mainly support this hypothesis. Unemployment, economic insecurity and receiving welfare increase the chance to support populists compared to support of established parties. Altough, the impact of living on welfare seems not to be as great as the other two factors mentioned and does not yield a significant effect in supporting traditionalist populists. In addition, in Model 3, where the cultural dimension has been added, there is a slight reduction of the effects. Despite this, all significances remain stable and the estimates continue to show the expected effects.
+
+Concerning the cultural dimension, the results of the multinomial logistic regression also support our hypotheses:
+
+> H2: The more culturally inclusive (values), the higher the probability of supporting progressive populist parties.
+
+> H3: The more culturally exclusive, the higher the probability of supporting a traditionalist populist party.
+
+Inclusive values (high values for self-transcendence and openness and lower anti-immigration sentiment) increases the probability of support for progressive populists, but openness lacks a statistically significant effect. In addition, exclusive values (low values for self-transcendence and openness and a high value for anti-immigration), increase the probability of supporting traditionalist populism. Anti-immigration in particular seems very important here and stands out clearly from the other effects. Additionally, openness values decrease the chance of supporting traditionalist populist parties. Even in Model 4, which combines all predictors, all estimated effects remain stable. The effects also show our previously suspected differentiation. The economic dimension increases the likelihood of supporting populist parties in general. The cultural dimension, on the other hand, shows that it has diametrically opposed effects on the support of traditionalist and progressive populists. 
+
+The last hypothesis concerning interaction effects stated as follows:
+
+> H4: When economic and cultural factors interact, the support for populist parties is higher.
+
+The empirical evidence obtained through multinomial logistic regression does not support this hypothesis. Two statistically significant effects were found, however most interactions were not. An interaction between *Anti-Immigration Sentiment* and *Economic Insecurity* implied that the effect of the former on populist party support is *weaker* for those that are very economically insecure, suggesting the direct opposite of what we expected. Future research should further investigate what factors might cause this discrepancy. On the other hand, the other interaction effect between *Unemployment* and *Self-Enhancment* showed the expected direction and the influence of self-enhancement values was *stronger* for those that are unemployed. However, given the overwhelming contradictory evidence, this hypothesis has to be rejected.
+
+\begin{table}[]
+	\centering
+	\caption{Summary of Results}
+	\label{summaryy}
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{@{}lccl@{}}
+			\toprule
+			\multicolumn{1}{c}{\textbf{Hypothesis}} & 
+			\textbf{Confirmed} & 
+			\textbf{\begin{tabular}[c]{@{}c@{}}Indications/\\  Tendencies\end{tabular}} &
+			\multicolumn{1}{c}{\textbf{Restrictions}} \\ 
+			\midrule
+			\textit{\begin{tabular}[c]{@{}l@{}}\textbf{H1:} The less economically fortunate \\(economic dissatisfaction, unemployment, \\ economic insecurity, living on welfare), \\the higher the probability of supporting \\ anti-establishment parties.\end{tabular}}                                  & Yes  & +                                                                          & \begin{tabular}[c]{@{}l@{}}Weak Effects \\ 
+			Welfare not signicant for \\
+			Traditionalist Populists\end{tabular}                           \\ \midrule
+			
+\textit{\begin{tabular}[c]{@{}l@{}}\textbf{H2:} The more culturally inclusive \\(values), the higher the probability of \\ supporting progressive populist parties.\end{tabular}}               & Yes                                                               & +                                                                          & \begin{tabular}[c]{@{}l@{}}Weak Effects \\ 
+			Openness not signicant for \\
+			Progressive Populists. \end{tabular}                                                                                      \\ \midrule
+			\textit{\begin{tabular}[c]{@{}l@{}}\textbf{H3:} The more culturally exclusive, \\the higher the probability of supporting \\a traditionalist populist party.\end{tabular}}             & Yes                                                                & +                                                                          & \begin{tabular}[c]{@{}l@{}}Weak Effects. \end{tabular} \\ \midrule
+			\textit{\begin{tabular}[c]{@{}l@{}}\textbf{H4:} When economic and cultural factors interact, \\ the support for populist parties is higher.\end{tabular}}               & No                                                                & \textbf{-}                                                                 & \begin{tabular}[c]{@{}l@{}}No significant effects \\
+			except for two \\
+			inconclusive evidence\end{tabular}                                                            \\ \bottomrule	\\[-1em]
+			\multicolumn{4}{l}{%
+				\begin{minipage}{19cm}%
+					\flushright
+					\scriptsize A "+" sign indicates at least some empirical evidence in favor of the hypothesis and a "-" sign stands for contradictory empirical evidence.%
+				\end{minipage}%
+			}
+		\end{tabular}
+}
+\end{table}
+
+It should also be stressed that while all the effects found are significant, they are rather weak, especially when it comes to the cultural dimension. In addition, almost all control effects remain significant in all models. In the academic literature, supporters of populist parties are often associated with features such as older age and lower education. Some minor surprises were found here: in terms of educational attainment, more education decreases the support for traditional populists, whereas the same isn't true for supporters of progressive populists where higher education levels are associated with higher support. Further, when it comes to age, the models suggest that younger age is associated with higher support for progressive as well as traditional populists.
+
+The goal of this paper was to bring some clarity on the confusion between different variants of populism that all too often have neglected this multidimensionality. Further research might be able to build upon our conceptualization and give more attention to the different variants of populism, so as to not conflate the distinct explanatory frameworks that come along with them. 
+
+
+

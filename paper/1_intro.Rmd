@@ -1,0 +1,30 @@
+---
+output: pdf_document
+---
+
+
+This paper seeks to investigate support for populist parties in Europe. While populism is an important and intensely debated topic, most scholarship is plagued with conceptual conflations between different variants of populism. Despite efforts to avoid such conflations, many influential scholars continue to use qualifying features of the Right to describe populism, possibly leading to severe shortcomings in their empirical analyses. For example, in Inglehart's and Norris' publication "Trump, Brexit, and the rise of populism"^[Inglehart, Ronald and Norris, Pippa (2016). Trump, Brexit, and the Rise of Populism: Economic Have-Nots and Cultural Backlash. HKS Working Paper No. RWP16-026.] ostensibly right-wing parties such as the *National Democratic Party* in Germany or the Hungarian *Jobbik* are classified as populist left, based solely on their left-right position on the economic scale.
+
+To avoid such conceptual confusions, this paper adopts Cas Mudde’s clear minimalist definition to identify core features that all subtypes of populism have in common. In line with this definition, we suggest that populist parties are primarily defined by their degree of anti-establishment attitudes as well as their opposition to globalization. Subsequently, we propose to classify European populist parties along a *progressive and traditionalist* left-right dimension.
+
+While previous authors used economic and cultural factors to determine support for (mostly traditionalist) populism, we propose a hierarchical theoretical model that distinguishes between traditionalist and progressive populism. This model involves two steps: 
+
+\begin{enumerate}
+\renewcommand{\labelenumii}{\alph{enumii}.}
+\item \textbf{Economically deprived individuals} - seeking to change the status quo - are more likely to reject establishment parties and consequently support populist parties instead. 
+\item \textbf{Cultural values} determine whether these individuals support progressive or traditionalist populism: 
+\begin{enumerate}
+\item \textit{Traditionalist populists} draw their support from people who believe that cosmopolitan liberal elites undermine national unity and that societal change has gone too far.
+\item \textit{Progressive populists} draw their support from people who believe that "neoliberal" elites (represented by institutions like multinational banks and companies) undermine the people's will by safeguarding the deeply reactionary society that is in dire need of radical change.
+\end{enumerate}
+\end{enumerate}
+
+
+In order to operationalize our conceptual considerations, we use the *Chapel Hill Expert Survey* (CHES) dataset that contains information on the positions of political parties within Europe. We then devise two indices along which European parties can be classified: Anti-Establishment vs. Establishment and Progressivism vs Traditionalism. K-Nearest Neighbour clustering identifies four clusters, traditionalist and progressive populist parties as well as their two establishment counterparts that are merged into a single establishment cluster. After the successful classification, we combine the CHES data with *European Social Survey* (ESS) data Round 5 – 8 and identify respondents that either vote for or identify with the classified populist parties, forming our dependent variable *Support for Populist Parties*.
+
+We estimate a multinomial logistic regression to test our hypotheses of support for populism. Our models lend support for our theoretical expectations. Economically deprived individuals are more likely to support both traditionalist and progressive populist parties. Yet individuals who hold anti-immigration views as well as traditional values are more likely to support traditionalist populism, whereas the effect goes in the opposite direction for the support of progressive populism.
+
+Further research might be able to build upon our conceptualization and give more attention to the different variants of populism, so as to not conflate the distinct explanatory frameworks that come along with them. 
+
+
+The following Chapter \ref{theory} discusses our theoretical framework and classification of European populist parties, as well as some of the general challenges when it comes to quantifying and analyzing populism in Europe. In Chapter \ref{methods}, the used research methods are introduced and the classification of European parties is done with the help of k-means clustering. Afterwards, Chapter \ref{analysis} reports on the multinomial logistic regression and its results. Finally, the conclusion (Chapter \ref{conclusion}) gives a summary of the results and derives implications for further research.
