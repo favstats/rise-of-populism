@@ -1,0 +1,717 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{}
+  \pretitle{\vspace{\droptitle}}
+  \posttitle{}
+  \author{}
+  \preauthor{}\postauthor{}
+  \date{}
+  \predate{}\postdate{}
+
+
+\begin{document}
+
+\subsection{What is Populist about
+Populism?}\label{what-is-populist-about-populism}
+
+While populism is an important and intensely debated topic, most
+scholarship is plagued with conceptual conflations {[}cf.
+@mudde2011voices 1{]}. Despite efforts to avoid such confusions, many
+influential scholars continue to use qualifying features of the Right to
+describe populism, possibly leading to severe shortcomings in their
+empirical analyses. To avoid similar mistakes, this chapter will first
+adopt Cas Mudde's clear minimalist definition to identify those core
+elements that all subtypes of populism have in common (2.1.1.).
+Subsequently, we propose a comprehensive framework to classify European
+populist parties along two relevant dimensions: progressive and
+traditionalist populism. (2.1.2.)
+
+\subsubsection{A Minimalist definition of
+Populism}\label{a-minimalist-definition-of-populism}
+
+In almost every handbook about populism, authors would eventually point
+out to the concept's contested nature. As Heinisch et al. describe,
+``{[}n{]}early as ubiquitous as articles and commentaries on populism is
+the assertion that it is a contested concept and difficult to define.
+{[}\ldots{}{]} {[}T{]}here have been numerous conceptualisations, which
+are themselves derived from several fundamental approaches that differ
+{[}\ldots{}{]} in their ideas on whether populism is primarily
+ideational, discursive, stylistic, or strategic in nature''
+{[}@heinisch2017handbook 22{]}. This contending debate on how to best
+define populism is reflected by various empirical studies that emphasize
+different and sometimes even contradictory aspects of the phenomenon
+{[}cf. @gerring2001social 120{]}. Broadly speaking, there exist three
+types of definition for populism. It can be qualified as an
+organizational type, as a political communication style or as an
+ideology. Especially the latter has gained prominence in scholarly
+literature {[}cf. @pauwels2011measuring 99{]}. However, the
+differentiation between populism as a communication style and as an
+ideology seems artificial at times. Both types distinguish between the
+people as opposed to the elite and they both allow for a combination
+with other (even diametrically opposed) ideologies. In our understanding
+these two types of populism share so many characteristics that the
+differentiation between them seems to be a matter of wording rather than
+a matter of clear defined features of populism. Most scholars agree on
+the ``chameleonic'' character of populism {[}cf.
+@taggart2000populism{]}. Some authors, borrowing the notion of a thin
+ideology from @freeden1998nationalism, assert that populism can be
+combined with other more ``established'' ideologies like liberalism,
+nationalism, conservatism, federalism or socialism {[}i.e.
+@mudde2016populist 1; @mudde2017populism 19; @albertazzi2007twenty 4{]}.
+As Mudde and Kaltwasser emphasize, populism can be ``left-wing or
+right-wing, organized in top-down or bottom-up fashion, rely on strong
+leaders or be even leaderless'' {[}@mudde2013exclusionary 153{]}. A
+serious problem is therefore the confusion between populism and the
+Right, as Cas Mudde laments: ``Until now, populism was almost
+exclusively linked to the radical right, leading to an incorrect
+conflation of populism and xenophobia'' {[}@mudde2016populist 1{]}. This
+tendency has to do with the fact that populism gained strength in Europe
+with the formation of populist radical right parties in the 1980s {[}cf.
+@mudde2013exclusionary 155{]}. Their emergence triggered the blossoming
+of a vast scholarly literature -- although focussing almost exclusively
+on discussing right-wing populism {[}cf. @de2008pariah{]} while
+neglecting the growing impact of their counterpart on the left side of
+the political spectrum {[}cf. @lucardie2012populisten{]}.
+
+Despite the already existing thematization of this shortcoming, many
+scholars still make the mistake of using right-wing characteristics to
+define populism {[}cf. @mudde2007populist{]}. For instance, Inglehart
+and Norris, in their analysis on the support for populism in Europe,
+justified their definition as follows: ``Cas Mudde has been influential
+in the literature, suggesting that populist philosophy is a loose set of
+ideas that share three core features: anti-establishment,
+authoritarianism, and nativism'' {[}@inglehart2016trump 6{]}.
+Considering that the publication they quoted from is called
+\emph{``Populist Radical Right Parties in Europe'' (2007)}, Inglehart's
+and Norris' statement seems to be remarkably negligent. In this
+publication, Cas Mudde unambiguously named authoritarianism and nativism
+as ideological features of the populist right and not of populism per se
+{[}cf. @mudde2013exclusionary 155{]}. We believe that it is exactly
+because of such a theoretical conflation that Inglehart's and Norris'
+empirical classification of European parties exhibits serious flaws,
+i.e.~by wrongly categorising ostensibly right-wing parties such as the
+\emph{German National Democratic Party} or the Hungarian \emph{Jobbik}
+as populist left just because they happen to be on the left and right of
+the economic policy scale {[}cf. @inglehart2016trump 36{]}. As
+Albertazzi points out, ``this insistence on making `populist' and
+`extreme right' synonymous or lumping all populists under the `radical
+Right populist' banner for ease of comparison {[}\ldots{}{]} is
+detrimental to our understanding {[}of{]} {[}\ldots{}{]} populism
+itself'' {[}@albertazzi2007twenty 4{]}.
+
+To avoid similar mistakes, we propose a new classification framework,
+drawing on a minimalist definition to capture core features that all
+subtypes of populism have in common. Following Mudde (who is indeed
+``influential in the literature''), we view populism as ``a
+thin-centered ideology that considers society to be ultimately separated
+into two homogeneous and antagonistic groups, `the pure people' versus
+`the corrupt elite', and which argues that politics should be an
+expression of the volonté générale (general will) of the people''
+{[}@mudde2004populist 543; @mudde2017populism 6{]}. A big advantage of
+this minimalist definition is its neutrality, allowing us to analyse
+populism independently from the ideological environment in which it
+operates {[}@halikiopoulou2012paradox 2{]}. The particularity of Mudde's
+definition is the normative distinction made between the ``pure'' people
+and the ``corrupt'' elite {[}cf. @mudde2017populism 9{]}. According to
+populists, democracy has been perverted by the corrupt elite who act in
+their own interests instead of respecting the volonté générale (general
+will of the people) {[}cf. @mudde2017populism 16{]}. Populists proclaim
+their commitment to fight these corrupt elites as well as other alien
+enemies in possession of power in order to give back the sovereignty to
+the people {[}cf. @otjes2015populists 60{]}.
+
+Studies of populism were initially focused in a narrow, national or
+regional context, first concentrating on the United States and later
+expanding to also include Latin America and Europe {[}cf.
+@mudde2011voices 1{]}. Recognizing that left-wing populism was widely
+neglected in the past, recent scholarship has started to study this
+variant of populism {[}i.e. @stavrakakis2014return;
+@rendueles2018rise{]}. However, so far this literature tends to conduct
+qualitative case studies that concentrate on regional singularities
+instead of generalizable tendencies of the phenomenon {[}cf.
+@mudde2011voices 1{]}. Left-wing populism is commonly perceived as
+geographically limited to Latin America while right-wing populism is
+associated with the European political context {[}@hawkins2017populism
+267{]}. Given the recently growing importance of left-wing populist
+parties in Europe (i.e.~SYRIZA or Podemos), it is important to study the
+populist phenomenon taking into account -- but without limiting it to --
+the regional context (comprising political, cultural and economic
+specificities) that it is embedded in {[}cf. @sorensen2017com 138;
+@lanzone2017com 229{]}.
+
+With regard to the populist phenomenon in Europe -- which is this is
+paper's focus of study -- two common points shared by all populist
+parties regardless of their ideological backgrounds are important to
+note. First, as explained above, populists reject establishment parties
+that they consider to represent the ``corrupt elite'' acting against the
+interests of the ``pure people'' {[}@mudde2017populism 12{]}. Secondly,
+populists are consistently opposed to globalization, most notably
+represented by the European integration process {[}cf.
+@halikiopoulou2012paradox; @mudde2007populist; @hooghe2002does{]}.
+However, while anti-establishment attitudes and euroscepticism
+constitute common denominators of populists from both sides of the
+political spectrum, the justification and intensity for these attitudes
+vary starkly depending on the ideological orientation of the populist
+parties in question {[}cf. @conti2012multi; @mudde2017populism 22{]}.
+This begs another important question: what, then, distinguishes the
+operating logic of different variants of populist parties?
+
+\subsubsection{Discerning between Progressive and Traditionalist
+Populism}\label{discerning-between-progressive-and-traditionalist-populism}
+
+The main difference originates from the populists' definition of ``the
+pure people'' and ``the corrupt elite'' {[}@mudde2013exclusionary
+148{]}. The term populism in itself is derived from the Latin word
+populus - literally meaning ``the people''. Populists are however very
+ambiguous about `the people' that they intend to represent {[}cf.
+@heinisch2017handbook 22{]}. Since `the people' is an ``empty
+signifier'' {[}@laclau2005populist 232{]}, its signification varies
+depending on historical and regional circumstances and its
+interpretation differs from party to party {[}cf. @akkerman2017parties
+169{]}. As @mudde2017populism assert, ``{[}e{]}ach populist actor
+emerges because of a particular set of social grievances, which
+influences its choice of host ideology, which in turn affects how the
+actor defines `the people' and `the elite'\,'' {[}@mudde2017populism
+22{]}. Due to this ambiguity, the dichotomy between the ``pure people''
+and the ``corrupt elite'' can be understood from a political, a cultural
+or an economic viewpoint {[}cf. @meny2000populismo{]}. Most populists
+therefore not only target the political elite, but also other types of
+elites like the economic, the cultural or the media elite {[}cf.
+@mudde2017populism 12{]}.
+
+As suggested in the previous section, the two most discussed variants
+are commonly labelled ``left-wing'' and ``right-wing'' populism. In
+recent scholarly literature however, there exist many different notions
+to capture these two manifestations of the populist phenomenon.
+Alexander and Wenzel, for instance, propose to associate left-wing
+populism with ``disaffected liberalism'' and right-wing populism with
+``disaffected illiberalism'' {[}@alexander2017myth 8{]}. Kaltwasser and
+Mudde, on the other hand, identify a juxtaposition between
+``inclusionary populism'' and ``exclusionary populism''
+{[}@mudde2011voices 2; @mudde2013exclusionary 158{]}. In this light,
+inclusive populism could be seen to focus on inclusion of the
+underprivileged (\emph{socioeconomic dimension}), while exclusive
+populism primarily focuses on excluding the perceived `others'
+(\emph{sociocultural dimension}) {[}cf. @mudde2013exclusionary 167{]}.
+In this sense, inclusive populism is considered to exhibit left-wing,
+and exclusive populism, right-wing characteristics.
+@halikiopoulou2012paradox for their part, consider nationalism to be the
+source of populism. Which variant of populism then emerges depends on
+whether a civic (left-wing) or an ethnic (right-wing) form of
+nationalism is at play {[}cf. @halikiopoulou2012paradox 3{]}. These are
+but some of the many existing conceptualizations of populism --
+reflecting a certain difficulty to do justice to the diversity of this
+phenomenon.
+
+We, for our part, seek to distance ourselves from the left-right labels
+and suggest to classify European populist parties along a values
+continuum on which \emph{progressive populists} and \emph{traditionalist
+populists} are opposing one another. There are two main reasons for as
+why we chose to categorize variants of populism along this value
+dimension and using these notions. The first reason has to do with the
+appropriate naming of public actors. We wish to avoid imposing a label
+that the actors in question would not employ to describe themselves.
+Populists do not necessarily agree to be pigeonholed as belonging to the
+``left'' or to the ``right'' (and especially not to the ``radical-left''
+or ``radical-right''). Furthermore, it has been noted that the positions
+of some populist parties on political and economic issues are too
+incoherent to be consistently categorized as left or right {[}cf.
+@huber2017distinct{]}. As for the suggestion to categorize populists as
+\emph{``liberal''} or \emph{``illiberal''}, it is important to note that
+liberalism is a highly ambiguous concept in itself {[}cf.
+@paton2010seeking 9{]}. On the one hand, the ``classic'' or ``Lockean''
+version of liberalism insists on individual freedom associated to
+private property rights, hence rejecting any form of state intervention.
+On the other hand, the ``social'' or ``Millian'' version of liberalism
+rejects market inequality in favour of individual agency, hence
+encouraging state intervention, economic regulation and resources
+redistribution by a welfare state {[}cf. @stephens2017pop 58;
+@skorupski1999ethical 215{]} In this respect, both the political right
+and the left can be qualified as ``liberal'', depending on the
+interpretation of the concept. Furthermore, the term ``liberal'' has an
+inextricable political and normative connotation when used within the
+setting of liberal democracies. No populist party -- regardless of their
+ideological affiliation -- would accept being described as
+``illiberal''. Conversely, those populists who feel close to socialist
+ideals would shy away from being called ``liberals''. Our second reason
+to classify populism along a ``progressivist-traditionalist'' axis is of
+conceptual considerations. The notion of \emph{progressivism}, defined
+by the Oxford dictionary as ``support for or advocacy of social reform''
+{[}@ox2017prog{]}, refers initially to the \emph{Progressive Movement}
+that developed in United States in the late 19th century. It emerged as
+a reaction to social problems that resulted from the rapid
+industrialisation, urbanisation, agrarian depression and financial
+recession at the time. Progressivism's main assumption is that
+laissez-faire capitalism and excessive individualism has led to social
+ills, such as extreme poverty, the formation of slums, increased
+prostitution and the exploitation of workers. Progressives hence support
+state induced social reforms to help the weak and underprivileged
+(especially workers, women and children). The government, responsible
+for protecting the ``public interest'' against self-interest,
+{[}@prono2008prog 258; @nugent2009progressivism 4{]} is expected to
+control finance and industry to make these more accountable to citizens
+-- and to fight social injustice in the process {[}cf. @prono2008prog
+257{]}. The key value of progressivism is thus ``openness to change''
+{[}@nugent2009progressivism 3{]}, and the central belief of progressives
+is that ``society could be changed into a better place'' (ibid: 5).
+
+When speaking about progressivism since the late 20th century, it is
+notably associated with the ``silent revolution'' that describes a value
+change of the post-war generation towards post-materialism {[}cf.
+@inglehart1977silent{]}. Post-materialists endorse progressive social
+values and new lifestyles, champion self-expression and civil liberties
+{[}cf. @inglehart1997modernization 131{]} including cosmopolitanism,
+multiculturalism, and a greater tolerance for sexual, ethnic and
+religious diversity (cf.~ibid: 23). This value shift brought new issues
+on the political agenda such as environmental protection, human rights,
+legalisation of abortion, acceptance of homosexuality, and gender
+equity, resulting in rising support for left-libertarian parties
+(i.e.~the Greens) and progressive movements. {[}cf. @ignazi1992silent;
+@inglehart1977silent; @inglehart1997modernization 4f., 23, 240f.{]}
+
+\emph{Progressive populists}, in our understanding, are people who
+challenge establishment institutions on the grounds of social justice
+and internationalist solidarity. They believe that \emph{``neoliberal''}
+transnational elites (represented by institutions like multinational
+banks and firms) undermine the people's will by safeguarding a deeply
+reactionary society that is in dire need of radical change {[}cf.
+@van20176 390{]}. While being essentially tolerant towards cultural,
+religious and sexual diversity, progressive populists believe that the
+current economic system of free markets is fundamentally defective --
+insofar as to benefit the elites to the detriment of the
+underprivileged, ordinary people {[}cf. @march2005s 25;
+@bornschier2010new{]}. Examples that progressive populists frequently
+use to criticize the dysfunctionality of the status quo are the
+financial crisis of 2008 or the European debt crisis. ``Neoliberal''
+policies pursued by financial elites are perceived as widening the gap
+between rich and poor and as a danger to welfare state commitments
+{[}cf. @van2016united 1184{]} \emph{Progressive populists} reject
+globalisation for fear of capital flight and depreciation of labour
+{[}@frieden1996impact; @hawkins2017populism 389{]}. They therefore
+oppose the EU -- an institution considered as a means of action for
+these global neoliberal elites (i.e. ``Goldman Sachs' revolving doors in
+Brussels'') {[}cf. @hooghe2004does 128; @march2015out{]}.
+
+The antithesis to \emph{progressivism} is \emph{traditionalism}.
+Tradition, in its broadest sense, is ``anything which is typical of the
+past, customary, or part of a cultural identity'' {[}@allison2009trad
+537{]}. Traditionalism is the ``propensity to revive or defend
+traditions against non‐traditional beliefs and values'' (ibid), and
+traditionalists are people who highly value traditions. In its initial
+meaning, traditionalism refers to the idea that established institutions
+and order, most notably represented by the church and the monarchy,
+should be protected against radical revolutions. {[}cf. @allison2009trad
+537{]} In a wider sense, traditionalism's object of protection can
+include diverse items ranging from religious orientation, sporting
+customs, linguistic practices to dietary habits''
+{[}@allison2009trad{]}. The key value of traditionalism is the
+preservation of stability, and the central belief of traditionalists is
+that society must defend the customs they hold dear against chaotic
+change {[}cf. @allison2009trad 537{]}. Examples for progressive
+doctrines that oppose political traditionalism are Marxism or liberal
+capitalism, which -- in their rationalism -- are inherently intolerant
+towards traditional values and practices. These doctrines were however
+unable to provide people's lives with cultural or spiritual meaning,
+which is important to give them a sense of security, stability and
+achievement. This contributes to the appeal of traditionalism, often
+manifesting through divers forms of nationalist or religious renaissance
+(cf.~ibid). Traditionalism of the late 20th century refers to
+counterrevolutionary reactions to the ``silent revolution''. Supporters
+consist primarily of white men, elders and those left behind by
+globalisation, who fear that the rise of progressive demands will
+endanger their material status, benefits and privileges. They also see
+the strengthening of post-materialist values as a threat to once
+prevailing cultural norms that they cherish. Traditionalists value
+tradition and stability over change, believing that the government
+should apply strict measures to protect their social and cultural
+identity against morally corrupt influences. For them, security and
+order has priority over universal liberal norms {[}cf.
+@inglehart2016trump 7, 13{]}.
+
+\emph{Traditionalist populists}, in our understanding, are people who
+challenge establishment institutions to protect their sociocultural
+identity. They draw their support from people who believe that
+cosmopolitan liberal elites undermine national unity and that societal
+change has gone too far. They usually endorse nationalist and
+authoritarian values {[}@mudde2010ideology; @mudde2013exclusionary
+155{]}, emphasizing the necessity to have strong leaders repelling
+``external threats'' to the nation state. This tendency manifests itself
+most notably in ``ethno-centric'' discourses {[}cf.
+@hainsworth2008extreme{]} and calls for harsh policies concerning asylum
+and immigration issues {[}@mudde2007populist; @mair1998party{]}.
+\emph{Traditionalist populists} reject globalisation, which they see as
+a danger for national and local identities {[}cf. @van20176 390{]}. This
+logic translate into their euroscepticism in defence of national
+sovereignty and cultural homogeneity against alien influences {[}cf.
+@van2016united 1184{]}.
+
+Summing up, while all populists are at odds with political elites,
+progressive populists especially target the economic elite. By contrast,
+traditionalist populists are characterized by nativism and focus on
+arguments around cultural antagonism {[}@akkerman2017parties 170; cf.
+@mudde2007populist 18 ff.{]}. Simply put, progressivists frequently
+enter in a marriage of convenience with some type of `socialism' while
+traditionalists do the same with some type of `nativism'
+{[}@mudde2016populist 1; @mudde2017populism 21{]}. Having established a
+hierarchical framework to categorize European populist parties along a
+populist-establishment and a progressive-traditionalist dimension, we
+now proceed to explain the growing support for European populist
+parties.
+
+\subsection{\{-\} What explain's Populist's
+Populism}\label{what-explains-populists-populism}
+
+Literature on the electoral success of populist parties is dominated by
+two broad strand of causal theorizing: (1) the Durkheimian sociological,
+``mass society'' thesis that focusses on feelings of cultural identity
+loss and (2) the Downsian rational-choice, ``economic'' approach that
+builds upon materialist conceptions of representative politics. Despite
+significant differences within both strands with regard to the
+independent variables that they use (i.e.~modernization, globalization
+or electoral rules), the causal mechanisms behind their arguments are
+similar {[}@hawkins2017populism 268 f.{]}. Within the latter group of
+Downsian rationalist accounts, Hawkins et al. narrow down
+interpretations of populist electoral success down to:
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\item
+  a medium-term inability of establishment parties to immediately
+  address socioeconomic change as demanded by the electorate, or
+\item
+  a long-term response of citizens to a fundamentally corrupt governance
+  system (both are ``demand-side'' accounts), or
+\item
+  the strategic exploitation of electoral rules by parties resorting to
+  populist techniques (a ``supply-side'' account) {[}cf.
+  @hawkins2017populism 270 f.{]}.
+\end{enumerate}
+
+As @hawkins2017populism notice, scholarship so far has ``given little
+attention to the causes of populism at the individual level'', with
+``research say{[}ing{]} little about the mentality of populist voters or
+the cognitive processes that lead people to join populist forces''
+{[}@hawkins2017populism 267{]}. To explain individuals' support for
+certain populist parties, this study will focus on the ``medium-term
+structural change'' account, which interprets populism as the result of
+citizens' normative attitudes and material situation when faced with
+socioeconomic change {[}@hawkins2017populism 270 f.{]}.
+
+Populism is not a new, but a rather recurring phenomenon. Support for
+populist parties grow especially during periods of major structural
+transitions because formerly established institutions and order are
+thrown into a maelstrom of uncertainty, a sort of crisis situation
+{[}cf. @kelly2017pop 511{]}. As the primary catalyst for socioeconomic
+change, industrial modernization serve as the explanatory factor for the
+rise of anti-establishment forces during the late 19th and early 20th
+century. Industrialisation and urbanization restructured the division of
+labour, and in the process they also alter the relationship between the
+state and the individual. Society becomes more atomized, moving away
+from familiar vehicles of social integration, like the church or the
+family, towards more bureaucratic and anonymous institutions.
+Individuals feeling socially disintegrated in this modernization process
+turn to populist parties who promise to bring back the ``good old days''
+{[}cf. @hawkins2017populism 269{]}. In the post-industrial era of the
+late 20th and early 21st century, globalization as the new trigger for
+structural change accounts for the strong uptrend of contemporary
+populism. This argument, now commonly known as the \emph{globalization
+losers thesis}, was first proposed by @betz1994radical, who reasons that
+globalization reorganized the economy and society to the benefit of
+some, but also to the detriment of others {[}cf. @betz1994radical{]}.
+Globalization essentially depicts a disconnection between social and
+spatial relations {[}cf. @scholte2005globalization{]}. In a figurative
+manner, it is described as ``the process of world shrinkage, of
+distances getting shorter, things moving closer {[}\ldots{}{]},
+pertain{[}ing{]} to the increasing ease with which somebody on one side
+of the world can interact, to mutual benefit, with somebody on the other
+side of the world'' {[}@larsson2001race 9{]}. From an economic
+perspective, it is understood as a process of ``markets and people
+around the world {[}\ldots{}{]} becoming more integrated over time''
+{[}@sen2001if{]}. In this sense, factors of production are becoming
+increasingly mobile, with especially four aspects concerned: goods
+(trade), money (capital), people (labour), and ideas (knowledge) {[}cf.
+@IMF2000global{]}. As globalization brings about new cultural, social
+and economic inputs, it triggers fear and hostility for several,
+distinct reasons. While the accelerating movement of goods and money are
+worrisome to individuals who depend heavily on socioeconomic stability,
+the increased mobility of people and ideas worry primarily those who
+want to safeguard a homogenous, culturally inclusive society. Both the
+socioeconomic and the sociocultural aspect of globalization play
+therefore distinctive roles in the strengthening of support for populist
+parties. While economic grievances contributes to the general electoral
+success of populist parties (2.2.1.), differing values and attitudes
+internalized by individuals will determine which type of populist party
+they are likely to support (2.2.2.).
+
+\subsubsection{The Socio-Economic Aspect of
+Globalization}\label{the-socio-economic-aspect-of-globalization}
+
+Today's post-industrial age, characterized by a drop in industrial
+activities and by a growing demand of services, gives new opportunities
+to the ``winners'' of globalization who stand out as being ``flexible,
+professional, and entrepreneurial''. Those who do not meet these
+criteria -- often ``the unemployed, the underemployed, the unskilled,
+and those whose jobs are threatened by advancing technology' -- are the
+`losers' of globalization'' {[}@betz1994radical{]}. Globalization in the
+economic and financial sphere gives some producers, investors and
+workers better conditions to make profit while making it more precarious
+for others in terms of incomes, jobs security and welfare benefits
+{[}cf. @van20176 390{]}. Because these ``losers'' feel abandoned by
+mainstream parties, which have consistently supported pro-market
+policies associated with globalization, they turn to populist parties
+for democratic representation {[}cf. @betz1994radical{]}.
+
+As measured by the KOP Globalization Index, the movement of goods,
+people, capital and knowledge has steadily increased since the 1970s
+{[}cf. @kofswiss{]}. As a result, patterns of economic competition have
+changed, which in turn creates an increasing number of people unable to
+offer the sought-after skills and know-how for rewarding jobs. Well-paid
+work for hardworking, but less qualified workers gradually disappeared,
+especially in developed countries. This tendency frustrates especially
+those having difficulties to be mobile (i.e.~older people or low-skilled
+people facing language barriers). Their fear of losing their jobs if
+exposed to fierce competition in the global labour market is therefore
+particularly great {[}cf. @spruyt2016supports 337{]}. As summed up by
+Rodrik:
+
+\begin{quote}
+``Globalization drove multiple, partially overlapping wedges in society:
+between capital and labor, skilled and unskilled workers, employers and
+employees, globally mobile professionals and local producers,
+industries/regions with comparative advantage and those without, cities
+and the countryside, cosmopolitans versus communitarians, elites and
+ordinary people. It left many countries ravaged by financial crises and
+their aftermath of austerity'' {[}@rodrik2018populism 12{]}.
+\end{quote}
+
+Especially events like the financial crisis of 2007-2008 serve for some
+as proof for the degeneration of excessive globalization. According to
+the OECD, such crises are more likely to occur when the degree of
+uncontrolled capital flows is high {[}cf. @oecd2011risk 49{]}. The EU,
+an institution embodying cultural and economic integration {[}cf.
+@eu2018global{]}, is seen as a vehicle for globalization and hence as a
+danger to the status and wellbeing by many people. Above all, EU
+institutions are especially disliked because they deny member states the
+freedom to adopt their own economic policies {[}cf. @hawkins2017populism
+271{]} Despite awareness for these public concerns, ``the economic
+anxiety, discontent, loss of legitimacy, fairness concerns that are
+generated as a byproduct of globalization rarely come with obvious
+solutions or policy perspectives'' {[}@rodrik2018populism 12{]}. Whether
+the hypothesis that globalization causes economic misery is objectively
+true does not matter in this case. As establishment parties fail to fix
+the problem, people who perceive themselves as ``globalization losers''
+see in anti-establishment and anti-globalization parties the only
+solution to address their fears.
+
+On the other hand, it has been questioned by some authors whether a
+higher degree of globalization really leads to major social problems. As
+Agéndor and Florian argue, globalization can induce higher net income
+inequality, higher rates of unemployment and poverty, but mainly in the
+beginning of the process. In the long run, a higher level of
+globalization results in the decline of poverty and income inequality
+{[}cf. @agenor2004does; @dorn2018globalization{]}. However, ``{[}i{]}n
+the long run we are all dead'', as John Maynard Keynes cleverly points
+out, ``{[}e{]}conomists set themselves too easy, too useless a task if
+in tempestuous seasons they can only tell us that when the storm is long
+past the ocean is flat again'' {[}@keynes1923some 80{]}. Since
+especially those in an economically precarious situation depend on their
+jobs for daily survival, they are not in a position to wait for the
+long-term positive impact of globalization to manifest. It is therefore
+plausible to assume the following:
+
+\begin{quote}
+H1: The more precarious the economic situation of an individual, the
+higher the probability of that individual supporting populist parties.
+\end{quote}
+
+While globalization is an ``economic or technical phenomenon'', it is
+also ``a cultural evolution'' at the same time. This is why its
+sociocultural aspect also influence the perception that citizens have of
+populist parties.
+
+\subsubsection{The Socio-Cultural Aspect of
+Globalization}\label{the-socio-cultural-aspect-of-globalization}
+
+Individuals dissatisfied with current establishment elites and resenting
+the ills of globalization are more likely to seek anti-status quo
+alternatives by supporting populist parties. However, rational citizens
+do not remain indifferent about whom they entrust the task of dethroning
+the `corrupt elite' from the party political power stronghold. Given a
+choice, these individuals will obviously slant towards the populist
+party that they feel ideologically closer to. Whether citizens support
+the progressive or traditionalist variant of populism depends on
+sociocultural values, norms and practices that they have internalized.
+
+Culture, in the first place, is constituted by collective values and
+norms and therefore plays an important role for social coherence. It is
+part of a ``collective consciousness'', responsible for ``form{[}ing{]}
+a moral glue that results in social integration.'' The feeling of
+disintegration and normlessness, also called anomie by Durkheim, occurs
+especially during periods of transitions like the 19th century's
+industrial modernization and today's resurgence of globalization {[}cf.
+@hawkins2017populism 269{]}. Culture, according to Kroeber and
+Kluckhohn,
+
+\begin{quote}
+``consists of patterns, explicit and implicit, of and for behavior
+acquired and transmitted by symbols, constituting the distinctive
+achievements of human groups, including their embodiment in artifacts;
+the essential core of culture consists of traditional (I.e.,
+historically derived and selected) ideas and especially their attached
+values; culture systems may, on the one hand, be considered as products
+of action, on the other, as conditioning elements of future action''
+{[}@kroeber1952culture 181{]}.
+\end{quote}
+
+Cultural norms and practices are important as they provide people's
+lives with a sense of security, stability and achievement {[}cf.
+@allison2009trad 537{]}. Traditionally understood, it is bound to a
+specific territorial boundary. However, an increased level of
+globalization also means that cultural practices and experiences become
+gradually deterritorialized {[}cf. @tomlinson2012cultural 2 ff.{]}. As a
+consequent, certain aspects of the local culture may be ``diluted'' or
+even disappear while particularities become stronger. This constitute a
+worrying development especially for individuals who cherish traditional
+ways {[}cf. @nijman1999cultural 150{]}.
+
+Furthermore, cultural globalization goes hand in hand with an active
+promotion of a cosmopolitan identity {[}cf. @spruyt2016supports 337{]}.
+Cosmopolitanism is part of a progressive mentality, which is rejected by
+those who fear a loss of values and traditions. Images of an invasion by
+foreigners, who pose a threat to cultural norms and therefore to social
+cohesion, often serve as a strong stimulus for anti-immigration
+sentiments {[}cf. @mudde1999single 188 ff.{]}. This is why identity has
+gained an important place in the political agenda, especially of those
+who endorse traditional-conservative and materialist values {[}cf.
+@hawkins2017populism 390{]}. It is therefore plausible to assume the
+following:
+
+\begin{quote}
+H2: The more culturally exclusive the values of an individual, the
+higher the probability of that individual supporting traditionalist
+populist parties.
+\end{quote}
+
+Opposing these culturally exclusive individuals are those whose cultural
+norms and values are fundamentally cosmopolitan. These individuals
+mainly belong to the post-war generation, which grew up endorsing
+post-material, universal ideal about human rights, rule of law,
+tolerance and individual freedom from traditional constraints {[}cf.
+@jansen2011populist 297; @hawkins2017populism 390{]}. As Calhoun
+explains, ``cosmopolitanism has become an enormously popular rhetorical
+vehicle for claiming at once to be already global and to have the
+highest ethical aspirations for what globalization can offer''
+{[}@calhoun2008cosmopolitanism 209{]}. A cosmopolite, which derives from
+the word kosmos (world, universe) and polis (citizen), describes a
+person who is culturally inclusive. Ingram, citing emancipatory
+struggles such as the 1848 ``Springtime of Nations'' or the Communist
+Manifesto's call to international solidarity amongst workers, argues
+that populism can have a universalistic, cosmopolitan and inclusive
+character. Populism is thus not always territorially or ethnically
+exclusive. This is why he criticizes the conception that populism is
+always xenophobic and cosmopolitanism is always elitist (cf.
+@hawkins2017populism 654 f.{]}. It is therefore plausible to assume the
+following:
+
+\begin{quote}
+H3: The more culturally inclusive the values of an individual, the
+higher the probability of that individual supporting progressive
+populist parties.
+\end{quote}
+
+It is however important to note that the socioeconomic and sociocultural
+dimensions of globalization are not completely independent from one
+another. Economic and sociocultural factors may interact in a way that
+intensify support for populist parties. For instance, the new labour
+structure induced by contemporary globalization has produced ``a
+splintered and atomized workforce; without powerful unions to reinforce
+a new sense of class identity, individuals find themselves powerless to
+mobilize'' {[}@hawkins2017populism 269{]}. As a result, feelings of
+identity loss, alienation and helplessness develop amongst those who are
+unable to cope with these changes {[}cf. @hawkins2017populism 269{]}. In
+this case, economic globalization has also contributed to the widening
+of sociocultural cleavages. It is also well-established that especially
+individuals who are in a precarious economic situation resent
+immigrants, whom they might lose their jobs to, or whom they see as a
+cost to welfare benefits. In this case, economic insecurity reinforces
+anti-immigrant feelings {[}@decleen2017pop 349{]}. It is therefore
+plausible to assume the following:
+
+\begin{quote}
+H4: Economic insecurity and cultural values interact in a way that
+increases the probability of an individual supporting populist parties
+\end{quote}
+
+
+\end{document}

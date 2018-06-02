@@ -53,9 +53,9 @@ load("data/boxplot_dat.Rdata")
 
 
 
-In this section, a short examination of descriptive statistics takes place (Section \ref{descs}) followed by a report on the results of estimated multinomial logistic regression models which are subsequently examined for their implications regarding the research hypotheses (Section \ref{multinom}). 
+In this section, a short examination of descriptive statistics takes place followed by a report on the results of estimated multinomial logistic regression models which are subsequently examined for their implications regarding the research hypotheses. 
 
-\subsection{Descriptive Statistics} \label{descs}
+\subsection*{Descriptive Statistics} \label{descs}
 
 This section will introduce some basic descriptive statistics of the used variables. More specifically, we examine the support for populism over time, its geographical distribution and how it differs among different socio-demographic groups. Table \ref{summary_stats} shows summary statistics for all used variables.
 
@@ -163,11 +163,11 @@ Lastly, the bottom-right graphic of Figure \ref{plot2by2} shows the degree of re
 	{\scriptsize Number in boxplots show the arithmetic mean. Source: ESS Data Round 5 - 8; N = 68403. \par}
 \end{figure}
 
-\subsection{Multinomial Logistic Regression} \label{multinom}
+\subsection*{Multinomial Logistic Regression}
 
 This section will present the results of multinomial logistic regressions used to estimate the support for progressive and traditionalist populism followed by a short summary and discussion of the findings in regards to our hypotheses.
 
-### Results
+### Results {-}
 
 Five models will be estimated in total: *Model 1* only includes the results of the control variables. *Model 2* tests the economic hypothesis and *Model 3* tests the cultural hypothesis. Lastly, *Model 4* estimates variables of both hypotheses together and *Model 5* shows additional interaction effects between them.^[All models were checked by tolerance tests to be free of problems of multicollinearity.] Instead of a table, it was decided to use a coefficient plot in order to visualize the results, shown in Figure \ref{coefficients}. The big advantage of reporting the results in this way is that in addition to estimates and p-values, the relation and differences between coefficients can be intuitively read. 
 

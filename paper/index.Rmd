@@ -6,7 +6,7 @@ output:
     includes:
      in_header: header.tex
      before_body: title_page.tex
-     # after_body: appendix.tex
+     after_body: appendix.tex
 documentclass: article
 classoption: a4paper
 bibliography: references_by_MC.bib
@@ -27,31 +27,31 @@ knitr::opts_chunk$set(echo = F)
 <!-- \onehalfspacing -->
 \setstretch{1.5}
 
-\section{Introduction} 
+\section*{Introduction}
 
 ```{r child = '1_intro.Rmd'}
 ```
 
-\newpage
-\section{Theory}  \label{theory}
+<!-- \newpage -->
+<!-- \section*{Theory}  \label{theory} -->
 
 ```{r child = '2_theory.Rmd'}
 ```
 
-\newpage
-\section{Methods and Data Preparation} \label{methods}
+<!-- \newpage -->
+\section*{Methods and Data Preparation} \label{methods}
 
 ```{r child = '3_methods.Rmd'}
 ```
 
-\newpage
-\section{Analysis} \label{analysis}
+<!-- \newpage -->
+\section*{Analysis} \label{analysis}
 
 ```{r child = '4_analysis.Rmd'}
 ```
 
-\newpage
-\section{Conclusions} \label{conclusion}
+<!-- \newpage -->
+\section*{Conclusions} \label{conclusion}
 
 ```{r child = '5_conclusions.Rmd'}
 ```
@@ -63,7 +63,7 @@ knitr::opts_chunk$set(echo = F)
 \newpage
 
 
-# References
+# References {-}
 
 \setlength{\parindent}{-0.2in}
 \setlength{\leftskip}{0.2in}

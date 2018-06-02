@@ -1509,7 +1509,7 @@ br1 %>%
 
 
 ```
-## bayesian2
+## bayesian gerät
 
 ```{r}
 mlogit_ess_adds %>% #select(target) %>% table 
@@ -1527,6 +1527,7 @@ br2 <- brm(populism2 ~ econ_unsat + econ_insec + unemployed + welfare +
            prior = c(set_prior ("normal (0, 8)")))
 
 save(br2, file = "data/br2.Rdata")
+load("data/br2.Rdata")
 
 library(tidybayes)
 
@@ -1542,7 +1543,7 @@ br2 %>%
   geom_halfeyeh() 
 
 add_predicted_samples(mlogit_sub, br2) -> pred_samples
-add_fitted_samples(mlogit_sub, br2, n = 100) -> fit_samples
+add_fitted_samples(mlogit_sub, br2, n = 115) -> fit_samples
 
 library(ggridges)
 
@@ -1560,14 +1561,26 @@ fit_samples %>%
 
 ggsave(filename = "images/bayesia_fun.png", width = 10)
 
+
+
+
+sjPlot::plot_model(br2, 
+                   terms = c("b_muTraditionalistPopulism_anti_imm",
+                             "b_muTraditionalistPopulism_govsat"))
+parameters(br2)
+```
+
+## bayesian2
+
+```{r}
 fit_samples %>%
   ungroup() %>% 
-  select(govsat, anti_imm, lrscale, estimate, category, .iteration) %>% 
+  select(govsat, globalism, lrscale, estimate, category, .iteration) %>% 
   gather("variable", "value", -estimate, -.iteration, -category) %>% 
   mutate(variable = 
            case_when(
              variable == "govsat" ~ "Government Satisfaction",
-             variable == "anti_imm" ~ "Anti-Immigration Sentiment",
+             variable == "globalism" ~ "Trust in Global Governance",
              variable == "lrscale" ~ "Left-Right Scale"
            )) %>% 
   mutate(category = 
@@ -1592,14 +1605,89 @@ fit_samples %>%
         strip.text = element_text(size = 11)) 
     # scale_x_continuous(breaks = seq(0,10, by
 
-ggsave(filename = "images/bayesia_fun2.png", width = 18, height = 10)
-
-
-sjPlot::plot_model(br2, 
-                   terms = c("b_muTraditionalistPopulism_anti_imm",
-                             "b_muTraditionalistPopulism_govsat"))
-parameters(br2)
+ggsave(filename = "slides/images/bayesia_fun2.png", width = 12, height = 9)
 ```
+
+
+## bayesian3
+
+```{r}
+#add_fitted_samples(mlogit_sub, br2, n = 100) -> fit_samples
+
+fit_samples %>%
+  ungroup() %>% 
+  select(econ_insec, unemployed, welfare, estimate, category, .iteration) %>% 
+  gather("variable", "value", -estimate, -.iteration, -category) %>% 
+  mutate(variable =
+           case_when(
+             variable == "econ_insec" ~ "Economic Insecurity",
+             variable == "unemployed" ~ "Unemployed (0/1)",
+             variable == "welfare" ~ "Welfare (0/1)"
+           )) %>%
+  mutate(category = 
+           case_when(
+             category == "1" ~ "Establishment",
+             category == "2" ~ "Progressive Populism",
+             category == "3" ~ "Traditionalist Populism"
+           )) %>% 
+  mutate(estimate = round(estimate * 100, 2)) %>% 
+ ggplot(aes(x = value, y = estimate, color = category)) +
+  geom_smooth(aes(y = estimate, group = paste(category, .iteration)), alpha = 0.25, 
+              se = F, size = 0.000000000000025, method = "gam") +
+  facet_grid(category~variable, scales = "free") +
+    scale_y_continuous(breaks = seq(0,100, by = 5),
+                     labels = paste0(seq(0,100, by = 5),"%")) + 
+    ggthemes::theme_hc() +
+    labs(y = "Probability", x = "Score") +
+  ggthemes::scale_colour_gdocs("Type") + 
+    guides(color = F) +
+  # cowplot::panel_border() +# and a border around each panel
+  theme(panel.spacing = unit(2, "lines"),
+        strip.text = element_text(size = 11)) 
+    # scale_x_continuous(breaks = seq(0,10, by
+
+ggsave(filename = "slides/images/bayesia_fun3.png", width = 12, height = 9)
+```
+
+## bayesian4
+
+```{r}
+
+fit_samples %>%
+  ungroup() %>% 
+  select(anti_imm, religion, age, estimate, category, .iteration) %>% 
+  gather("variable", "value", -estimate, -.iteration, -category) %>% 
+  mutate(variable =
+           case_when(
+             variable == "anti_imm" ~ "Anti-Immigration Sentiment",
+             variable == "religion" ~ "Religiosity",
+             variable == "age" ~ "Age"
+           )) %>%
+  mutate(category = 
+           case_when(
+             category == "1" ~ "Establishment",
+             category == "2" ~ "Progressive Populism",
+             category == "3" ~ "Traditionalist Populism"
+           )) %>% 
+  mutate(estimate = round(estimate * 100, 2)) %>% 
+ ggplot(aes(x = value, y = estimate, color = category)) +
+  geom_smooth(aes(y = estimate, group = paste(category, .iteration)), alpha = 0.25, 
+              se = F, size = 0.000000000000025, method = "loess") +
+  facet_grid(category~variable, scales = "free") +
+    scale_y_continuous(breaks = seq(0,100, by = 5),
+                     labels = paste0(seq(0,100, by = 5),"%")) + 
+    ggthemes::theme_hc() +
+    labs(y = "Probability", x = "Score") +
+  ggthemes::scale_colour_gdocs("Type") + 
+    guides(color = F) +
+  # cowplot::panel_border() +# and a border around each panel
+  theme(panel.spacing = unit(2, "lines"),
+        strip.text = element_text(size = 11)) 
+    # scale_x_continuous(breaks = seq(0,10, by
+
+ggsave(filename = "slides/images/bayesia_fun4.png", width = 12, height = 9)
+```
+
 
 
 ### example 

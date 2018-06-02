@@ -241,21 +241,22 @@ ches_add %>%
 fa_dat <- ches %>% 
   select(antielite_salience, antieu, 
          sociallifestyle, civlib_laworder, 
-         galtan, multiculturalism, lrgen) %>% 
+         galtan) %>% 
   mutate_all(as.numeric) 
 
 # Check out a factor analysis
 fa_pop <- fa_dat %>% 
   fa(2, rotate = "varimax", fm = "ml")
 
-#save(fa_pop, file = "text/data/fa_pop.Rdata")
+# save(fa_dat, file = "paper/data/fa_dat.Rdata")
+# save(fa_pop, file = "paper/data/fa_pop.Rdata")
 
 fa_dat_fin <- fa_dat %>% 
   fa(2, rotate = "varimax", fm = "ml") %>% 
   predict(fa_dat) %>% 
   as.data.frame() %>% 
   mutate(populism_e_eu_fac = range01(ML2)*100) %>% 
-  mutate(liberalism_s_c_g_lr_m_fac = range01(ML1)*100) %>% 
+  mutate(liberalism_s_c_g_fac = range01(ML1)*100) %>% 
   select(-ML2, -ML1) %>% 
   cbind(ches) 
 
@@ -294,12 +295,12 @@ ggsave(file = here("images",
 
 
 plot_coords(fa_dat_fin, 
-            liberalism_s_c_g_lr_m_fac, 
+            liberalism_s_c_g_fac, 
             populism_e_eu_fac)
   
 ggsave(file = here("images", 
                    "diffs", 
-                   "populism_liberalism_fac.png"), 
+                   "populism_liberalism_fac2.png"), 
        height = 10, width = 10)
 ```
 
@@ -308,8 +309,8 @@ ggsave(file = here("images",
 ```{r}
 set.seed(2018)
 ches_cluster <- ches_add %>% 
-  select(party_cntry, liberalism_s_c_g_m, populism_e_eu) %>% 
-  rename(prog_trad = liberalism_s_c_g_m,
+  select(party_cntry, liberalism_s_c_g, populism_e_eu) %>% 
+  rename(prog_trad = liberalism_s_c_g,
          populism = populism_e_eu) %>% 
   #na.omit() %>% 
   as.data.frame()
@@ -371,7 +372,7 @@ ggsave(file = here("text", "images", "optim_cluster.png"),
 
 ```{r}
 ches_final <- ches_add %>% 
-  rename(prog_trad = liberalism_s_c_g_m,
+  rename(prog_trad = liberalism_s_c_g,
          populism = populism_e_eu) %>%
   select(party_cntry, 
          party_name, 
