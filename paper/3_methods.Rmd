@@ -28,18 +28,18 @@ pacman::p_load(tidyverse, gridExtra)
 ```
 
 
-The following section introduces the data and its sources. We use the Chapel Hill Expert Survey (CHES) on European party positions in order to construct our dependent variable of *Support for Establishment/Populist Parties* (i.e. Support for Progressive or Traditionalist Populist parties) along with individual level data from the European Social Survey (ESS). The section further operationalizes our hypotheses (cultural and economic explanations for populism) and give a description of the used control variables. 
+The following section introduces the data and its sources. We use the Chapel Hill Expert Survey (CHES) on European party positions to construct our dependent variable of *Support for Establishment/Populist Parties* (i.e. Support for Progressive or Traditionalist Populist parties) along with individual level data from the European Social Survey (ESS). The section further operationalizes our hypotheses (cultural and economic explanations for populism) and describes the control variables used in the process.
 
 
-The CHES dataset contains information on the positions of 365 political parties in 40 European countries on european and national policy issues in the timerange between 1999 and 2014. This makes the CHES data suitable for identifying the ideological party positions that can be classified as progressive and traditionalist populism within the European context. Since parties have changed over time, for the purposes of our analysis we only use the latest available data from 2014.
+The CHES dataset contains information on the positions of 365 political parties in 40 European countries on European and national policy issues between 1999 and 2014. The CHES dataset therefore allows us to identify ideological party positions that can be either classified as progressive or traditionalist populism within the European context. As many parties have greatly changed over time, we only use the latest available data from 2014 for the purpose of our analysis. 
 
-As a first step, we selected two variables that are in line with our minimalistic definition of populism. They will be used to construct the an *Establishment - Anti-Establishment Axis*.
+In a first step, we selected two salient variables to construct the *Establishment - Anti-Establishment Axis*. Populism, as it is conceptualized in this study, is characterized by two main features: a disdain for the established elites that supposedly exploit the *pure* and *little* people and an opposition to the effects of globalization that brings cultures and economies closer together at the expense of the (local) working class.
 
-Populism, as it is conceptualized in this study, is characterized by two main features: a disdain for the established elites that supposedly exploit the *pure* and *little* people and an opposition to the effects of globalization that brings cultures and economies closer together at the expense of the (local) working class.
+\newpage
 
 **Anti-Elite Sentiment**
 
-Anti-Elite Sentiment is measured with the 11-point scale (0-1) variable *antielite_salience* that indicates the salience of anti-elite rhetoric within a given party. This corresponds with Mudde and Kaltwasser's concept of populism where the "corrupt elite" is pitted against the pure people [@mudde2017populism 6].
+Anti-Elite Sentiment is measured with the 11-point scale (0-1) variable *antielite_salience* that indicates the salience of anti-elite rhetoric within a given party. This corresponds with Mudde's and Kaltwasser's minimalistic concept of populism where the "corrupt elite" is pitted against the pure people [@mudde2017populism 6].
 
 + *Salience of anti-establishment and anti-elite rhetoric*
     0. Not important at all
@@ -47,7 +47,7 @@ Anti-Elite Sentiment is measured with the 11-point scale (0-1) variable *antieli
     
 **Euroskepticism**
 
-Euroskepticism (*position*[^1]) will be used as a proxy variable for anti-globalization. Populists are consistently opposed to the European integration process, albeit for different reasons.
+Euroskepticism (*position*[^1]) will be used as a proxy variable for anti-globalization attitudes within the European context. Populists, regardless of their ideological background, are consistently opposed to the European integration process, albeit for different reasons.
     
 + *Overall orientation of the party leadership towards European integration*
     1. Strongly opposed
@@ -56,11 +56,11 @@ Euroskepticism (*position*[^1]) will be used as a proxy variable for anti-global
 [^1]:The Euroskepticism variable has been recoded so that higher values indicate higher opposition to European integration.
 
 
-Next, we try to identify the value cleavage between progressivism and traditionalism on a *Progressivism - Traditionalism Axis*. This cleavage divides *progressives*, who favor progressive social values, promote liberal lifestyles and acceptance of homosexuality, civil liberties and multiculturalism from *traditionalists* who take the opposite stance on of all these positions. The following variables have been selected in order to distinguish between progressive and traditionalist populism.
+In a second step, we try to identify the value cleavage between different variants of populism on a *Progressivism - Traditionalism Axis*. This cleavage divides *progressives*, who favor progressive social values, promote liberal lifestyles and acceptance of homosexuality, civil liberties and multiculturalism from *traditionalists* who take the opposite stance on all these positions. The following variables have been selected to distinguish between progressive and traditionalist populism.
 
 **GAL-TAN**
 
-GAL-TAN is a new politics dimension invented by @hooghe2002does. The capital letters are abbrevations for a scale that is supposed to capture the new fault lines in European politics and they stand for *Green-Alternative-Libertarian*
+GAL-TAN is a new politics dimension invented by @hooghe2002does. The capital letters are abbrevations for a scale that is supposed to capture the new fault lines in European politics. They stand for *Green-Alternative-Libertarian*
 (GAL) and *Traditional-Authoritarian-Nationalist* (TAN) respectively.
 
 + *Position of the party [...] in terms of their views on democratic freedoms and rights. "Libertarian” or "postmaterialist” parties favor expanded personal freedoms, for example, access to abortion, active euthanasia, same-sex marriage, or greater democratic participation. "Traditional” or "authoritarian” parties often reject these ideas; they value order, tradition, and stability, and believe that the government should be a firm moral authority on social and cultural issues (galtan).*
@@ -70,7 +70,7 @@ GAL-TAN is a new politics dimension invented by @hooghe2002does. The capital let
 
 **Social Lifestyle**
 
-The acceptance of different lifestyle is a phenomena that consistently splits traditionalists from progressives. While progressives push for the acceptance of non-traditional social lifestyles traditionalists see this push as undermining very fabric of society.
+The acceptance of different lifestyles is an issue that consistently splits traditionalists from progressives. While progressives push for the acceptance of non-traditional social lifestyles, traditionalists fear that this push is undermining the very fabric of society.
 
 + *Position on social lifestyle (e.g. homosexuality) (sociallifestyle).*
     0.  Strongly supports liberal policies
@@ -78,13 +78,13 @@ The acceptance of different lifestyle is a phenomena that consistently splits tr
     
 **Civil Liberties**
 
-While progressives favor civil liberties and rehabilitation of criminals into society, traditionalists favor tough measures can serve as a deterrence, even at the expense of civil liberty. 
+While progressives endorse civil liberties and the rehabilitation of criminals into society, traditionalists favor tough measures that can serve as a deterrence, even at the expense of civil liberties. 
     
 + *Position on civil liberties vs. law and order (civlib_laworder).*
     0. Strongly promotes civil liberties
     10. Strongly supports tough measures to fight crime
 
-Having selected the variables, a maximum likelihood factor analysis with varimax rotation is conducted in order to estimate whether our proposed dimensions are being measured by the relevant variables.
+Having selected the variables, we conducted a maximum likelihood factor analysis with varimax rotation to estimate whether our proposed dimensions are being measured by the relevant variables.
 
 ```{r, include=F}
 load("data/fa_pop.Rdata")
@@ -143,11 +143,11 @@ fa_table <- fa_pop$Vaccounted %>%
     \label{fig:mesh1}
 \end{figure}
 
-Based on the Kaiser-Criterion, two distinct dimensions are extracted explaining a total variance of $`r round(fa_table[3,3,],2)`\%$. The extracted scales are then summed into two scales *Establishment vs. Anti-Establishment* and *Progressive vs. Traditionalism*, each standardized from 0 to 100 points to facilitate easy interpretation.
+Based on the Kaiser-Criterion, two distinct dimensions are extracted, explaining a total variance of $`r round(fa_table[3,3,],2)`\%$. The extracted scales are then summed into two scales *Establishment vs. Anti-Establishment* and *Progressive vs. Traditionalism*, each standardized from 0 to 100 points to facilitate easy interpretation.
 
-As a next step, we want to extract our traditionalist and progressive populist parties. This will be done with the help of *k-means clustering*. K-Means clustering is a very popular form of unsupervised machine learning that helps with classification problems. The algorithm producess a $k$ number of clusters (classification groups), where k is specified by the researcher. K-Means clustering estimates a centroid (i.e. a center) for each group that has the highest *intra-class similarity* within a given cluster (i.e. smallest distance from the centroid) and the lowest *inter-class similarity* with other specified cluster (i.e. maximized distance from other cluster centroids). The resulting clusters have minimal *within cluster variation* and a maximum of *between cluster variation*  [cf. @friedman2001elements 509 ff.]. 
+As a next step, we extract the traditionalist and progressive populist parties with the help of *k-means clustering*. K-Means clustering is a very popular form of unsupervised machine learning that helps with classification problems. The algorithm produces a $k$ number of clusters (classification groups), where k is specified by the researcher. K-Means clustering estimates a centroid (i.e. a center) for each group that has the highest *intra-class similarity* within a given cluster (i.e. smallest distance from the centroid) and the lowest *inter-class similarity* with other specified cluster (i.e. maximized distance from other cluster centroids). The resulting clusters have minimal *within cluster variation* and a maximum of *between cluster variation*  [cf. @friedman2001elements 509 ff.]. 
 
-The two scales *Establishment vs. Anti-Establishment* and *Progressive vs. Traditionalism* are handed over to the K-means clustering algorithm. Based on the *Gap Statistic* method [cf. @tibshirani2001estimating], four clusters are suggested as the optimal number of clusters.[^2] Figure \ref{fig:gap} shows the results of the gap statistic that clearly indicate four clusters.
+The two scales *Establishment vs. Anti-Establishment* and *Progressive vs. Traditionalism* are handed over to the K-means clustering algorithm. Based on the *Gap Statistic* method [cf. @tibshirani2001estimating], four clusters are suggested as the optimal number of clusters.[^2] Figure \ref{fig:gap} shows the results of the gap statistic that clearly indicates four clusters.
 
 \begin{figure}[!h]
     \centering
@@ -156,9 +156,16 @@ The two scales *Establishment vs. Anti-Establishment* and *Progressive vs. Tradi
     \label{fig:gap}
 \end{figure}
 
-[^2]:Elbow and average silhouette method also suggest four clusters as optimal. 
+[^2]:Elbow and average silhouette method also suggests four clusters as being optimal. 
 
-The four clusters that are estimated with the help of the k-means algorithm can be named as traditionalist and progressive populist parties as well as their two establishment counterparts (establishment progressives and traditionalists). Together with the clustering method, the two dimensions can be used to visualize the ideological position of each European party and its classification, which is illustrated in Figure \ref{fig:alignment}.
+Two out of the four clusters that are estimated using the k-means algorithm can be named as traditionalist and progressive populist parties, while their two establishment counterparts indicate establishment progressives and establishment traditionalists. Together with the clustering method, the two dimensions can be used to visualize the ideological position of each European party and its classification, which is illustrated in Figure \ref{fig:alignment}.
+
+
+The *top-left quadrant* shows progressive populists such as: 
+
+*Syriza*
+
+After winning the parliamentary elections in January 2015, SYRIZA (*Coalition of the Radical Left*) attempted to carry out the difficult balancing act between extreme left-wing positions, opposition to EU imposed austerity and yet supposedly pro-European commitments. In social policy, Syriza is particularly committed to the socially disadvantaged with progressive policies. For instance, they endorse the stance that the unemployed, the homeless and low-income people should be allowed to use the health facilities free of charge. They also support easier family reunification for individuals with a migration background [cf. @bbc2014syriza].
 
 \begin{figure}[!h]
     \centering
@@ -167,34 +174,25 @@ The four clusters that are estimated with the help of the k-means algorithm can 
     \label{fig:alignment}
 \end{figure}
 
-In order to validate the clusters, let's pick some examples and see whether the classified parties fit our theoretical expectations.
-
-
-The *top-left quadrant* shows progressive populists such as: 
-
-*Syriza*
-
-After winning the parliamentary elections in January 2015, SYRIZA (*Coalition of the Radical Left*) attempted to carry out the difficult balancing act between extreme left-wing positions, opposition to EU imposed austerity and yet supposedly pro-European commitments. In social policy, Syriza is particularly committed to the socially disadvantaged in society with progressive value policies such as guaranteeing that unemployed, homeless and low-income people should be allowed to use the health facilities free of charge or that family reunification should be made easier for individuals with a migration background [cf. @bbc2014syriza].
-
-
 *Podemos*
 
-In the general elections held on December 20, 2015, the left-wing political party Podemos that emerged from a protest movement obtained 20.68% of the votes and 69 deputies in the whole of the State. The Spanish "Indignados", the "indignants" of the Podemos movement, practice critique of globalization and capitalism often symbolized in the overarching EU bureacracy. Among other measures, they defend abortion, want to stop house evictions, suppress church privileges, promote renewable energies and are in favor of curbing nuclear energy. With regard to political parties, they propose to stop gauging, reduce subsidies and expand restrictions on connections between politicians and companies.
+In the general elections held on December 20, 2015, the left-wing political party Podemos obtained 20.68% of the votes and 69 deputies in the whole of the State. The Spanish "Indignados", the "indignants" of the Podemos movement, strongly criticizes globalization and capitalism - often symbolized by the overarching EU bureacracy. Among other propositions, they defend abortion, want to stop house evictions, suppress church privileges, promote renewable energies and are in favor of curbing nuclear energy. With regard to political parties, they propose to stop gauging, reduce subsidies and expand restrictions on connections between politicians and companies.
 
 The *top-right quadrant*  shows traditionalist populists such as:
 
 *AfD*
 
-The alternative for Germany (AfD) is a political party founded in 2013 in Germany. As of 2014, it gradually moved into 14 state parliaments and in the 2017 general election, the AfD received 12.6% of the vote and thus became the third strongest force and the strongest opposition party in the German Bundestag. Regarding the EU, they have been in favor of renationalization of policies that are currently situated in the EU [cf. @bbc2017afd]. The AfD represents conservative-antifeminist positions in gender politics and rejects gender equality policies and relies thereby on Christian fundamentalist and nationalist ideas. Therefore, the AfD is a party with traditional values. According to the AfD, Islam does not belong to Germany. In particular, the party calls for a ban on minarets and the face veil. 
+The alternative for Germany (AfD) is a political party founded in 2013 in Germany. As of 2014, it gradually moved into 14 state parliaments and in the 2017 general election, the AfD received 12.6% of the vote and thus became the third strongest force and the strongest opposition party in the German Bundestag. Regarding the EU, they have been in favor of renationalization of policies that are currently situated in the EU [cf. @bbc2017afd]. The AfD represents conservative-antifeminist positions in gender politics. It rejects gender equality policies and relies on Christian fundamentalist and nationalist ideas. The AfD is therefore obviously a party with traditional values. According to the AfD, Islam does not belong to Germany. In particular, the party calls for a ban on minarets and on the face veil. 
 
 *Front National*
 
-The Front National (FN) was founded in 1972 in France and moved into the national assembly with 8 seats in 2017 [cf. @nf]. In the European Parliament, the FN owns 18 out of the 74 French seats. With regard to foreign policy, the FN is strongly against EU membership and they vividly oppose immigration and asylum seekers and want to limit the rate of people allowed into the country. Furhtermore, their economic policy blames globalization for national ills which makes them favor protectionist policies.
+The Front National (FN) was founded in 1972 in France and moved into the national assembly with 8 seats in 2017 [cf. @nf]. In the European Parliament, the FN owns 18 out of the 74 French seats. With regard to foreign policy, the FN is strongly against EU membership. It vividly opposes immigration and asylum seekers and wants to limit the rate of people allowed into the country. Furthermore, they consider globalization as the cause of national economic problems, which makes them favor protectionist policies.
 
 The  *bottom-left and bottom-right quadrants* show progressive and traditionalist establishment parties:
 
-These quadrants include known establishment parties such as the German SPD and CDU, Labour Party and Conservatives in the UK and the Socialists and REM in France, among others. Given that the distinction between kinds of establishment parties is not of greater interest to us, we will merge progressive and traditionalist establishment parties into a single establishment party group.
+These quadrants include known establishment parties such as the German SPD and CDU, Labour Party and Conservatives in the UK and the Socialists and REM in France, among others. Since the distinction between different kinds of establishment parties is not of greater interest for the purpose of this study, progressive and traditionalist establishment parties are merged into a single establishment party group.
 
+In order to validate the clusters, we picked some examples to see whether the classified parties fit our theoretical expectations.
 
 <!-- ```{r, echo=F, out.height="55%", fig.align="center"} -->
 <!-- knitr::include_graphics("images/party_alignment_abstract.png",  -->
@@ -202,28 +200,28 @@ These quadrants include known establishment parties such as the German SPD and C
 
 <!-- ``` -->
 
-A full list of used parties as well as their respective scores and affiliations can be found in the appendix Table \ref{alignment}.
+A full list of the parties we used as well as their respective scores and affiliations can be found in the appendix Table \ref{alignment}.
 
 
 ### Dependent Variable: Support for Establishment/Populist Parties {-}
 
-After the successful classification, we combine the clusters from the CHES data with the *European Social Survey* (ESS) Round 5 – 8. We decided to use only this timerange, because in this way we capture the years after the European financial crisis (2008-09). Two variables will be used to measure our dependent variable *Support for Establishment/Populist Parties*: 
+After successful classification, we combine the clusters from the CHES data with the *European Social Survey* (ESS) Round 5 – 8. We decided to use only this timerange to only capture the years following the financial crisis (2008-09). Two variables will be used to measure our dependent variable *Support for Establishment/Populist Parties*: 
 
    *1. What party did you vote for in the last national election?* 
    
    *2. Which party is closest to your views?*
 
-A respondent that either voted for or indicated that they feel closest to a specific party, will be classified as either supporting a progressive or traditionalist populist or an establishment party, based on the clusters generated by the k-means alghorithm. If it is the case that a person voted for a party but felt close to a different party, we decided to classify said person as a supporter of the party that it felt most close to (thus ranking their vote as less indicative of their support). This is based on the assumption that many voters have an incentive to vote strategically and they might end up voting for an establishment party even though they actually support a populist party.
+A respondent who either voted for or indicated that they feel closest to a specific party, will be classified as either supporting a progressive or traditionalist populist or an establishment party, based on the clusters generated by the k-means alghorithm. In the case that a person voted for a party but felt closest to a different party, we decided to classify said person as a supporter of the party that it felt closest to (thus ranking their vote as less indicative of their support). This is based on the assumption that many voters have an incentive to vote strategically and they might end up voting for an establishment party even though they actually support a populist party.
 
-After merging of the datasets is completed, we are initially left with 130155 respondents from 22 European countries. However, given that there are many missing values for respondents who gave no indication on whether they support a political party (32.99%), we are ultimately left with 87238 cases for the purposes of our descriptive analysis and 68403 for the multinomial logistic regression analysis (where all missing values were deleted listwise).^[Note that is certainly a high amount of missing values. Imputation could be considered in this case, however, this would be beyond the scope of this seminar paper.]
+After completing the merging of the datasets, we are initially left with 130155 respondents from 22 European countries. However, given that there are many missing values for respondents who gave no indication on whether they support a political party (32.99%), we are ultimately left with 87238 cases for the purposes of our descriptive analysis and 68403 for the multinomial logistic regression analysis (where all missing values were deleted listwise).^[Note that this is certainly a high amount of missing values. Imputation could be considered in this case, however, this would be beyond the scope of this paper.]
 
 <!-- Finally, we turned to the pooled European Social Survey (2002-2014) to examine the crossnational micro-level evidence for both the core arguments. The advantage of this survey is that the pooled dataset across six waves contains 293,856 respondents, providing a large-enough sample of the European public in 32 countries to identify the electoral base of smaller parties with some degree of reliability. -->
 
 ### Independent Variables: Cultural and Economic Explanations {-}
 
-Next, the hypotheses will be operationalized with corresponding ESS variables. *Economic deprivation* will be captured with two variables: *Economic Insecurity* (4-point scale) and the dummy variables *Unemployment*, and *Welfare*. The *cultural value hypothesis* will be measured with an index for *Anti-Immigration Sentiment* ranging from 0 to 10: *Openness*, *Self-Transendence*, *Self-Enhancement* and *Conservation*, where the former two are associated with liberal values and the latter two are associated with conservative values [cf. @schwartz1994there; @schwartz2005human]. The models further include common socio-demographic control variables, for example, *Age*, *Education* and *Sex* but also includes a *Left-Right Scale*, *Religiosity*, *Government Satisfaction*, *Ethnic Minority Status*, *Trust in Global Governance* and the dummy variable *Rural vs. Urban*. Lastly, regional dummies (East, West, North and Southern Europe) and time dummies for each year will be included in the model as controls (2010, 2012, 2014 and 2016).
+Next, the hypotheses will be operationalized with corresponding ESS variables. *Economic deprivation* will be captured with two variables: *Economic Insecurity* (4-point scale) and the dummy variables *Unemployment* and *Welfare*. The *cultural value hypothesis* will be measured with an index for *Anti-Immigration Sentiment* ranging from 0 to 10: *Openness*, *Self-Transendence*, *Self-Enhancement* and *Conservation*, where the former two are associated with liberal values and the latter two are associated with conservative values [cf. @schwartz1994there; @schwartz2005human]. The models further include common socio-demographic control variables such as *Age*, *Education* and *Sex*, but also a *Left-Right Scale*, *Religiosity*, *Government Satisfaction*, *Ethnic Minority Status*, *Trust in Global Governance* and the dummy variable *Rural vs. Urban*. Lastly, we also include regional dummies (East, West, North and Southern Europe) and time dummies for each year in the model as controls (2010, 2012, 2014 and 2016).
 
-Theoretically a multilevel model would have been needed to estimate the model properly, but given that there are some countries with almost none or no populist supporters in our data, this would lead to problems. In order to still account for the hierarchical order of our data, we decided to use regional variables of Europe, based on the four classifications: Eastern, Western, Southern and Northern Europe.
+Theoretically, a multilevel model would have been needed to estimate the model properly, but given that there are some countries with almost none or no populist supporters in our data, this would lead to problems. In order to still account for the hierarchical order of our data, we decided to use regional variables of Europe, based on the four classifications: Eastern, Western, Southern and Northern Europe.
 
 A more detailed description of the used variables can be requested from the authors.
 

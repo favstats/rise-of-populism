@@ -176,9 +176,10 @@ mlogit_ess %>%
          impsafe , ipstrgv , ipfrule , ipbhprp , ipmodst , imptrad,
          imprich , iprspot , ipshabt , ipsuces,
          ipeqopt , ipudrst , impenv , iphlppl , iplylfr), minus_7) %>% 
-  mutate(openness = 10-(range01(ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + impfun)*10)) %>% 
+  mutate(openness = (range01(ipcrtiv + impfree + impdiff + ipadvnt + ipgdtim + #what
+                               impfun)*10)) %>% 
   mutate(conservation = range01(impsafe + ipstrgv + ipfrule + ipbhprp + ipmodst + imptrad)*10) %>%   
-  mutate(selfenhance = 10-(range01(imprich + iprspot + ipshabt + ipsuces)*10)) %>%  
+  mutate(selfenhance = (range01(imprich + iprspot + ipshabt + ipsuces)*10)) %>% #what
   mutate(selftrans = range01(ipeqopt + ipudrst + impenv + iphlppl + iplylfr)*10) %>%  
   mutate(opendim = (range01((openness - conservation))*10)-5) %>% 
   mutate(selfdim = (range01((selftrans - selfenhance))*10)-5) %>% 
